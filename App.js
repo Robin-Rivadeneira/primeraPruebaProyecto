@@ -20,7 +20,7 @@ export default function App() {
         <Stack.Screen
           name="carucel"
           component={carucel}
-          options={{ title: "Servicios ISSFA" }}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>
