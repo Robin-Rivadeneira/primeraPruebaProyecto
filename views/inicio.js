@@ -1,7 +1,10 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import app from "../public/css/app";
 import { LinearGradient } from 'expo-linear-gradient';
+import GoIdentitySVG from "../public/img/goIdentity.svg";
+import InstitutoSVG from "../public/img/instituto.svg";
+import HuellaSVG from "../public/img/huella.svg";
 
 export default function inicio({ navigation }) {
   return (
@@ -13,25 +16,13 @@ export default function inicio({ navigation }) {
           style={app.gradieFond}
         >
       {/* Logo y título */}
-      <Image
-        source={require("../public/img/goIdentity.png")} // Ruta relativa al logo
-        style={app.issfaLogo}
-        resizeMode="contain"
-      />
+      <GoIdentitySVG style={app.issfaLogo} />
 
       {/* Logo y título */}
-      <Image
-        source={require("../public/img/instituto.png")} // Ruta relativa al logo
-        style={app.issfaLogo}
-        resizeMode="contain"
-      />
+      <InstitutoSVG style={app.issfaLogo} />
 
       {/* Huella digital */}
-      <Image
-        source={require("../public/img/buella.png")} // Ruta relativa a la huella
-        style={app.fingerprint}
-        resizeMode="contain"
-      />
+      <HuellaSVG style={app.fingerprint} />
 
       {/* Botón de ingresar */}
       <TouchableOpacity
