@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import inicio from "./views/inicio";
 import carucel from "./views/carucel";
+import login from "./views/login";
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,12 @@ export default function App() {
         <Stack.Screen
           name="carucel"
           component={carucel}
+          options={{ headerShown: false }}
+        />
+        {/* Vista del login */}
+        <Stack.Screen
+          name="login"
+          component={login}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

@@ -48,7 +48,7 @@ const Carucel = () => {
   // Función para navegar a otra vista
   const handleNavigate = () => {
     // Aquí se define a qué vista deseas navegar
-    navigation.navigate('NextView'); // Cambia 'NextView' por el nombre de la vista a la que deseas ir
+    navigation.navigate('login'); // Cambia 'NextView' por el nombre de la vista a la que deseas ir
   };
 
   return (
