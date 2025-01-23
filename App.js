@@ -1,20 +1,28 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import inicio from "./views/inicio";
+import carucel from "./views/carucel";
+
+const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="inicio">
+        {/* Vista inicial */}
+        <Stack.Screen
+          name="inicio"
+          component={inicio}
+          options={{ headerShown: false }}
+        />
+        {/* Vista del carrusel */}
+        <Stack.Screen
+          name="carucel"
+          component={carucel}
+          options={{ title: "Servicios ISSFA" }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
