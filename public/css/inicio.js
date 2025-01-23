@@ -15,13 +15,13 @@ const caruceles = StyleSheet.create({
     padding: 15,
     backgroundColor: "transparent",
     borderRadius: 20,
-    width: screenWidth * 0.9, // Reducir el ancho del item del carrusel
+    width: screenWidth * 0.8, // Reducir el ancho del item del carrusel
     height: '60%', // Ajustar la altura de cada item
     marginHorizontal: 10, // Añadir espacio entre los itemsT
     marginTop:100
   },
   carouselImage: {
-    widh: '90%', // Reducir el tamaño de la imagen
+    width: '90%', // Reducir el tamaño de la imagen
     height: '60%', // Reducir la altura de la imagen
     marginBottom: 15,
     backgroundColor:'white',
