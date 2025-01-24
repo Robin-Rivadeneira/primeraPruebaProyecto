@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import loginEstilos from '../public/css/login';
+import GoIdentitySVG from "../public/img/goIdentity.svg";
 
 const Login = () => {
     const [isChecked, setIsChecked] = useState(false);
@@ -26,19 +27,15 @@ const Login = () => {
 
     return (
         <LinearGradient
-            colors={['#bed9f4', '#c4f4fd', '#ecf2ff']}
+            colors={['#bed9f4', '#c4f4fd', '#ecf2ff', "white"]}
+            locations={[0.2, 0.4, 0.6, 0.8]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={loginEstilos.container}
         >
             <View style={loginEstilos.logoContainer}>
-                <Image
-                    source={require("../public/img/goIdentity.png")}
-                    style={loginEstilos.imagen}
-                    resizeMode="contain"
-                />
+                <GoIdentitySVG />
             </View>
-
             <Text style={loginEstilos.welcomeText}>BIENVENIDOS</Text>
             <Text style={loginEstilos.letras}>Correo</Text>
             <TextInput

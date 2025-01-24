@@ -11,15 +11,15 @@ const loginEstilos = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 10,
         width: '100%',
+        height: '30%'
     },
-    imagen: {
-        width: '100%'
-    },
+
     welcomeText: {
         fontSize: 30,
         fontWeight: 'bold',
+        marginTop: 20,
         marginBottom: 20,
-        color: '#5C5C5C',
+        color: '#5b749e',
     },
     input: {
         width: '100%',
@@ -50,11 +50,11 @@ const loginEstilos = StyleSheet.create({
     },
     checkboxLabel: {
         fontSize: 18,
-        color: '#6B6B6B',
+        color: '#5b749e',
     },
     letras: {
         fontSize: 18,
-        color: '#6B6B6B',
+        color: '#5b749e',
         width: '100%'
     },
     button: {
@@ -68,7 +68,7 @@ const loginEstilos = StyleSheet.create({
     },
     footerText: {
         fontSize: 16,
-        color: '#6B6B6B',
+        color: '#5b749e',
         marginTop: '5%',
     },
     link: {

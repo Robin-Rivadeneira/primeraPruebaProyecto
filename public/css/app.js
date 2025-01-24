@@ -5,6 +5,7 @@ const app = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    width: '100%',
   },
   gradieFond: {
     width: '100%',
@@ -13,17 +14,19 @@ const app = StyleSheet.create({
   issfaLogo: {
     width: '100%',
     height: '30%',
-    marginBottom: 30,
+    marginTop:'10%'
   },
+
   fingerprint: {
     width: '100%',
-    height: '15%',
-    marginBottom: 30,
+    height: '20%',
+    marginTop:'5%'
   },
   button: {
     width: '50%',
     marginLeft:'25%',
     borderRadius: 20,
+    marginTop:'5%'
   },
   gradientButton: {
     paddingVertical: 10,
