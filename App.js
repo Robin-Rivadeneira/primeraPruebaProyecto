@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import inicio from "./views/inicio";
 import carucel from "./views/carucel";
 import login from "./views/login";
+import RegistroBiometrico from "./views/registro";
 
 const Stack = createStackNavigator();
 
@@ -27,6 +28,11 @@ export default function App() {
         <Stack.Screen
           name="login"
           component={login}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="registro"
+          component={RegistroBiometrico}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

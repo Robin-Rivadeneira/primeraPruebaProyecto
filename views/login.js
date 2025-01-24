@@ -22,7 +22,7 @@ const Login = () => {
 
     const handleCrearCuenta = () => {
         // Navegar a la pantalla "CrearCuenta"
-        navigation.navigate('CrearCuenta');
+        navigation.navigate('registro');
     };
 
     return (
