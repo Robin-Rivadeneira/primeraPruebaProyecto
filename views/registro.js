@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    StyleSheet,
-    Alert,
-    Image,
-    TextInput,
-    ScrollView
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, TextInput, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import registroEsrilo from '../public/css/registro';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const RegistroBiometrico = () => {
     const [photoUri, setPhotoUri] = useState(null);
@@ -58,147 +51,82 @@ const RegistroBiometrico = () => {
         }
         Alert.alert('Registro exitoso', '¡Gracias por registrarte!');
     };
-
     return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>VERIFICACIÓN BIOMÉTRICA</Text>
+        <View>
+            <LinearGradient
+                colors={['#bed9f4', '#c4f4fd', '#ecf2ff', "white"]}
+                locations={[0.2, 0.4, 0.6, 0.8]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={registroEsrilo.container}
+            >
+                <ScrollView contentContainerStyle={registroEsrilo.container}>
 
-            <TouchableOpacity style={styles.biometricButton} onPress={openCamera}>
-                {photoUri ? (
-                    <Image source={{ uri: photoUri }} style={styles.biometricImage} />
-                ) : (
-                    <Image
-                        style={styles.biometricImagePlaceholder}
+                    <Text style={registroEsrilo.title}>VERIFICACIÓN BIOMÉTRICA</Text>
+
+                    <TouchableOpacity style={registroEsrilo.biometricButton} onPress={openCamera}>
+                        {photoUri ? (
+                            <Image source={{ uri: photoUri }} style={registroEsrilo.biometricImage} />
+                        ) : (
+                            <Image
+                                style={registroEsrilo.biometricImagePlaceholder}
+                            />
+                        )}
+                    </TouchableOpacity>
+
+                    <TextInput
+                        style={registroEsrilo.input}
+                        placeholder="Nombres"
+                        value={name}
+                        onChangeText={setName}
                     />
-                )}
-            </TouchableOpacity>
+                    <TextInput
+                        style={registroEsrilo.input}
+                        placeholder="Apellidos"
+                        value={surname}
+                        onChangeText={setSurname}
+                    />
+                    <TextInput
+                        style={registroEsrilo.input}
+                        placeholder="Cédula"
+                        value={idNumber}
+                        onChangeText={setIdNumber}
+                    />
+                    <TextInput
+                        style={registroEsrilo.input}
+                        placeholder="Código Dactilar"
+                        value={fingerCode}
+                        onChangeText={setFingerCode}
+                    />
+                    <TextInput
+                        style={registroEsrilo.input}
+                        placeholder="Correo Electrónico"
+                        value={email}
+                        onChangeText={setEmail}
+                    />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Nombres"
-                value={name}
-                onChangeText={setName}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Apellidos"
-                value={surname}
-                onChangeText={setSurname}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Cédula"
-                value={idNumber}
-                onChangeText={setIdNumber}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Código Dactilar"
-                value={fingerCode}
-                onChangeText={setFingerCode}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Correo Electrónico"
-                value={email}
-                onChangeText={setEmail}
-            />
+                    <View style={registroEsrilo.checkboxContainer}>
+                        <TouchableOpacity
+                            style={[registroEsrilo.checkbox, isChecked && registroEsrilo.checked]}
+                            onPress={() => setIsChecked(!isChecked)}
+                        />
+                        <Text style={registroEsrilo.checkboxText}>Acepto los términos y condiciones</Text>
+                    </View>
 
-            <View style={styles.checkboxContainer}>
-                <TouchableOpacity
-                    style={[styles.checkbox, isChecked && styles.checked]}
-                    onPress={() => setIsChecked(!isChecked)}
-                />
-                <Text style={styles.checkboxText}>Acepto los términos y condiciones</Text>
-            </View>
-
-            <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-                <Text style={styles.registerButtonText}>REGISTRAR</Text>
-            </TouchableOpacity>
-        </ScrollView>
+                    <TouchableOpacity style={registroEsrilo.registerButton} onPress={handleRegister}>
+                        <LinearGradient
+                            colors={['#e5ecfd', '#bdccf4']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={registroEsrilo.gradientButton}
+                        >
+                            <Text style={registroEsrilo.registerButtonText}>REGISTRAR</Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+                </ScrollView>
+            </LinearGradient>
+        </View >
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flexGrow: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-        backgroundColor: '#E5F6FE',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#4A90E2',
-        marginBottom: 20,
-    },
-    biometricButton: {
-        width: 150,
-        height: 150,
-        borderRadius: 75,
-        backgroundColor: '#FFFFFF',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 20,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 5,
-        elevation: 5,
-    },
-    biometricImage: {
-        width: '100%',
-        height: '100%',
-        borderRadius: 75,
-    },
-    biometricImagePlaceholder: {
-        width: 80,
-        height: 80,
-    },
-    input: {
-        width: '90%',
-        padding: 10,
-        marginVertical: 10,
-        borderWidth: 1,
-        borderColor: '#CCC',
-        borderRadius: 10,
-        backgroundColor: '#FFFFFF',
-    },
-    checkboxContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginVertical: 10,
-    },
-    checkbox: {
-        width: 20,
-        height: 20,
-        borderWidth: 1,
-        borderColor: '#CCC',
-        borderRadius: 5,
-        backgroundColor: '#FFF',
-    },
-    checked: {
-        backgroundColor: '#4A90E2',
-    },
-    checkboxText: {
-        marginLeft: 10,
-        fontSize: 14,
-        color: '#333',
-    },
-    registerButton: {
-        marginTop: 20,
-        paddingVertical: 15,
-        paddingHorizontal: 40,
-        backgroundColor: '#4A90E2',
-        borderRadius: 25,
-        alignItems: 'center',
-    },
-    registerButtonText: {
-        color: '#FFFFFF',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-});
 
 export default RegistroBiometrico;

@@ -2,78 +2,89 @@ import { StyleSheet, Dimensions } from "react-native";
 
 const registroEsrilo = StyleSheet.create({
     container: {
-        flex: 1,
-    },
-    scroll: {
+        flexGrow: 1,
+        justifyContent: 'center',
         alignItems: 'center',
-        paddingVertical: 20,
-    },
-    menuButton: {
-        position: 'absolute',
-        top: 40,
-        right: 20,
-        zIndex: 10,
-    },
-    iconContainer: {
-        marginVertical: 20,
-        alignItems: 'center',
+        padding: 20,
     },
     title: {
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: 'bold',
-        color: '#4a4a4a',
+        color: '#5b749e',
         marginBottom: 20,
-        textAlign: 'center',
+    },
+    biometricButton: {
+        width: 150,
+        height: 150,
+        borderRadius: 75,
+        backgroundColor: '#FFFFFF',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        elevation: 5,
+    },
+    biometricImage: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 75,
+    },
+    biometricImagePlaceholder: {
+        width: 80,
+        height: 80,
     },
     input: {
-        width: '85%',
-        height: 50,
+        width: '95%',
+        padding: 10,
+        marginVertical: 10,
         borderBottomWidth: 1,
-        borderBottomColor: '#c4c4c4',
-        marginBottom: 15,
-        fontSize: 16,
-        color: '#555',
-        paddingHorizontal: 10,
+        borderColor: 'trasparent',
+        borderRadius: 10,
+        backgroundColor: 'trasparent',
+        borderBottomColor: 'black'
     },
     checkboxContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: 20,
+        marginVertical: 10,
     },
     checkbox: {
         width: 20,
         height: 20,
         borderWidth: 1,
-        borderColor: '#ccc',
-        marginRight: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
+        borderColor: '#CCC',
+        borderRadius: 5,
+        backgroundColor: '#FFF',
     },
     checked: {
-        backgroundColor: '#5bc9e7',
+        backgroundColor: '#5b749e',
     },
-    checkboxLabel: {
+    checkboxText: {
+        marginLeft: 10,
         fontSize: 14,
-        color: '#555',
+        color: '#5b749e',
     },
-    buttonShadow: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-        elevation: 5,
+    registerButton: {
+        width: '50%',
+        borderRadius: 20,
+        marginTop:'10%',
     },
-    button: {
-        width: 200,
-        height: 50,
-        borderRadius: 25,
+    registerButtonText: {
+        color: '#5b749e',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+
+    gradientButton: {
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 20,
+        width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
-    },
-    buttonText: {
-        fontSize: 16,
-        color: '#fff',
-        fontWeight: 'bold',
     },
 });
 
