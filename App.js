@@ -9,6 +9,7 @@ import pasarela from "./views/pasarela";
 import menu from "./views/menu";
 import Perfil from "./views/perfil";
 import IdentidadInicial from "./views/identidad";
+import VerificarIdentidad from "./views/verificarIdentidad";
 
 const Stack = createStackNavigator();
 
@@ -57,6 +58,11 @@ export default function App() {
         <Stack.Screen
           name="identidadInicial"
           component={IdentidadInicial}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="verificar"
+          component={VerificarIdentidad}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

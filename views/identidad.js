@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import UsuarioSvg from "../public/img/usuarios.jpeg";
+import { useNavigation } from '@react-navigation/native';
+import VerificarSbg from "../public/img/Verificar.png";
+import MostrarSbg from "../public/img/generar.png";
 import GoIdentitySVG from "../public/img/goIdentity.svg";
 import identidadInicialEstilos from '../public/css/identidad';
 
 export default function IdentidadInicial() {
+    const navigation = useNavigation();
+    const handVerificar = () => {
+        // Navegar a la pantalla "Verificacion"
+        navigation.navigate('verificar');
+    };
+
     return (
         <LinearGradient
             colors={['#bed9f4', '#c4f4fd', '#ecf2ff', "white"]}
@@ -20,25 +28,27 @@ export default function IdentidadInicial() {
 
             <Text style={identidadInicialEstilos.title}>MI IDENTIDAD</Text>
             <Text style={identidadInicialEstilos.parrafo}>Servicios de Identidad</Text>
-            <View style={identidadInicialEstilos.card}>
-                <View style={identidadInicialEstilos.cardContent}>
+            <TouchableOpacity style={identidadInicialEstilos.button} onPress={handVerificar}>
+                <View style={identidadInicialEstilos.card}>
                     <View style={identidadInicialEstilos.cardInfo}>
                         <View style={identidadInicialEstilos.imagenCard}>
-                            <GoIdentitySVG />
+                            <Image source={VerificarSbg}></Image>
                         </View>
-                        <TouchableOpacity style={identidadInicialEstilos.button} onPress={ }>
-                            <Text style={identidadInicialEstilos.buttonText}></Text>
-                        </TouchableOpacity>
+                        <Text style={identidadInicialEstilos.buttonText}>Verificar Identidad</Text>
                     </View>
                 </View>
-            </View>
-            <View style={identidadInicialEstilos.card}>
-                <View style={identidadInicialEstilos.cardContent}>
-                    <View style={identidadInicialEstilos.cardInfo}>
+            </TouchableOpacity>
 
+            <TouchableOpacity style={identidadInicialEstilos.buttons} onPress={""}>
+                <View style={identidadInicialEstilos.card}>
+                    <View style={identidadInicialEstilos.cardInfo}>
+                        <View style={identidadInicialEstilos.imagenCard}>
+                            <Image source={MostrarSbg}></Image>
+                        </View>
+                        <Text style={identidadInicialEstilos.buttonTextG}>Generar Identidad</Text>
                     </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         </LinearGradient>
     );
 }

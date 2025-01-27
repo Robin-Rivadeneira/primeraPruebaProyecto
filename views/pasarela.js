@@ -14,7 +14,7 @@ export default function pasarela() {
   const handleMenu = () => {
     // Navegar a la pantalla "CrearCuenta"
     navigation.navigate('menu');
-};
+  };
   return (
     <LinearGradient
       colors={['#bed9f4', '#c4f4fd', '#ecf2ff', "white"]}
@@ -38,7 +38,14 @@ export default function pasarela() {
         <PasarelaFinalSvg />
       </View>
       <TouchableOpacity style={pasarelaEsitlos.payButton} onPress={handleMenu}>
-        <Text style={pasarelaEsitlos.payButtonText}>PAGAR</Text>
+        <LinearGradient
+          colors={['#e5ecfd', '#bdccf4']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={pasarelaEsitlos.gradientButton}
+        >
+          <Text style={pasarelaEsitlos.payButtonText}>PAGAR</Text>
+        </LinearGradient>
       </TouchableOpacity>
     </LinearGradient>
   );

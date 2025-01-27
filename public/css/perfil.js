@@ -5,19 +5,18 @@ const perfil = StyleSheet.create({
         padding: 20,
     },
     header: {
-        alignItems: 'center',
+        alignItems: 'left',
         marginBottom: 20,
     },
     logo: {
         width: 100,
         height: 50,
-        marginLeft:"-80%",
         marginTop:"5%"
       },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        color: '#333',
+        color: '#4A6289',
     },
     profileCard: {
         backgroundColor: '#fff',
@@ -42,19 +41,19 @@ const perfil = StyleSheet.create({
     label: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#555',
+        color: '#4A6289',
     },
     value: {
         fontSize: 16,
         marginBottom: 10,
-        color: '#333',
+        color: '#5b749e',
     },
     input: {
         fontSize: 16,
         borderBottomWidth: 1,
         borderColor: '#ccc',
         marginBottom: 10,
-        color: '#333',
+        color: '#5b749e',
     },
     button: {
         backgroundColor: '#007bff',

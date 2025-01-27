@@ -27,6 +27,7 @@ const pasarelaEsitlos = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'left',
         marginVertical: 20,
+        color: "#4A6289"
     },
     image: {
         width: 200,
@@ -37,12 +38,14 @@ const pasarelaEsitlos = StyleSheet.create({
         fontSize: 18,
         textAlign: 'center',
         marginVertical: 20,
+        color: "#5b749e"
     },
     price: {
         fontSize: 24,
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 20,
+        color: "#4A6289"
     },
     images: {
         width: '100%',
@@ -50,16 +53,25 @@ const pasarelaEsitlos = StyleSheet.create({
         alignSelf: 'center',
     },
     payButton: {
-        backgroundColor: '#64B5F6',
         padding: 15,
         borderRadius: 10,
         alignItems: 'center',
-        marginTop: '10%'
+        marginTop: '10%',
+        width: "100%"
     },
     payButtonText: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#fff',
+        color: '#5b749e',
+    },
+
+    gradientButton: {
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 20,
+        alignItems: 'center',
+        width: "100%",
+        justifyContent: 'center',
     },
 });
 

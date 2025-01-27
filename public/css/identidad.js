@@ -21,31 +21,59 @@ const identidadInicialEstilos = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'left',
         marginVertical: 20,
+        color: "#4A6289"
     },
     parrafo: {
         fontSize: 18,
         textAlign: 'left',
         marginVertical: 1,
+        color: "#5b749e",
     },
     card: {
-        backgroundColor: '#fff',
         borderRadius: 10,
-        elevation: 5,
-        marginBottom: 20,
-        height: "30%",
-        marginTop:"5%"
-    },
-    cardContent: {
-        flexDirection: 'row',
-        padding: 10,
+        height: "100%",
+        width: "100%"
     },
     cardInfo: {
         flex: 1,
     },
-    cardText: {
-        fontSize: 14,
-        marginBottom: 5,
-        width: "80%",
+    button: {
+        width: '100%',
+        height: "20%",
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        elevation: 5,
+        alignItems: 'center',
+        marginBottom: 20,
+        marginTop: "5%"
+    },
+
+    buttons: {
+        width: '100%',
+        height: "20%",
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        elevation: 5,
+        alignItems: 'center',
+        marginBottom: 20,
+        marginTop: "20%"
+    },
+
+    buttonText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginTop: "-15%",
+        marginLeft: "40%",
+        color: "#4A6289"
+    },
+    buttonTextG: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginTop: "-10%",
+        marginLeft: "40%",
+        color: "#4A6289"
     },
 })
 
