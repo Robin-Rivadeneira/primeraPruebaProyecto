@@ -17,12 +17,17 @@ const Login = () => {
             return;
         }
         // Navegar a la pantalla "Home" después de iniciar sesión
-        navigation.navigate('Home');
+        navigation.navigate('pasarela');
     };
 
     const handleCrearCuenta = () => {
         // Navegar a la pantalla "CrearCuenta"
         navigation.navigate('registro');
+    };
+
+    const handlePasarela = () => {
+        // Navegar a la pantalla "CrearCuenta"
+        navigation.navigate('pasarela');
     };
 
     return (
@@ -71,7 +76,7 @@ const Login = () => {
                 style={loginEstilos.gradientButton}
             >
                 <TouchableOpacity style={loginEstilos.button} onPress={handleLogin}>
-                    <Text style={loginEstilos.buttonText}>INGRESAR</Text>
+                    <Text style={loginEstilos.buttonText} onPress={handlePasarela}>INGRESAR</Text>
                 </TouchableOpacity>
             </LinearGradient>
             <Text style={loginEstilos.footerText}>

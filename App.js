@@ -5,6 +5,9 @@ import inicio from "./views/inicio";
 import carucel from "./views/carucel";
 import login from "./views/login";
 import RegistroBiometrico from "./views/registro";
+import pasarela from "./views/pasarela";
+import menu from "./views/menu";
+import Perfil from "./views/perfil";
 
 const Stack = createStackNavigator();
 
@@ -33,6 +36,21 @@ export default function App() {
         <Stack.Screen
           name="registro"
           component={RegistroBiometrico}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="pasarela"
+          component={pasarela}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="menu"
+          component={menu}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Perfil"
+          component={Perfil}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

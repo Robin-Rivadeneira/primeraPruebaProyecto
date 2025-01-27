@@ -4,6 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import registroEsrilo from '../public/css/registro';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
 
 const RegistroBiometrico = () => {
     const [photoUri, setPhotoUri] = useState(null);
@@ -13,6 +14,7 @@ const RegistroBiometrico = () => {
     const [fingerCode, setFingerCode] = useState('');
     const [email, setEmail] = useState('');
     const [isChecked, setIsChecked] = useState(false);
+    const navigation = useNavigation();
 
     const openCamera = async () => {
         const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -50,6 +52,7 @@ const RegistroBiometrico = () => {
             return;
         }
         Alert.alert('Registro exitoso', '¡Gracias por registrarte!');
+        navigation.navigate('pasarela');
     };
     return (
         <View>
