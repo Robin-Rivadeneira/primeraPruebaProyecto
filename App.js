@@ -8,6 +8,7 @@ import RegistroBiometrico from "./views/registro";
 import pasarela from "./views/pasarela";
 import menu from "./views/menu";
 import Perfil from "./views/perfil";
+import IdentidadInicial from "./views/identidad";
 
 const Stack = createStackNavigator();
 
@@ -49,8 +50,13 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Perfil"
+          name="perfil"
           component={Perfil}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="identidadInicial"
+          component={IdentidadInicial}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

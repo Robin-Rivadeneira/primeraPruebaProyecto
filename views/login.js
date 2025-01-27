@@ -26,7 +26,7 @@ const Login = () => {
     };
 
     const handlePasarela = () => {
-        // Navegar a la pantalla "CrearCuenta"
+        // Navegar a la pantalla "pasarela"
         navigation.navigate('pasarela');
     };
 

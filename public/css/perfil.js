@@ -8,6 +8,12 @@ const perfil = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 20,
     },
+    logo: {
+        width: 100,
+        height: 50,
+        marginLeft:"-80%",
+        marginTop:"5%"
+      },
     title: {
         fontSize: 24,
         fontWeight: 'bold',

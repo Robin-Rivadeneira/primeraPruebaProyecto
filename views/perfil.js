@@ -1,24 +1,62 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Location from 'expo-location';
+import UsuarioSvg from "../public/img/usuarios.jpeg";
+import GoIdentitySVG from "../public/img/goIdentity.svg";
 import perfil from '../public/css/perfil';
 
 export default function Perfil() {
   const [isEditing, setIsEditing] = useState(false);
   const [userInfo, setUserInfo] = useState({
-    name: 'LARREA PAREDES DIEGO FRANCISCO',
+    name: 'DIEGO FRANCISCO',
+    lastName: 'LARREA PAREDES',
     cedula: '1234567890',
-    grado: 'Teniente Coronel',
-    caduca: '01/01/2030',
+    direccion: '',
+    celular: '0976289216',
   });
   const [tempInfo, setTempInfo] = useState({ ...userInfo });
 
-  const handleEditToggle = () => {
+  const handleEditToggle = async () => {
     if (isEditing) {
       // Actualizar la información del perfil
       setUserInfo({ ...tempInfo });
+    } else {
+      // Obtener la dirección actual
+      const address = await getCurrentAddress();
+      if (address) {
+        setTempInfo({ ...tempInfo, direccion: address });
+      }
     }
     setIsEditing(!isEditing);
+  };
+
+  const getCurrentAddress = async () => {
+    try {
+      // Solicitar permisos
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permiso denegado', 'Es necesario otorgar permisos de ubicación para completar este campo.');
+        return null;
+      }
+
+      // Obtener ubicación actual
+      const location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
+
+      // Obtener dirección desde las coordenadas
+      const reverseGeocode = await Location.reverseGeocodeAsync({ latitude, longitude });
+      if (reverseGeocode.length > 0) {
+        const { street, city, region, postalCode } = reverseGeocode[0];
+        return `${street}, ${city}, ${region}, ${postalCode}`;
+      } else {
+        return 'Dirección no encontrada';
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'No se pudo obtener la ubicación actual.');
+      return null;
+    }
   };
 
   return (
@@ -30,16 +68,16 @@ export default function Perfil() {
       style={perfil.container}
     >
       <View style={perfil.header}>
+        <GoIdentitySVG style={perfil.logo} />
         <Text style={perfil.title}>MI PERFIL</Text>
       </View>
 
       <View style={perfil.profileCard}>
         <Image
-          source={{ uri: 'https://via.placeholder.com/100x100.png?text=Foto' }}
-          style={perfil.profileImage}
+          source={UsuarioSvg} style={perfil.profileImage}
         />
         <View style={perfil.infoContainer}>
-          <Text style={perfil.label}>Nombre:</Text>
+          <Text style={perfil.label}>Nombres:</Text>
           {isEditing ? (
             <TextInput
               style={perfil.input}
@@ -48,6 +86,17 @@ export default function Perfil() {
             />
           ) : (
             <Text style={perfil.value}>{userInfo.name}</Text>
+          )}
+
+          <Text style={perfil.label}>Apellidos:</Text>
+          {isEditing ? (
+            <TextInput
+              style={perfil.input}
+              value={tempInfo.lastName}
+              onChangeText={(text) => setTempInfo({ ...tempInfo, lastName: text })}
+            />
+          ) : (
+            <Text style={perfil.value}>{userInfo.lastName}</Text>
           )}
 
           <Text style={perfil.label}>Cédula:</Text>
@@ -61,26 +110,26 @@ export default function Perfil() {
             <Text style={perfil.value}>{userInfo.cedula}</Text>
           )}
 
-          <Text style={perfil.label}>Grado:</Text>
+          <Text style={perfil.label}>Dirección:</Text>
           {isEditing ? (
             <TextInput
               style={perfil.input}
-              value={tempInfo.grado}
-              onChangeText={(text) => setTempInfo({ ...tempInfo, grado: text })}
+              value={tempInfo.direccion}
+              onChangeText={(text) => setTempInfo({ ...tempInfo, direccion: text })}
             />
           ) : (
-            <Text style={perfil.value}>{userInfo.grado}</Text>
+            <Text style={perfil.value}>{userInfo.direccion}</Text>
           )}
 
-          <Text style={perfil.label}>Caduca:</Text>
+          <Text style={perfil.label}>Celular:</Text>
           {isEditing ? (
             <TextInput
               style={perfil.input}
-              value={tempInfo.caduca}
-              onChangeText={(text) => setTempInfo({ ...tempInfo, caduca: text })}
+              value={tempInfo.celular}
+              onChangeText={(text) => setTempInfo({ ...tempInfo, celular: text })}
             />
           ) : (
-            <Text style={perfil.value}>{userInfo.caduca}</Text>
+            <Text style={perfil.value}>{userInfo.celular}</Text>
           )}
         </View>
       </View>
