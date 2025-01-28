@@ -22,10 +22,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./public/img/goIdentity.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.robjos.firmaElectronica"
     },
     "web": {
       "favicon": "./public/img/goIdentity.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0be3f0dd-055e-4563-9630-d665216a1124"
+      }
     }
   }
 }
