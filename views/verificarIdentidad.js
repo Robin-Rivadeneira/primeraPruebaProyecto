@@ -1,20 +1,73 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Button, Image, Text, StyleSheet, Platform } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
+import jsQR from 'jsqr';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
 import GoIdentitySVG from "../public/img/goIdentity.svg";
 import InstitutoSVG from "../public/img/instituto.svg";
 import UsuarioSvg from "../public/img/usuarios.jpeg";
-import LogoEjercito from "../public/img/ejercito.png";
-import { RNCamera } from 'react-native-camera';
+import LogoEjercito from "../public/img/ejercito.png"
 import menuEstilos from '../public/css/menu';
 
-export default function VerificarIdentidad() {
-    const [scanned, setScanned] = useState(false);
+const ImagePickerExample = () => {
+    const [image, setImage] = useState(null);
+    const [qrData, setQrData] = useState(null);
+    const [message, setMessage] = useState('');
 
-    const handleBarCodeScanned = ({ type, data }) => {
-        setScanned(true);
-        alert(`Código de barra ${type} con datos ${data} ha sido escaneado!`);
+    const pickImage = async () => {
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== 'granted') {
+            alert('Se requieren permisos de cámara.');
+            return;
+        }
+
+        let result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+            base64: true,
+        });
+
+        if (!result.cancelled) {
+            setImage(result.uri);
+            setQrData(null); // Reiniciar datos escaneados
+            setMessage('Verificando imagen...');
+            decodeQRCode(result.base64);
+        }
+    };
+
+    const decodeQRCode = async (base64) => {
+        try {
+            const img = new Image();
+            img.src = `data:image/jpeg;base64,${base64}`;
+
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                context.drawImage(img, 0, 0, img.width, img.height);
+
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+                if (code) {
+                    setQrData(code.data);
+                    setMessage('Código QR encontrado y decodificado.');
+                } else {
+                    setMessage('No se encontró un código QR en la imagen.');
+                }
+            };
+
+            img.onerror = () => {
+                setMessage('Error al cargar la imagen.');
+            };
+        } catch (error) {
+            console.error('Error al decodificar:', error);
+            setMessage('Error al decodificar la imagen.');
+        }
     };
 
     return (
@@ -25,38 +78,24 @@ export default function VerificarIdentidad() {
             end={{ x: 0, y: 1 }}
             style={menuEstilos.container}
         >
-            {/* QR Code Scanner */}
-            <RNCamera
-                style={styles.camera}
-                onBarCodeRead={scanned ? undefined : handleBarCodeScanned}
-                type={RNCamera.Constants.Type.back}
-            />
-            {scanned && (
-                <TouchableOpacity onPress={() => setScanned(false)} style={styles.button}>
-                    <Text style={styles.buttonText}>Escanear nuevamente</Text>
-                </TouchableOpacity>
-            )}
-
-            {/* Header */}
-            <View style={menuEstilos.header}>
-                <GoIdentitySVG style={menuEstilos.logo} />
+            <View style={styles.container}>
+                <Button title="Tomar Foto" onPress={pickImage} />
+                {image && <Image source={{ uri: image }} style={styles.image} />}
+                {message && <Text>{message}</Text>}
+                {qrData && <Text>Datos del QR: {qrData}</Text>}
             </View>
 
-            {/* Title */}
-            <Text style={menuEstilos.title}>Verificar Identidad</Text>
-
-            {/* ID Card */}
             <View style={menuEstilos.card}>
                 <View style={menuEstilos.cardHeader}>
                     <Text style={menuEstilos.cardTitle}>ISSFA</Text>
                 </View>
                 <View style={menuEstilos.cardContent}>
-                    <View>
-                        <Image source={UsuarioSvg} />
+                    <View >
+                        <Image source={UsuarioSvg}></Image>
                     </View>
                     <View style={menuEstilos.cardInfo}>
                         <View style={menuEstilos.imagenCard}>
-                            <Image source={LogoEjercito} style={menuEstilos.logosEjercito} />
+                            <Image source={LogoEjercito} style={menuEstilos.logosEjercito}></Image>
                         </View>
                         <View style={menuEstilos.subida}>
                             <Text style={menuEstilos.cardText}>CÉDULA:</Text>
@@ -75,24 +114,19 @@ export default function VerificarIdentidad() {
             </View>
         </LinearGradient>
     );
-}
+};
 
 const styles = StyleSheet.create({
-    camera: {
-        height: 200,
-        width: '100%',
-        justifyContent: 'center',
+    container: {
+        flex: 1,
         alignItems: 'center',
-        marginBottom: 20,
+        justifyContent: 'center',
     },
-    button: {
-        backgroundColor: '#007AFF',
-        padding: 10,
-        borderRadius: 5,
-        marginVertical: 10,
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 16,
+    image: {
+        width: 200,
+        height: 200,
+        marginTop: 20,
     },
 });
+
+export default ImagePickerExample;

@@ -9,7 +9,12 @@ import pasarela from "./views/pasarela";
 import menu from "./views/menu";
 import Perfil from "./views/perfil";
 import IdentidadInicial from "./views/identidad";
-import VerificarIdentidad from "./views/verificarIdentidad";
+import ImagePickerExample from "./views/verificarIdentidad";
+import miIdentidad from "./views/miInformacion";
+import ServiciosScreen from "./views/servicios";
+import BeneficiosFiltro from "./views/beneficiosFiltro";
+import BeneficiosScreen from "./views/beneficios";
+import VistaAmigos from "./views/amigos";
 
 const Stack = createStackNavigator();
 
@@ -62,7 +67,32 @@ export default function App() {
         />
         <Stack.Screen
           name="verificar"
-          component={VerificarIdentidad}
+          component={ImagePickerExample}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="miIdentidad"
+          component={miIdentidad}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="servicios"
+          component={ServiciosScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="beneficioFiltro"
+          component={BeneficiosFiltro}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="benecios"
+          component={BeneficiosScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="amigos"
+          component={VistaAmigos}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

@@ -21,15 +21,26 @@ export default function menu() {
   };
 
   const handIdentidad = () => {
-    // Navegar a la pantalla "perfil"
     navigation.navigate('identidadInicial');
   };
 
+  const handServicos = () => {
+    navigation.navigate('servicios');
+  };
+
+  const handBeneficios = () => {
+    navigation.navigate('beneficioFiltro');
+  };
+
+  const handAmigos = () => {
+    navigation.navigate('amigos');
+  };
+
   const buttons = [
-    { text: 'Identidad', icon: <IdentidadSVG width={60} height={60} />, link: handIdentidad},
-    { text: 'Servicios', icon: <ServiciosSVG width={60} height={60} /> },
-    { text: 'Beneficios', icon: <BeneficiosSVG width={60} height={60} /> },
-    { text: 'Amigos', icon: <AmigosSVG width={60} height={60} /> },
+    { text: 'Identidad', icon: <IdentidadSVG width={60} height={60} />, link: handIdentidad },
+    { text: 'Servicios', icon: <ServiciosSVG width={60} height={60} />, link: handServicos },
+    { text: 'Beneficios', icon: <BeneficiosSVG width={60} height={60} />, link: handBeneficios },
+    { text: 'Amigos', icon: <AmigosSVG width={60} height={60} />, link: handAmigos },
   ];
 
   return (
@@ -62,7 +73,7 @@ export default function menu() {
           </View>
           <View style={menuEstilos.cardInfo}>
             <View style={menuEstilos.imagenCard}>
-            <Image source={LogoEjercito} style={menuEstilos.logosEjercito}></Image>
+              <Image source={LogoEjercito} style={menuEstilos.logosEjercito}></Image>
             </View>
             <View style={menuEstilos.subida}>
               <Text style={menuEstilos.cardText}>CÉDULA:</Text>

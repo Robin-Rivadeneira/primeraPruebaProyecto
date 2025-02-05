@@ -14,6 +14,11 @@ export default function IdentidadInicial() {
         navigation.navigate('verificar');
     };
 
+    const handIdentidad = () => {
+        // Navegar a la pantalla "Verificacion"
+        navigation.navigate('miIdentidad');
+    };
+
     return (
         <LinearGradient
             colors={['#bed9f4', '#c4f4fd', '#ecf2ff', "white"]}
@@ -39,7 +44,7 @@ export default function IdentidadInicial() {
                 </View>
             </TouchableOpacity>
 
-            <TouchableOpacity style={identidadInicialEstilos.buttons} onPress={""}>
+            <TouchableOpacity style={identidadInicialEstilos.buttons} onPress={handIdentidad}>
                 <View style={identidadInicialEstilos.card}>
                     <View style={identidadInicialEstilos.cardInfo}>
                         <View style={identidadInicialEstilos.imagenCard}>
