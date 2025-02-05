@@ -13,27 +13,24 @@
     "@expo/vector-icons": "^14.0.4",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.1",
-    "expo": "~52.0.27",
+    "expo": "~52.0.30",
     "expo-barcode-scanner": "^13.0.1",
     "expo-camera": "~16.0.14",
     "expo-file-system": "~18.0.9",
     "expo-image-picker": "~16.0.5",
     "expo-linear-gradient": "~14.0.2",
     "expo-location": "~18.0.5",
-    "expo-permissions": "^14.4.0",
     "expo-status-bar": "~2.0.1",
     "jsqr": "^1.4.0",
     "react": "18.3.1",
     "react-native": "0.76.6",
     "react-native-barcode-reader": "^1.0.0",
     "react-native-camera": "^4.2.1",
-    "react-native-fetch-blob": "^0.10.8",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-get-random-values": "^1.11.0",
     "react-native-image-picker": "^7.2.3",
     "react-native-paper": "^5.13.1",
-    "react-native-permissions": "^5.2.5",
     "react-native-qrcode-scanner": "^1.5.5",
     "react-native-qrcode-svg": "^6.3.14",
     "react-native-reanimated": "^3.16.7",
@@ -50,5 +47,17 @@
     "@react-native-community/cli": "latest",
     "eas-cli": "^14.5.0"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "react-native-barcode-reader",
+          "jsqr",
+          "react-navigation"
+        ]
+      },
+      "listUnknownPackages": false
+    }
+  }
 }
