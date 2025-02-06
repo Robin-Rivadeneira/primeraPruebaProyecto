@@ -4,18 +4,22 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "npx expo start",
+    "start": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/config-plugins": "~9.0.0",
+    "@expo/metro-config": "^0.19.9",
+    "@expo/prebuild-config": "~8.0.0",
     "@expo/vector-icons": "^14.0.4",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.1",
     "expo": "~52.0.30",
     "expo-barcode-scanner": "^13.0.1",
     "expo-camera": "~16.0.14",
+    "expo-dev-client": "~5.0.11",
     "expo-file-system": "~18.0.9",
     "expo-image-picker": "~16.0.5",
     "expo-linear-gradient": "~14.0.2",
@@ -52,12 +56,17 @@
     "doctor": {
       "reactNativeDirectoryCheck": {
         "exclude": [
-          "react-native-barcode-reader",
+          "react-native-camera",
+          "react-native-fs",
+          "expo-barcode-scanner",
+          "react-native-qrcode-scanner",
+          "react-native-snap-carousel",
           "jsqr",
+          "react-native-barcode-reader",
           "react-navigation"
-        ]
-      },
-      "listUnknownPackages": false
+        ],
+        "listUnknownPackages": false
+      }
     }
   }
 }
