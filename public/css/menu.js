@@ -16,15 +16,8 @@ const menuEstilos = StyleSheet.create({
     height: 50,
   },
   menuButton: {
-    padding: 10,
-  },
-  logos: {
-    width: 50,
-    height: 70
-  },
-  logosEjercito: {
-    width: 70,
-    height: 70
+    width: '25%',
+    height: '100%',
   },
   title: {
     fontSize: 24,
@@ -55,6 +48,12 @@ const menuEstilos = StyleSheet.create({
   cardContent: {
     flexDirection: 'row',
     padding: 10,
+  },
+
+  cardImagen: {
+    width:'30%',
+    height: '90%',
+    marginTop: '-3%',
   },
 
   imagenCard: {

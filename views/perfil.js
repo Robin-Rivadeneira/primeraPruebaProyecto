@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
-import UsuarioSvg from "../public/img/usuarios.jpeg";
+import UsuarioSvg from "../public/img/usuarios.svg";
 import GoIdentitySVG from "../public/img/goIdentity.svg";
 import perfil from '../public/css/perfil';
 
@@ -73,9 +73,7 @@ export default function Perfil() {
       </View>
 
       <View style={perfil.profileCard}>
-        <Image
-          source={UsuarioSvg} style={perfil.profileImage}
-        />
+        <UsuarioSvg style={perfil.profileImage}></UsuarioSvg>
         <View style={perfil.infoContainer}>
           <Text style={perfil.label}>Nombres:</Text>
           {isEditing ? (

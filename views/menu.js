@@ -4,13 +4,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import GoIdentitySVG from "../public/img/goIdentity.svg";
 import InstitutoSVG from "../public/img/instituto.svg";
-import UsuarioSvg from "../public/img/usuarios.jpeg";
-import LogoEjercito from "../public/img/ejercito.png"
+import UsuarioSvg from "../public/img/usuarios.svg";
+import LogoEjercito from "../public/img/ejercito.svg"
 import menuEstilos from '../public/css/menu';
-import IdentidadSVG from "../public/img/Recurso 37.svg";
-import ServiciosSVG from "../public/img/Recurso 36.svg";
-import BeneficiosSVG from "../public/img/Recurso 34.svg";
-import AmigosSVG from "../public/img/Recurso 35.svg";
+import IdentidadSVG from "../public/img/qr.svg";
+import ServiciosSVG from "../public/img/servicios.svg";
+import BeneficiosSVG from "../public/img/beneficios.svg";
+import AmigosSVG from "../public/img/amigosMenu.svg";
 
 export default function menu() {
 
@@ -55,7 +55,7 @@ export default function menu() {
       <View style={menuEstilos.header}>
         <GoIdentitySVG style={menuEstilos.logo} />
         <TouchableOpacity style={menuEstilos.menuButton} onPress={handPerfil}>
-          <Image source={UsuarioSvg} style={menuEstilos.logos}></Image>
+          <UsuarioSvg width='100%' height="100%" ></UsuarioSvg>
         </TouchableOpacity>
       </View>
 
@@ -68,12 +68,12 @@ export default function menu() {
           <Text style={menuEstilos.cardTitle}>ISSFA</Text>
         </View>
         <View style={menuEstilos.cardContent}>
-          <View >
-            <Image source={UsuarioSvg}></Image>
+          <View style={menuEstilos.cardImagen}>
+            <UsuarioSvg width='100%' height="100%"></UsuarioSvg>
           </View>
           <View style={menuEstilos.cardInfo}>
             <View style={menuEstilos.imagenCard}>
-              <Image source={LogoEjercito} style={menuEstilos.logosEjercito}></Image>
+              <LogoEjercito  width='100%' height="100%"></LogoEjercito>
             </View>
             <View style={menuEstilos.subida}>
               <Text style={menuEstilos.cardText}>CÉDULA:</Text>

@@ -6,8 +6,8 @@ import jsQR from 'jsqr';
 import { LinearGradient } from 'expo-linear-gradient';
 import GoIdentitySVG from "../public/img/goIdentity.svg";
 import InstitutoSVG from "../public/img/instituto.svg";
-import UsuarioSvg from "../public/img/usuarios.jpeg";
-import LogoEjercito from "../public/img/ejercito.png"
+import UsuarioSvg from "../public/img/usuarios.svg";
+import LogoEjercito from "../public/img/ejercito.svg"
 import menuEstilos from '../public/css/menu';
 
 const ImagePickerExample = () => {
@@ -90,12 +90,12 @@ const ImagePickerExample = () => {
                     <Text style={menuEstilos.cardTitle}>ISSFA</Text>
                 </View>
                 <View style={menuEstilos.cardContent}>
-                    <View >
-                        <Image source={UsuarioSvg}></Image>
+                    <View style={menuEstilos.cardImagen}>
+                        <UsuarioSvg  width='100%' height="100%"></UsuarioSvg>
                     </View>
                     <View style={menuEstilos.cardInfo}>
                         <View style={menuEstilos.imagenCard}>
-                            <Image source={LogoEjercito} style={menuEstilos.logosEjercito}></Image>
+                            <LogoEjercito  width='100%' height="100%"></LogoEjercito>
                         </View>
                         <View style={menuEstilos.subida}>
                             <Text style={menuEstilos.cardText}>CÉDULA:</Text>

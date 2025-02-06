@@ -14,7 +14,7 @@ import miIdentidad from "./views/miInformacion";
 import ServiciosScreen from "./views/servicios";
 import BeneficiosFiltro from "./views/beneficiosFiltro";
 import BeneficiosScreen from "./views/beneficios";
-import VistaAmigos from "./views/amigos";
+import AmigosScreen from "./views/amigos";
 
 const Stack = createStackNavigator();
 
@@ -86,13 +86,13 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="benecios"
+          name="BeneficiosScreen"
           component={BeneficiosScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="amigos"
-          component={VistaAmigos}
+          component={AmigosScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

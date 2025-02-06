@@ -37,6 +37,9 @@ const identidadInicialEstilos = StyleSheet.create({
     cardInfo: {
         flex: 1,
     },
+    imagenCard:{
+        width: '55%'
+    },
     button: {
         width: '100%',
         height: "20%",

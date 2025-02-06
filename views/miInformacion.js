@@ -4,9 +4,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import QRCode from 'react-native-qrcode-svg';
 import GoIdentitySVG from "../public/img/goIdentity.svg";
 import InstitutoSVG from "../public/img/instituto.svg";
-import UsuarioSvg from "../public/img/usuarios.jpeg";
-import LogoEjercito from "../public/img/ejercito.png";
+import UsuarioSvg from "../public/img/usuarios.svg";
+import LogoEjercito from "../public/img/ejercito.svg";
 import menuEstilos from '../public/css/menu';
+import miIdentidadEstilos from '../public/css/miIdentidad';
+
 
 const miIdentidad = () => {
   const qrValue = JSON.stringify({
@@ -29,12 +31,12 @@ const miIdentidad = () => {
           <Text style={menuEstilos.cardTitle}>ISSFA</Text>
         </View>
         <View style={menuEstilos.cardContent}>
-          <View >
-            <Image source={UsuarioSvg} />
+          <View style={menuEstilos.cardImagen}>
+            <UsuarioSvg width='100%' height="100%"></UsuarioSvg>
           </View>
           <View style={menuEstilos.cardInfo}>
             <View style={menuEstilos.imagenCard}>
-              <Image source={LogoEjercito} style={menuEstilos.logosEjercito} />
+              <LogoEjercito  width='100%' height="100%"></LogoEjercito>
             </View>
             <View style={menuEstilos.subida}>
               <Text style={menuEstilos.cardText}>CÉDULA:</Text>
@@ -50,20 +52,13 @@ const miIdentidad = () => {
             </View>
           </View>
         </View>
-        <View style={menuEstilos.qrContainer}>
-          <Text style={menuEstilos.cardText}>Código QR:</Text>
-          <QRCode value={qrValue} size={150} />
+        <View style={miIdentidadEstilos.qrContainer}>
+          <Text style={miIdentidadEstilos.cardText}>Código QR:</Text>
+          <QRCode value={qrValue} size={300} />
         </View>
       </View>
     </LinearGradient>
   );
 }
-
-const styles = StyleSheet.create({
-  qrContainer: {
-    alignItems: 'center',
-    marginTop: 20,
-  },
-});
 
 export default miIdentidad;

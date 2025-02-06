@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import VerificarSbg from "../public/img/Verificar.png";
-import MostrarSbg from "../public/img/generar.png";
+import VerificarSbg from "../public/img/Verificar.svg";
+import MostrarSbg from "../public/img/generar.svg";
 import GoIdentitySVG from "../public/img/goIdentity.svg";
 import identidadInicialEstilos from '../public/css/identidad';
 
@@ -37,7 +37,7 @@ export default function IdentidadInicial() {
                 <View style={identidadInicialEstilos.card}>
                     <View style={identidadInicialEstilos.cardInfo}>
                         <View style={identidadInicialEstilos.imagenCard}>
-                            <Image source={VerificarSbg}></Image>
+                            <VerificarSbg width='100%' height="100%"></VerificarSbg>
                         </View>
                         <Text style={identidadInicialEstilos.buttonText}>Verificar Identidad</Text>
                     </View>
@@ -48,7 +48,7 @@ export default function IdentidadInicial() {
                 <View style={identidadInicialEstilos.card}>
                     <View style={identidadInicialEstilos.cardInfo}>
                         <View style={identidadInicialEstilos.imagenCard}>
-                            <Image source={MostrarSbg}></Image>
+                            <MostrarSbg width='100%' height="100%"></MostrarSbg>
                         </View>
                         <Text style={identidadInicialEstilos.buttonTextG}>Generar Identidad</Text>
                     </View>

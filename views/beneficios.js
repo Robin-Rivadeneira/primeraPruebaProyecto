@@ -1,206 +1,88 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  Modal,
-} from "react-native";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons } from "@expo/vector-icons";
-
-const beneficiosData = [
-  {
-    id: "1",
-    titulo: "2x1",
-    descripcion: "Lunes y Jueves de 14h a 21h",
-    // imagen: require(""),
-    // qr: require(""),
-  },
-  {
-    id: "2",
-    titulo: "15%",
-    descripcion: "Lunes y Jueves de 16h a 23h",
-    // imagen: require(""),
-    // qr: require(""),
-  },
-];
+import QRCode from "react-native-qrcode-svg";
+import { useRoute } from "@react-navigation/native";
+import beneficiosEstilos from "../public/css/beneficios";
+import DosporUnoSvg from "../public/img/dosporuno.svg";
+import QuincePorciento from "../public/img/quncieporcentaje.svg";
+import SmartFitSvg from "../public/img/smartFit.svg";
+// Datos de beneficios con imágenes SVG
+const beneficiosData = {
+  Multicines: [
+    {
+      id: "1",
+      nombre: "2x1 en entradas",
+      horario: "Lunes y Jueves de 14H a 21H",
+      icono: <DosporUnoSvg width={100} height={100} />,
+    },
+    {
+      id: "2",
+      nombre: "15% de descuento",
+      horario: "Lunes y Jueves de 14H a 21H",
+      icono: <QuincePorciento width={100} height={100} />,
+    },
+  ],
+  SmartFit: [
+    {
+      id: "3",
+      nombre: "Membresía 50% off",
+      horario: "Lunes a Viernes de 8H a 18H",
+      icono: <SmartFitSvg width={100} height={100} />,
+    },
+  ],
+};
 
 const BeneficiosScreen = () => {
-  const [qrVisible, setQrVisible] = useState(false);
-  const [qrSeleccionado, setQrSeleccionado] = useState(null);
+  const route = useRoute();
+  const { beneficio } = route.params;
+  const beneficios = beneficiosData[beneficio.nombre] || [];
+  const [selectedBenefit, setSelectedBenefit] = useState(null);
 
-  const mostrarQR = (qr) => {
-    setQrSeleccionado(qr);
-    setQrVisible(true);
+  const handleBenefitPress = (item) => {
+    setSelectedBenefit(item);
   };
 
   return (
-    <LinearGradient colors={["#d4e9fa", "#e3f5ff", "#ffffff"]} style={styles.container}>
-      {/* Botón del Menú */}
-      <TouchableOpacity style={styles.menuButton}>
-        <Ionicons name="menu" size={28} color="#5e5e5e" />
-      </TouchableOpacity>
+    <LinearGradient
+      colors={["#bed9f4", "#c4f4fd", "#ecf2ff", "white"]}
+      locations={[0.2, 0.4, 0.6, 0.8]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+      style={beneficiosEstilos.container}
+    >
+      <Text style={beneficiosEstilos.title}>Beneficios de {beneficio.nombre}</Text>
 
-      {/* Título */}
-      <Text style={styles.titulo}>MIS BENEFICIOS</Text>
-
-      {/* Tarjeta del Comercio */}
-      <View style={styles.card}>
-        <Image style={styles.comercioImg} />
-        <View style={styles.comercioInfo}>
-          <Text style={styles.comercioNombre}>Multicines</Text>
-          <Text style={styles.comercioCiudad}>Quito</Text>
+      <View style={beneficiosEstilos.card}>
+        {beneficio.icono}
+        <View>
+          <Text style={beneficiosEstilos.name}>{beneficio.nombre}</Text>
+          <Text style={beneficiosEstilos.location}>{beneficio.ciudad}</Text>
         </View>
       </View>
 
-      {/* Lista de Beneficios */}
-      <Text style={styles.subtitulo}>Beneficios:</Text>
-      {beneficiosData.map((beneficio) => (
-        <TouchableOpacity
-          key={beneficio.id}
-          style={styles.beneficioCard}
-          onPress={() => mostrarQR(beneficio.qr)}
-        >
-          <Image source={beneficio.imagen} style={styles.beneficioImg} />
-          <View>
-            <Text style={styles.beneficioTitulo}>{beneficio.titulo}</Text>
-            <Text style={styles.beneficioDescripcion}>{beneficio.descripcion}</Text>
-          </View>
-        </TouchableOpacity>
-      ))}
+      <FlatList
+        data={beneficios}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleBenefitPress(item)}>
+            <View style={beneficiosEstilos.benefitCard}>
+            {item.icono}
+              <Text style={beneficiosEstilos.name}>{item.nombre}</Text>
+              <Text style={beneficiosEstilos.date}>{item.horario}</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+      />
 
-      {/* Modal para mostrar QR */}
-      <Modal visible={qrVisible} transparent animationType="slide">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.qrTitulo}>QR Verificación</Text>
-            <Image source={qrSeleccionado} style={styles.qrImg} />
-            <TouchableOpacity onPress={() => setQrVisible(false)} style={styles.cerrarBtn}>
-              <Text style={styles.cerrarTexto}>Cerrar</Text>
-            </TouchableOpacity>
-          </View>
+      {selectedBenefit && (
+        <View style={beneficiosEstilos.qrContainer}>
+          <Text style={beneficiosEstilos.subTitle}>QR verificación:</Text>
+          <QRCode value={JSON.stringify(selectedBenefit)} size={100} />
         </View>
-      </Modal>
+      )}
     </LinearGradient>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 50,
-    paddingHorizontal: 20,
-  },
-  menuButton: {
-    position: "absolute",
-    top: 40,
-    right: 20,
-    backgroundColor: "rgba(255,255,255,0.6)",
-    padding: 10,
-    borderRadius: 50,
-  },
-  titulo: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "left",
-    marginBottom: 20,
-    color: "#333",
-  },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 15,
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  comercioImg: {
-    width: 50,
-    height: 50,
-    marginRight: 10,
-  },
-  comercioInfo: {
-    flexDirection: "column",
-  },
-  comercioNombre: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  comercioCiudad: {
-    fontSize: 14,
-    color: "#666",
-  },
-  subtitulo: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  beneficioCard: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 10,
-    marginBottom: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  beneficioImg: {
-    width: 40,
-    height: 40,
-    marginRight: 10,
-  },
-  beneficioTitulo: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  beneficioDescripcion: {
-    fontSize: 14,
-    color: "#666",
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  qrTitulo: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  qrImg: {
-    width: 150,
-    height: 150,
-    marginBottom: 20,
-  },
-  cerrarBtn: {
-    backgroundColor: "#FFA726",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-  },
-  cerrarTexto: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
 
 export default BeneficiosScreen;
