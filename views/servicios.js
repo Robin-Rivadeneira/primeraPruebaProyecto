@@ -1,11 +1,23 @@
 import React from "react";
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import identidadInicialEstilos from '../public/css/identidad';
 import VerificarSbg from "../public/img/serviciosSupervivencia.svg";
 import MostrarSbg from "../public/img/firmarCredito.svg";
 import GoIdentitySVG from "../public/img/goIdentity.svg";
+import { Linking } from 'react-native'; // Importa Linking
+
 const ServiciosScreen = () => {
+
+  // Funciones para abrir los enlaces
+  const openServicioSupervivencia = () => {
+    Linking.openURL('https://enext.online/issfa_creditos/public/index.php?s=JnVzPXByb2Nlc29zRXF1aWZheEBnbWFpbC5jb20mcGFzcz1hVVFMSkgmaWRUcmFtaXRlPTE2OTg0'); // Cambia esta URL por la que desees
+  };
+
+  const openFirmarCredito = () => {
+    Linking.openURL('https://enext.online/issfa_supervivencia/public/index.php?s=JnVzPWhjYXJyZXJhQGVuZXh0LmVjJnBhc3M9WTBHOUE2JmlkVHJhbWl0ZT0zNTAy'); // Cambia esta URL por la que desees
+  };
+
   return (
     <LinearGradient
       colors={['#bed9f4', '#c4f4fd', '#ecf2ff', "white"]}
@@ -20,22 +32,23 @@ const ServiciosScreen = () => {
 
       <Text style={identidadInicialEstilos.title}>Mis Servicios</Text>
       <Text style={identidadInicialEstilos.parrafo}>ISSFA</Text>
-      <TouchableOpacity style={identidadInicialEstilos.button}>
+
+      <TouchableOpacity style={identidadInicialEstilos.button} onPress={openServicioSupervivencia}>
         <View style={identidadInicialEstilos.card}>
           <View style={identidadInicialEstilos.cardInfo}>
             <View style={identidadInicialEstilos.imagenCard}>
-              <VerificarSbg width='100%' height="100%"></VerificarSbg>
+              <VerificarSbg width='100%' height="100%" />
             </View>
             <Text style={identidadInicialEstilos.buttonText}>Servicio Supervivencia</Text>
           </View>
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity style={identidadInicialEstilos.buttons}>
+      <TouchableOpacity style={identidadInicialEstilos.buttons} onPress={openFirmarCredito}>
         <View style={identidadInicialEstilos.card}>
           <View style={identidadInicialEstilos.cardInfo}>
             <View style={identidadInicialEstilos.imagenCard}>
-              <MostrarSbg width='100%' height="100%"></MostrarSbg>
+              <MostrarSbg width='100%' height="100%" />
             </View>
             <Text style={identidadInicialEstilos.buttonTextG}>Firmar Crédito</Text>
           </View>
