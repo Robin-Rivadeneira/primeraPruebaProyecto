@@ -12,21 +12,28 @@ const app = StyleSheet.create({
     height: '100%',
   },
   issfaLogo: {
+    width: '80%',
+    height: '20%',
+    marginTop:'35%'
+  },
+
+  issfaLogos: {
     width: '100%',
-    height: '30%',
-    marginTop:'10%'
+    height: '20%',
+    marginTop:'10%',
+    marginLeft:'25%'
   },
 
   fingerprint: {
     width: '100%',
-    height: '20%',
+    height: '10%',
     marginTop:'5%'
   },
   button: {
-    width: '50%',
-    marginLeft:'25%',
+    width: '80%',
+    marginLeft:'10%',
     borderRadius: 20,
-    marginTop:'5%'
+    marginTop:'45%'
   },
   gradientButton: {
     paddingVertical: 10,

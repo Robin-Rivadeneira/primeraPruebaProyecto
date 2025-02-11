@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Button, Image, Text, StyleSheet, Platform } from 'react-native';
+import { View, Button, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import jsQR from 'jsqr';
@@ -9,6 +9,7 @@ import InstitutoSVG from "../public/img/instituto.svg";
 import UsuarioSvg from "../public/img/usuarios.svg";
 import LogoEjercito from "../public/img/ejercito.svg"
 import menuEstilos from '../public/css/menu';
+import FondoQrSvg from "../public/img/fondoQr.svg"
 
 const ImagePickerExample = () => {
     const [image, setImage] = useState(null);
@@ -79,7 +80,9 @@ const ImagePickerExample = () => {
             style={menuEstilos.container}
         >
             <View style={styles.container}>
-                <Button title="Tomar Foto" onPress={pickImage} />
+                <TouchableOpacity onPress={pickImage}>
+                    <FondoQrSvg />
+                </TouchableOpacity>
                 {image && <Image source={{ uri: image }} style={styles.image} />}
                 {message && <Text>{message}</Text>}
                 {qrData && <Text>Datos del QR: {qrData}</Text>}
@@ -91,11 +94,11 @@ const ImagePickerExample = () => {
                 </View>
                 <View style={menuEstilos.cardContent}>
                     <View style={menuEstilos.cardImagen}>
-                        <UsuarioSvg  width='100%' height="100%"></UsuarioSvg>
+                        <UsuarioSvg width='100%' height="100%"></UsuarioSvg>
                     </View>
                     <View style={menuEstilos.cardInfo}>
                         <View style={menuEstilos.imagenCard}>
-                            <LogoEjercito  width='100%' height="100%"></LogoEjercito>
+                            <LogoEjercito width='100%' height="100%"></LogoEjercito>
                         </View>
                         <View style={menuEstilos.subida}>
                             <Text style={menuEstilos.cardText}>CÉDULA:</Text>

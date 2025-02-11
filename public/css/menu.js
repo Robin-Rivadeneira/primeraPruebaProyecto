@@ -83,7 +83,7 @@ const menuEstilos = StyleSheet.create({
   cardText: {
     fontSize: 16,
     marginBottom: 1,
-    width: "80%",
+    width: "60%",
     color: "#4A6289"
   },
   cardTexts: {

@@ -36,7 +36,7 @@ const AmigosScreen = () => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={amigosEstilos.card}>
-            <item.SvgIcon width={50} height={50} />
+            <item.SvgIcon width={100} height={70} />
             <View>
               <Text style={amigosEstilos.name}>{item.nombre}</Text>
               <Text style={amigosEstilos.date}>Desde: {item.desde}</Text>

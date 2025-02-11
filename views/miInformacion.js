@@ -54,7 +54,7 @@ const miIdentidad = () => {
         </View>
         <View style={miIdentidadEstilos.qrContainer}>
           <Text style={miIdentidadEstilos.cardText}>Código QR:</Text>
-          <QRCode value={qrValue} size={300} />
+          <QRCode value={qrValue} size={250} />
         </View>
       </View>
     </LinearGradient>

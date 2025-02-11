@@ -1,22 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { WebView } from "react-native-webview"; // Importamos WebView
 import identidadInicialEstilos from '../public/css/identidad';
 import VerificarSbg from "../public/img/serviciosSupervivencia.svg";
 import MostrarSbg from "../public/img/firmarCredito.svg";
 import GoIdentitySVG from "../public/img/goIdentity.svg";
-import { Linking } from 'react-native'; // Importa Linking
+import menuEstilos from '../public/css/menu';
+import InstitutoSVG from "../public/img/instituto.svg";
 
 const ServiciosScreen = () => {
+  const [currentUrl, setCurrentUrl] = useState(null); // Estado para controlar la URL
 
-  // Funciones para abrir los enlaces
-  const openServicioSupervivencia = () => {
-    Linking.openURL('https://enext.online/issfa_creditos/public/index.php?s=JnVzPXByb2Nlc29zRXF1aWZheEBnbWFpbC5jb20mcGFzcz1hVVFMSkgmaWRUcmFtaXRlPTE2OTg0'); // Cambia esta URL por la que desees
+  // Función para abrir WebView con la URL
+  const openInApp = (url) => {
+    setCurrentUrl(url);
   };
 
-  const openFirmarCredito = () => {
-    Linking.openURL('https://enext.online/issfa_supervivencia/public/index.php?s=JnVzPWhjYXJyZXJhQGVuZXh0LmVjJnBhc3M9WTBHOUE2JmlkVHJhbWl0ZT0zNTAy'); // Cambia esta URL por la que desees
-  };
+  // Si hay una URL activa, mostrar el WebView en pantalla completa
+  if (currentUrl) {
+    return (
+      <View style={{ flex: 1 }}>
+        <TouchableOpacity 
+          style={{ padding: 10, backgroundColor: "black", alignItems: "center" }}
+          onPress={() => setCurrentUrl(null)} // Cerrar el WebView
+        >
+          <Text style={{ color: "white" }}>Cerrar</Text>
+        </TouchableOpacity>
+        <WebView source={{ uri: currentUrl }} style={{ flex: 1 }} />
+      </View>
+    );
+  }
 
   return (
     <LinearGradient
@@ -33,10 +47,13 @@ const ServiciosScreen = () => {
       <Text style={identidadInicialEstilos.title}>Mis Servicios</Text>
       <Text style={identidadInicialEstilos.parrafo}>ISSFA</Text>
 
-      <TouchableOpacity style={identidadInicialEstilos.button} onPress={openServicioSupervivencia}>
+      <TouchableOpacity style={identidadInicialEstilos.button} onPress={() => openInApp('https://enext.online/issfa_creditos/public/index.php?s=JnVzPXByb2Nlc29zRXF1aWZheEBnbWFpbC5jb20mcGFzcz1hVVFMSkgmaWRUcmFtaXRlPTE2OTg0')}>
         <View style={identidadInicialEstilos.card}>
           <View style={identidadInicialEstilos.cardInfo}>
-            <View style={identidadInicialEstilos.imagenCard}>
+            <View style={menuEstilos.imagenCard}>
+              <InstitutoSVG width='100%' height="100%" />
+            </View>
+            <View style={identidadInicialEstilos.imagenCards}>
               <VerificarSbg width='100%' height="100%" />
             </View>
             <Text style={identidadInicialEstilos.buttonText}>Servicio Supervivencia</Text>
@@ -44,10 +61,13 @@ const ServiciosScreen = () => {
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity style={identidadInicialEstilos.buttons} onPress={openFirmarCredito}>
+      <TouchableOpacity style={identidadInicialEstilos.buttons} onPress={() => openInApp('https://enext.online/issfa_supervivencia/public/index.php?s=JnVzPWhjYXJyZXJhQGVuZXh0LmVjJnBhc3M9WTBHOUE2JmlkVHJhbWl0ZT0zNTAy')}>
         <View style={identidadInicialEstilos.card}>
           <View style={identidadInicialEstilos.cardInfo}>
-            <View style={identidadInicialEstilos.imagenCard}>
+            <View style={menuEstilos.imagenCard}>
+              <InstitutoSVG width='100%' height="100%" />
+            </View>
+            <View style={identidadInicialEstilos.imagenCards}>
               <MostrarSbg width='100%' height="100%" />
             </View>
             <Text style={identidadInicialEstilos.buttonTextG}>Firmar Crédito</Text>

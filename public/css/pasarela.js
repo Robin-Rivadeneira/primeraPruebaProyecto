@@ -30,8 +30,8 @@ const pasarelaEsitlos = StyleSheet.create({
         color: "#4A6289"
     },
     image: {
-        width: 200,
-        height: 200,
+        width: '100%',
+        height: '35%',
         alignSelf: 'center',
     },
     description: {
@@ -57,7 +57,8 @@ const pasarelaEsitlos = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         marginTop: '10%',
-        width: "100%"
+        width: "80%",
+        marginLeft:'10%',
     },
     payButtonText: {
         fontSize: 18,

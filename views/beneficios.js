@@ -60,24 +60,23 @@ const BeneficiosScreen = () => {
           <Text style={beneficiosEstilos.location}>{beneficio.ciudad}</Text>
         </View>
       </View>
-
+      <Text style={beneficiosEstilos.title}>BENEFICIOS</Text>
       <FlatList
         data={beneficios}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => handleBenefitPress(item)}>
             <View style={beneficiosEstilos.benefitCard}>
-            {item.icono}
+              {item.icono}
               <Text style={beneficiosEstilos.name}>{item.nombre}</Text>
               <Text style={beneficiosEstilos.date}>{item.horario}</Text>
             </View>
           </TouchableOpacity>
         )}
       />
-
+      <Text style={beneficiosEstilos.subTitle}>QR verificación:</Text>
       {selectedBenefit && (
         <View style={beneficiosEstilos.qrContainer}>
-          <Text style={beneficiosEstilos.subTitle}>QR verificación:</Text>
           <QRCode value={JSON.stringify(selectedBenefit)} size={100} />
         </View>
       )}

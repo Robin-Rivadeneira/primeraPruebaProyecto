@@ -20,14 +20,16 @@ const identidadInicialEstilos = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         textAlign: 'left',
-        marginVertical: 20,
+        marginVertical: 10,
         color: "#4A6289"
     },
     parrafo: {
-        fontSize: 18,
+        fontSize: 20,
         textAlign: 'left',
+        fontWeight: 'bold',
         marginVertical: 1,
         color: "#5b749e",
+        marginBottom:'10%'
     },
     card: {
         borderRadius: 10,
@@ -38,7 +40,14 @@ const identidadInicialEstilos = StyleSheet.create({
         flex: 1,
     },
     imagenCard:{
-        width: '55%'
+        width: '55%',
+    },
+
+    imagenCards:{
+        width: '30%',
+        height: '100%',
+        marginTop: '-12.5%',
+        marginLeft: '20%',
     },
     button: {
         width: '100%',
@@ -66,17 +75,19 @@ const identidadInicialEstilos = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: "-15%",
-        marginLeft: "40%",
-        color: "#4A6289"
+        marginTop: "-20%",
+        marginLeft: "60%",
+        color: "#4A6289",
+        width: '40%'
     },
     buttonTextG: {
         fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: "-10%",
-        marginLeft: "40%",
-        color: "#4A6289"
+        marginTop: "-20%",
+        marginLeft: "60%",
+        color: "#4A6289",
+        width: '40%'
     },
 })
 

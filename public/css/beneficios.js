@@ -28,6 +28,7 @@ const beneficiosEstilos = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowOffset: { width: 2, height: 2 },
         elevation: 3,
+        width:'95%',
       },
       benefitCard: {
         flexDirection: "row",
@@ -40,6 +41,7 @@ const beneficiosEstilos = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowOffset: { width: 2, height: 2 },
         elevation: 3,
+        width:'95%',
       },
       qrContainer: {
         alignItems: "center",

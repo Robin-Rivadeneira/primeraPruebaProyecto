@@ -12,6 +12,8 @@ const registroEsrilo = StyleSheet.create({
         fontWeight: 'bold',
         color: '#5b749e',
         marginBottom: 20,
+        width:'60%',
+        textAlign:'center',
     },
     biometricButton: {
         width: 150,
@@ -39,7 +41,7 @@ const registroEsrilo = StyleSheet.create({
     input: {
         width: '95%',
         padding: 10,
-        marginVertical: 10,
+        marginVertical: 15,
         borderBottomWidth: 1,
         borderColor: 'trasparent',
         borderRadius: 10,
@@ -50,13 +52,14 @@ const registroEsrilo = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginVertical: 10,
+        width: '100%',
     },
     checkbox: {
-        width: 20,
-        height: 20,
+        width: 25,
+        height: 25,
         borderWidth: 1,
         borderColor: '#CCC',
-        borderRadius: 5,
+        borderRadius: 20,
         backgroundColor: '#FFF',
     },
     checked: {
@@ -64,11 +67,11 @@ const registroEsrilo = StyleSheet.create({
     },
     checkboxText: {
         marginLeft: 10,
-        fontSize: 14,
+        fontSize: 17,
         color: '#5b749e',
     },
     registerButton: {
-        width: '50%',
+        width: '100%',
         borderRadius: 20,
         marginTop:'10%',
     },

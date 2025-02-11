@@ -18,7 +18,8 @@ const filtroBeneficiosEstilos = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 20,
         color: '#4A6289',
-        width: '100%',
+        width: '80%',
+        marginLeft: '10%'
       },
       filtroTi:{
         width: '100%',

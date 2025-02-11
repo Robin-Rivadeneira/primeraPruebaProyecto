@@ -9,8 +9,8 @@ const loginEstilos = StyleSheet.create({
     },
     logoContainer: {
         alignItems: 'center',
-        marginBottom: 10,
-        width: '100%',
+        marginTop: '5%',
+        width: '60%',
         height: '30%'
     },
 
@@ -35,7 +35,8 @@ const loginEstilos = StyleSheet.create({
     checkboxContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 20,
+        marginBottom: '10%',
+        marginTop: '5%',
     },
     checkbox: {
         width: 24,
@@ -55,21 +56,23 @@ const loginEstilos = StyleSheet.create({
     letras: {
         fontSize: 18,
         color: '#5b749e',
-        width: '100%'
+        width: '100%',
+        marginTop:'5%',
     },
     button: {
-        width: '50%',
-        marginLeft: '25%',
+        width: '100%',
         borderRadius: 20,
     },
     buttonText: {
         color: '#5b749e',
         fontSize: 25,
+        width: '100%',
+        textAlign: 'center',
     },
     footerText: {
         fontSize: 16,
         color: '#5b749e',
-        marginTop: '5%',
+        marginTop: '10%',
     },
     link: {
         color: '#6E94FF',

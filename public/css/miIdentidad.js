@@ -2,7 +2,8 @@ import { StyleSheet, Dimensions } from "react-native";
 const miIdentidadEstilos = StyleSheet.create({
     qrContainer:{
         alignItems: 'center',
-        width: '100%'
+        width: '100%',
+        marginTop: '10%'
     },
     cardText: {
         color: '#4A6289',

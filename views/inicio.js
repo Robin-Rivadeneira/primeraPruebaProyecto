@@ -22,13 +22,10 @@ export default function inicio({ navigation }) {
           style={app.gradieFond}
         >
       {/* Logo y título */}
-      <GoIdentitySVG style={app.issfaLogo} />
+      <GoIdentitySVG width="100%" style={app.issfaLogo} />
 
       {/* Logo y título */}
-      <InstitutoSVG  width="100%" style={app.issfaLogo}/>
-
-      {/* Huella digital */}
-      <HuellaSVG style={app.fingerprint} />
+      <InstitutoSVG  width="50%" style={app.issfaLogos}/>
 
       {/* Botón de ingresar */}
       <TouchableOpacity

@@ -65,8 +65,6 @@ const RegistroBiometrico = () => {
             >
                 <ScrollView contentContainerStyle={registroEsrilo.container}>
 
-                    <Text style={registroEsrilo.title}>VERIFICACIÓN BIOMÉTRICA</Text>
-
                     <TouchableOpacity style={registroEsrilo.biometricButton} onPress={openCamera}>
                         {photoUri ? (
                             <Image source={{ uri: photoUri }} style={registroEsrilo.biometricImage} />
@@ -76,7 +74,7 @@ const RegistroBiometrico = () => {
                             />
                         )}
                     </TouchableOpacity>
-
+                    <Text style={registroEsrilo.title}>VERIFICACIÓN BIOMÉTRICA</Text>
                     <TextInput
                         style={registroEsrilo.input}
                         placeholder="Nombres"
