@@ -8,7 +8,7 @@ import UsuarioSvg from "../public/img/usuarios.svg";
 import LogoEjercito from "../public/img/ejercito.svg";
 import menuEstilos from '../public/css/menu';
 import miIdentidadEstilos from '../public/css/miIdentidad';
-
+import identidadInicialEstilos from '../public/css/identidad';
 
 const miIdentidad = () => {
   const qrValue = JSON.stringify({
@@ -26,6 +26,9 @@ const miIdentidad = () => {
       end={{ x: 0, y: 1 }}
       style={menuEstilos.container}
     >
+      <View style={identidadInicialEstilos.header}>
+        <GoIdentitySVG style={identidadInicialEstilos.logo} />
+      </View>
       <View style={menuEstilos.card}>
         <View style={menuEstilos.cardHeader}>
           <Text style={menuEstilos.cardTitle}>ISSFA</Text>
@@ -36,7 +39,7 @@ const miIdentidad = () => {
           </View>
           <View style={menuEstilos.cardInfo}>
             <View style={menuEstilos.imagenCard}>
-              <LogoEjercito  width='100%' height="100%"></LogoEjercito>
+              <LogoEjercito width='100%' height="100%"></LogoEjercito>
             </View>
             <View style={menuEstilos.subida}>
               <Text style={menuEstilos.cardText}>CÉDULA:</Text>

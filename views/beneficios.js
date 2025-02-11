@@ -7,6 +7,8 @@ import beneficiosEstilos from "../public/css/beneficios";
 import DosporUnoSvg from "../public/img/dosporuno.svg";
 import QuincePorciento from "../public/img/quncieporcentaje.svg";
 import SmartFitSvg from "../public/img/smartFit.svg";
+import identidadInicialEstilos from '../public/css/identidad';
+import GoIdentitySVG from "../public/img/goIdentity.svg";
 // Datos de beneficios con imágenes SVG
 const beneficiosData = {
   Multicines: [
@@ -51,6 +53,9 @@ const BeneficiosScreen = () => {
       end={{ x: 0, y: 1 }}
       style={beneficiosEstilos.container}
     >
+      <View style={identidadInicialEstilos.header}>
+        <GoIdentitySVG style={identidadInicialEstilos.logo} />
+      </View>
       <Text style={beneficiosEstilos.title}>Beneficios de {beneficio.nombre}</Text>
 
       <View style={beneficiosEstilos.card}>

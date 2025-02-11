@@ -7,7 +7,8 @@ import Avatar1 from "../public/img/usuarios.svg";
 import Avatar2 from "../public/img/usuarios.svg";
 import Avatar3 from "../public/img/usuarios.svg";
 import amigosEstilos from "../public/css/amigos";
-
+import identidadInicialEstilos from '../public/css/identidad';
+import GoIdentitySVG from "../public/img/goIdentity.svg";
 // Datos de amigos con SVG
 const amigosData = [
   { id: "1", nombre: "Juan Pérez", desde: "01/01/2025", hasta: "01/01/2026", SvgIcon: Avatar1 },
@@ -24,6 +25,9 @@ const AmigosScreen = () => {
       end={{ x: 0, y: 1 }}
       style={amigosEstilos.container}
     >
+      <View style={identidadInicialEstilos.header}>
+        <GoIdentitySVG style={identidadInicialEstilos.logo} />
+      </View>
       {/* Título */}
       <Text style={amigosEstilos.title}>MIS AMIGOS</Text>
 

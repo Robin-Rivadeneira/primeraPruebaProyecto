@@ -10,7 +10,7 @@ import UsuarioSvg from "../public/img/usuarios.svg";
 import LogoEjercito from "../public/img/ejercito.svg"
 import menuEstilos from '../public/css/menu';
 import FondoQrSvg from "../public/img/fondoQr.svg"
-
+import identidadInicialEstilos from '../public/css/identidad';
 const ImagePickerExample = () => {
     const [image, setImage] = useState(null);
     const [qrData, setQrData] = useState(null);
@@ -79,6 +79,9 @@ const ImagePickerExample = () => {
             end={{ x: 0, y: 1 }}
             style={menuEstilos.container}
         >
+            <View style={identidadInicialEstilos.header}>
+                <GoIdentitySVG style={identidadInicialEstilos.logo} />
+            </View>
             <View style={styles.container}>
                 <TouchableOpacity onPress={pickImage}>
                     <FondoQrSvg />

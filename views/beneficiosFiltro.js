@@ -11,7 +11,8 @@ import EnextSvg from "../public/img/enext.svg";
 import SaludSaSvg from "../public/img/saludSa.svg";
 
 import filtroBeneficiosEstilos from "../public/css/filtroBeneficios";
-
+import identidadInicialEstilos from '../public/css/identidad';
+import GoIdentitySVG from "../public/img/goIdentity.svg";
 // Datos de beneficios con sus respectivos iconos
 const beneficiosData = {
   Quito: [
@@ -40,6 +41,9 @@ const BeneficiosFiltro = () => {
       end={{ x: 0, y: 1 }}
       style={filtroBeneficiosEstilos.container}
     >
+      <View style={identidadInicialEstilos.header}>
+        <GoIdentitySVG style={identidadInicialEstilos.logo} />
+      </View>
       <Text style={filtroBeneficiosEstilos.titulo}>MIS BENEFICIOS</Text>
 
       <View style={filtroBeneficiosEstilos.filtroContainer}>
