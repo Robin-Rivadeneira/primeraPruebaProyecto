@@ -51,7 +51,7 @@ const MiIdentidad = () => {
 
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
+      allowsEditing: false,
       aspect: [1, 1],
       quality: 1,
       base64: false, // No convertir aquí, lo haremos manualmente
@@ -101,8 +101,14 @@ const MiIdentidad = () => {
       type: 'image/png', // Tipo de archivo
     });
 
+    const requestBody = {
+      source_img: imageRefBase64, // Imagen de referencia en Base64
+      target_img: photoBase64, // Imagen capturada en Base64
+      id: randomId,
+    };
+
     try {
-      const response = await fetch('https://api.luxand.cloud/photo/liveness/v2', {
+      const responses = await fetch('https://api.luxand.cloud/photo/liveness/v2', {
         method: 'POST',
         headers: {
           'token': 'ad37885a36ac42fca9f052f1b0487520', // Token de autenticación
@@ -110,10 +116,19 @@ const MiIdentidad = () => {
         body: formData, // Usamos FormData para enviar la imagen
       });
 
-      const result = await response.json();
-      console.log('Respuesta API:', result);
+      const response = await fetch('http://54.189.63.53:9100/biometria_DEMO', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
 
-      if (result.status == 'success') { // Verifica si el valor de "result" es "real"
+      const result = await responses.json();
+      const results = await response.json();
+      console.log('Respuesta API:', result);
+      console.log('Respuesta API:', results);
+      if (result.status == 'success' && response.ok) { // Verifica si el valor de "result" es "real"
         Alert.alert('Éxito', '¡Verificación biométrica completada!');
         // Solo generar el QR si la respuesta es exitosa
         setQrData({
