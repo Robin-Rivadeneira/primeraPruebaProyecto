@@ -1,73 +1,34 @@
-import React, { useState } from 'react';
-import { View, Button, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
-import jsQR from 'jsqr';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { LinearGradient } from 'expo-linear-gradient';
 import GoIdentitySVG from "../public/img/goIdentity.svg";
 import InstitutoSVG from "../public/img/instituto.svg";
 import UsuarioSvg from "../public/img/usuarios.svg";
 import LogoEjercito from "../public/img/ejercito.svg"
-import menuEstilos from '../public/css/menu';
 import FondoQrSvg from "../public/img/fondoQr.svg"
+import menuEstilos from '../public/css/menu';
 import identidadInicialEstilos from '../public/css/identidad';
-const ImagePickerExample = () => {
-    const [image, setImage] = useState(null);
+
+const QRScanner = () => {
     const [qrData, setQrData] = useState(null);
-    const [message, setMessage] = useState('');
+    const [permission, requestPermission] = useCameraPermissions();
+    const cameraRef = useRef(null);
 
-    const pickImage = async () => {
-        const { status } = await ImagePicker.requestCameraPermissionsAsync();
-        if (status !== 'granted') {
-            alert('Se requieren permisos de cámara.');
-            return;
+    useEffect(() => {
+        if (!permission?.granted) {
+            requestPermission();
         }
+    }, [permission]);
 
-        let result = await ImagePicker.launchCameraAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-            base64: true,
-        });
-
-        if (!result.cancelled) {
-            setImage(result.uri);
-            setQrData(null); // Reiniciar datos escaneados
-            setMessage('Verificando imagen...');
-            decodeQRCode(result.base64);
-        }
-    };
-
-    const decodeQRCode = async (base64) => {
-        try {
-            const img = new Image();
-            img.src = `data:image/jpeg;base64,${base64}`;
-
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
-                canvas.width = img.width;
-                canvas.height = img.height;
-                context.drawImage(img, 0, 0, img.width, img.height);
-
-                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-                const code = jsQR(imageData.data, imageData.width, imageData.height);
-
-                if (code) {
-                    setQrData(code.data);
-                    setMessage('Código QR encontrado y decodificado.');
-                } else {
-                    setMessage('No se encontró un código QR en la imagen.');
-                }
-            };
-
-            img.onerror = () => {
-                setMessage('Error al cargar la imagen.');
-            };
-        } catch (error) {
-            console.error('Error al decodificar:', error);
-            setMessage('Error al decodificar la imagen.');
+    const handleBarcodeScanned = ({ data }) => {
+        if (data && data !== qrData) {
+            setQrData(data);
+            Alert.alert(
+                "QR Detectado",
+                `Datos: ${data}`,
+                [{ text: "OK", onPress: () => setQrData(null) }]
+            );
         }
     };
 
@@ -82,13 +43,18 @@ const ImagePickerExample = () => {
             <View style={identidadInicialEstilos.header}>
                 <GoIdentitySVG style={identidadInicialEstilos.logo} />
             </View>
-            <View style={styles.container}>
-                <TouchableOpacity onPress={pickImage}>
-                    <FondoQrSvg />
-                </TouchableOpacity>
-                {image && <Image source={{ uri: image }} style={styles.image} />}
-                {message && <Text>{message}</Text>}
-                {qrData && <Text>Datos del QR: {qrData}</Text>}
+
+            <View style={styles.cameraContainer}>
+                <CameraView
+                    ref={cameraRef}
+                    style={StyleSheet.absoluteFill}
+                    facing="back"
+                    barcodeScannerSettings={{
+                        barcodeTypes: ["qr"],
+                    }}
+                    onBarcodeScanned={handleBarcodeScanned}
+                >
+                </CameraView>
             </View>
 
             <View style={menuEstilos.card}>
@@ -97,11 +63,11 @@ const ImagePickerExample = () => {
                 </View>
                 <View style={menuEstilos.cardContent}>
                     <View style={menuEstilos.cardImagen}>
-                        <UsuarioSvg width='100%' height="100%"></UsuarioSvg>
+                        <UsuarioSvg width='100%' height="100%" />
                     </View>
                     <View style={menuEstilos.cardInfo}>
                         <View style={menuEstilos.imagenCard}>
-                            <LogoEjercito width='100%' height="100%"></LogoEjercito>
+                            <LogoEjercito width='100%' height="100%" />
                         </View>
                         <View style={menuEstilos.subida}>
                             <Text style={menuEstilos.cardText}>CÉDULA:</Text>
@@ -123,16 +89,33 @@ const ImagePickerExample = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
+    cameraContainer: {
+        width: '60%', // Tamaño reducido
+        aspectRatio: 1,
+        borderRadius: 100, // Borde redondeado
+        overflow: 'hidden',
+        marginVertical: 20,
+        alignSelf: 'center',
+        // Sombra para efecto de profundidad
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 15,
+        elevation: 10,
+        // Borde decorativo
+        borderWidth: 2,
+        borderColor: 'rgba(255,255,255,0.3)'
+    },
+    overlay: {
         flex: 1,
-        alignItems: 'center',
         justifyContent: 'center',
-    },
-    image: {
-        width: 200,
-        height: 200,
-        marginTop: 20,
-    },
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.3)', // Fondo semitransparente
+        padding: 20 // Espacio interno
+    }
 });
 
-export default ImagePickerExample;
+export default QRScanner;

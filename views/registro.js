@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, TextInput, ScrollView } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -17,21 +17,21 @@ const RegistroBiometrico = () => {
     const [fingerCode, setFingerCode] = useState('');
     const [email, setEmail] = useState('');
     const [isChecked, setIsChecked] = useState(false);
+    const [permission, requestPermission] = useCameraPermissions();
+    const cameraRef = useRef(null);
     const navigation = useNavigation();
 
-    // Función para cargar la imagen de referencia en Base64
+    // Cargar imagen de referencia
     const loadReferenceImage = async () => {
         try {
             const asset = Asset.fromModule(require('../public/img/imagenPrueba.png'));
-            await asset.downloadAsync(); // Asegura que la imagen esté disponible
-
+            await asset.downloadAsync();
             const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
                 encoding: FileSystem.EncodingType.Base64,
             });
-
             setImageRefBase64(base64);
         } catch (error) {
-            console.error('Error cargando la imagen de referencia:', error);
+            console.error('Error cargando imagen:', error);
         }
     };
 
@@ -39,76 +39,61 @@ const RegistroBiometrico = () => {
         loadReferenceImage();
     }, []);
 
-    const openCamera = async () => {
-        const { status } = await ImagePicker.requestCameraPermissionsAsync();
-        if (status !== 'granted') {
-            Alert.alert('Permiso denegado', 'Se necesita acceso a la cámara para tomar una foto.');
-            return;
+    // Manejar permisos de cámara
+    useEffect(() => {
+        if (!permission?.granted) {
+            requestPermission();
         }
+    }, [permission]);
 
-        const result = await ImagePicker.launchCameraAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [1, 1],
-            quality: 1,
-            base64: false, // No convertir aquí, lo haremos manualmente
-        });
-
-        if (!result.canceled) {
-            const uri = result.assets[0].uri;
-            setPhotoUri(uri);
-
-            try {
-                const base64 = await FileSystem.readAsStringAsync(uri, {
-                    encoding: FileSystem.EncodingType.Base64,
-                });
-                setPhotoBase64(base64);
-            } catch (error) {
-                Alert.alert('Error', 'No se pudo convertir la imagen a Base64.');
-            }
+    // Tomar foto
+    const takePicture = async () => {
+        if (!cameraRef.current) return;
+        try {
+            const photo = await cameraRef.current.takePictureAsync({
+                quality: 1,
+                base64: false,
+                skipProcessing: true
+            });
+            
+            setPhotoUri(photo.uri);
+            const base64 = await FileSystem.readAsStringAsync(photo.uri, {
+                encoding: FileSystem.EncodingType.Base64,
+            });
+            setPhotoBase64(base64);
+            
+        } catch (error) {
+            Alert.alert('Error', 'Error al capturar foto');
         }
     };
 
+    // Registro
     const handleRegister = async () => {
         if (!name || !surname || !idNumber || !fingerCode || !email || !isChecked || !photoBase64 || !imageRefBase64) {
-            Alert.alert('Error', 'Por favor, complete todos los campos y tome una foto.');
+            Alert.alert('Error', 'Complete todos los campos');
             return;
         }
-
-        const randomId = Math.random().toString(36).substr(2, 10); // ID aleatorio
-
-        const requestBody = {
-            source_img: imageRefBase64, // Imagen de referencia en Base64
-            target_img: photoBase64, // Imagen capturada en Base64
-            id: randomId,
-        };
 
         try {
             const response = await fetch('http://54.189.63.53:9100/biometria_DEMO', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestBody),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    source_img: imageRefBase64,
+                    target_img: photoBase64,
+                    id: Math.random().toString(36).substr(2, 10),
+                }),
             });
 
             const result = await response.json();
-            console.log('Respuesta API:', result);
-
-            if (response.ok) {
-                Alert.alert('Registro exitoso', '¡Verificación biométrica completada!');
-                navigation.navigate('pasarela');
-            } else {
-                Alert.alert('Error', result.message || 'Error en la verificación biométrica.');
-            }
+            response.ok ? navigation.navigate('pasarela') : Alert.alert('Error', result.message);
         } catch (error) {
-            Alert.alert('Error', 'No se pudo conectar con el servidor.');
-            console.error(error);
+            Alert.alert('Error', 'Error de conexión');
         }
     };
 
     return (
-        <View>
+        <View style={{ flex: 1 }}>
             <LinearGradient
                 colors={['#bed9f4', '#c4f4fd', '#ecf2ff', "white"]}
                 locations={[0.2, 0.4, 0.6, 0.8]}
@@ -117,14 +102,43 @@ const RegistroBiometrico = () => {
                 style={registroEsrilo.container}
             >
                 <ScrollView contentContainerStyle={registroEsrilo.container}>
-
-                    <TouchableOpacity style={registroEsrilo.biometricButton} onPress={openCamera}>
-                        {photoUri ? (
-                            <Image source={{ uri: photoUri }} style={registroEsrilo.biometricImage} />
+                    
+                    {/* Contenedor de cámara con marco oscuro */}
+                    <View style={styles.cameraContainer}>
+                        {!photoUri ? (
+                            <CameraView
+                                ref={cameraRef}
+                                style={StyleSheet.absoluteFill}
+                                facing="front"
+                            >
+                                <View style={styles.overlay}>
+                                    <View style={styles.frame}>
+                                        <View style={styles.frameInner}>
+                                            <View style={styles.guideLines} />
+                                        </View>
+                                    </View>
+                                    <TouchableOpacity
+                                        style={styles.captureButton}
+                                        onPress={takePicture}
+                                    />
+                                </View>
+                            </CameraView>
                         ) : (
-                            <Image style={registroEsrilo.biometricImagePlaceholder} />
+                            <Image source={{ uri: photoUri }} style={styles.previewImage} />
                         )}
-                    </TouchableOpacity>
+                    </View>
+
+                    {/* Botón para retomar foto */}
+                    {photoUri && (
+                        <TouchableOpacity
+                            style={styles.retakeButton}
+                            onPress={() => setPhotoUri(null)}
+                        >
+                            <Text style={styles.retakeText}>VOLVER A TOMAR FOTO</Text>
+                        </TouchableOpacity>
+                    )}
+
+                    {/* Formulario */}
                     <Text style={registroEsrilo.title}>VERIFICACIÓN BIOMÉTRICA</Text>
                     <TextInput
                         style={registroEsrilo.input}
@@ -157,20 +171,21 @@ const RegistroBiometrico = () => {
                         onChangeText={setEmail}
                     />
 
+                    {/* Checkbox y botón de registro */}
                     <View style={registroEsrilo.checkboxContainer}>
                         <TouchableOpacity
                             style={[registroEsrilo.checkbox, isChecked && registroEsrilo.checked]}
                             onPress={() => setIsChecked(!isChecked)}
                         />
-                        <Text style={registroEsrilo.checkboxText}>Acepto los términos y condiciones</Text>
+                        <Text style={registroEsrilo.checkboxText}>Acepto términos y condiciones</Text>
                     </View>
 
                     <TouchableOpacity style={registroEsrilo.registerButton} onPress={handleRegister}>
                         <LinearGradient
                             colors={['#e5ecfd', '#bdccf4']}
+                            style={registroEsrilo.gradientButton}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
-                            style={registroEsrilo.gradientButton}
                         >
                             <Text style={registroEsrilo.registerButtonText}>REGISTRAR</Text>
                         </LinearGradient>
@@ -180,5 +195,28 @@ const RegistroBiometrico = () => {
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    cameraContainer: {
+        width: '50%',
+        aspectRatio: 1,
+        borderRadius: 20,
+        overflow: 'hidden',
+        marginVertical: 20,
+        alignSelf: 'center',
+        // Sombra exterior
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 15,
+        elevation: 15, // Para Android
+        // Borde
+        borderWidth: 5,
+        borderColor: 'rgba(255,255,255,0.5)'
+    },
+});
 
 export default RegistroBiometrico;
