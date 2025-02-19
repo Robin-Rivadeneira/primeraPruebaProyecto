@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Button, Alert, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Button, Alert, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import QRCode from 'react-native-qrcode-svg';
 import GoIdentitySVG from "../public/img/goIdentity.svg";
@@ -41,7 +41,7 @@ const MiIdentidad = () => {
 
   const takePhoto = async () => {
     if (!cameraRef.current) return;
-    
+
     try {
       const photo = await cameraRef.current.takePictureAsync({
         quality: 1,
@@ -52,7 +52,7 @@ const MiIdentidad = () => {
       const base64 = await FileSystem.readAsStringAsync(photo.uri, {
         encoding: FileSystem.EncodingType.Base64,
       });
-      
+
       setPhotoBase64(base64);
       handleRegister(photo.uri, base64);
     } catch (error) {
@@ -65,7 +65,7 @@ const MiIdentidad = () => {
 
     try {
       const randomId = Math.random().toString(36).substr(2, 10);
-      
+
       // Primera petición a Luxand
       const formData = new FormData();
       formData.append('photo', {
@@ -145,7 +145,11 @@ const MiIdentidad = () => {
 
         <View style={menuEstilos.cardContent}>
           <View style={menuEstilos.cardImagen}>
-            <UsuarioSvg width='100%' height="100%" />
+            <Image source={require('../public/img/imagenPrueba.jpg')} style={{
+              width: '100%',
+              height: '100%',
+              borderRadius: 12,
+            }} resizeMode="contain" />
           </View>
 
           <View style={menuEstilos.cardInfo}>
@@ -154,8 +158,8 @@ const MiIdentidad = () => {
             </View>
 
             <View style={menuEstilos.subida}>
-              <Text style={menuEstilos.cardText}>CÉDULA: 1234567890</Text>
-              <Text style={menuEstilos.cardText}>LARREA PAREDES DIEGO FRANCISCO</Text>
+              <Text style={menuEstilos.cardText}>CÉDULA: 1713489514</Text>
+              <Text style={menuEstilos.cardText}>Gerald Orlando Moreno Jadan</Text>
               <Text style={menuEstilos.cardText}>GRADO: Teniente Coronel</Text>
               <Text style={menuEstilos.cardText}>CADUCA: 01/01/2030</Text>
             </View>
@@ -180,7 +184,7 @@ const MiIdentidad = () => {
               >
                 <Text style={miIdentidadEstilos.text}>Cambiar cámara</Text>
               </TouchableOpacity>
-              
+
               <TouchableOpacity
                 style={miIdentidadEstilos.captureButton}
                 onPress={takePhoto}
