@@ -23,17 +23,21 @@
         "foregroundImage": "./public/img/goIdentity.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.robjos.firmaElectronica"
+      "package": "com.robinjos.firmaElectronica",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./public/img/goIdentity.png"
     },
     "extra": {
       "eas": {
-        "projectId": "0be3f0dd-055e-4563-9630-d665216a1124"
+        "projectId": "032198ff-d0c0-48df-9a22-15f595e11314"
       }
     },
-    "owner": "robjos",
+    "owner": "robinjos",
     "plugins": [
       [
         "expo-camera",
