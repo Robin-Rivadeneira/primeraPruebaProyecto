@@ -22,7 +22,7 @@ const RegistroBiometrico = () => {
     // Función para cargar la imagen de referencia en Base64
     const loadReferenceImage = async () => {
         try {
-            const asset = Asset.fromModule(require('../public/img/imagenPrueba.jpeg'));
+            const asset = Asset.fromModule(require('../public/img/imagenPrueba.png'));
             await asset.downloadAsync(); // Asegura que la imagen esté disponible
 
             const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
