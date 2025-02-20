@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Button, Alert, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, Button, Alert, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import QRCode from 'react-native-qrcode-svg';
 import GoIdentitySVG from "../public/img/goIdentity.svg";
@@ -21,6 +21,7 @@ const MiIdentidad = () => {
   const [qrGenerated, setQrGenerated] = useState(false);
   const [facing, setFacing] = useState('back');
   const [permission, requestPermission] = useCameraPermissions();
+  const [loading, setLoading] = useState(false); // Estado para la animación de carga
 
   useEffect(() => {
     loadReferenceImage();
@@ -43,6 +44,7 @@ const MiIdentidad = () => {
     if (!cameraRef.current) return;
 
     try {
+      setLoading(true); // Iniciar animación de carga
       const photo = await cameraRef.current.takePictureAsync({
         quality: 1,
         base64: false,
@@ -54,9 +56,11 @@ const MiIdentidad = () => {
       });
 
       setPhotoBase64(base64);
-      handleRegister(photo.uri, base64);
+      await handleRegister(photo.uri, base64);
     } catch (error) {
       Alert.alert('Error', 'No se pudo tomar la foto');
+    } finally {
+      setLoading(false); // Detener animación de carga
     }
   };
 
@@ -177,21 +181,25 @@ const MiIdentidad = () => {
             facing={facing}
             enableTorch={false}
           >
-            <View style={miIdentidadEstilos.buttonContainer}>
-              <TouchableOpacity
-                style={miIdentidadEstilos.button}
-                onPress={() => setFacing(current => current === 'back' ? 'front' : 'back')}
-              >
-                <Text style={miIdentidadEstilos.text}>Cambiar cámara</Text>
-              </TouchableOpacity>
+            {loading ? (
+              <ActivityIndicator size="large" color="#0000ff" />
+            ) : (
+              <View style={miIdentidadEstilos.buttonContainer}>
+                <TouchableOpacity
+                  style={miIdentidadEstilos.button}
+                  onPress={() => setFacing(current => current === 'back' ? 'front' : 'back')}
+                >
+                  <Text style={miIdentidadEstilos.text}>Cambiar cámara</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={miIdentidadEstilos.captureButton}
-                onPress={takePhoto}
-              >
-                <Text style={miIdentidadEstilos.text}>Tomar foto</Text>
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity
+                  style={miIdentidadEstilos.captureButton}
+                  onPress={takePhoto}
+                >
+                  <Text style={miIdentidadEstilos.text}>Tomar foto</Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </CameraView>
         )}
 
@@ -209,4 +217,5 @@ const MiIdentidad = () => {
     </LinearGradient>
   );
 };
+
 export default MiIdentidad;

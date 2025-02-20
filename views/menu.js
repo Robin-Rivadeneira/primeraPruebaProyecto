@@ -67,30 +67,34 @@ export default function menu() {
         <View style={menuEstilos.cardHeader}>
           <Text style={menuEstilos.cardTitle}>ISSFA</Text>
         </View>
+
         <View style={menuEstilos.cardContent}>
           <View style={menuEstilos.cardImagen}>
-            <UsuarioSvg width='100%' height="100%"></UsuarioSvg>
+            <Image source={require('../public/img/imagenPrueba.jpg')} style={{
+              width: '100%',
+              height: '100%',
+              borderRadius: 12,
+            }} resizeMode="contain" />
           </View>
+
           <View style={menuEstilos.cardInfo}>
             <View style={menuEstilos.imagenCard}>
-              <LogoEjercito  width='100%' height="100%"></LogoEjercito>
+              <LogoEjercito width='100%' height="100%" />
             </View>
+
             <View style={menuEstilos.subida}>
-              <Text style={menuEstilos.cardText}>CÉDULA:</Text>
-              <Text style={menuEstilos.cardTexts}>1234567890</Text>
-              <Text style={menuEstilos.cardText}>LARREA PAREDES DIEGO FRANCISCO</Text>
-              <Text style={menuEstilos.cardText}>GRADO:</Text>
-              <Text style={menuEstilos.cardTexts}>Teniente Coronel</Text>
-              <Text style={menuEstilos.cardText}>CADUCA:</Text>
-              <Text style={menuEstilos.cardTexts}>01/01/2030</Text>
+              <Text style={menuEstilos.cardText}>CÉDULA: 1713489514</Text>
+              <Text style={menuEstilos.cardText}>Gerald Orlando Moreno Jadan</Text>
+              <Text style={menuEstilos.cardText}>GRADO: Teniente Coronel</Text>
+              <Text style={menuEstilos.cardText}>CADUCA: 01/01/2030</Text>
             </View>
+
             <View style={menuEstilos.imagenCards}>
               <InstitutoSVG width='100%' height="100%" />
             </View>
           </View>
         </View>
       </View>
-
       {/* Buttons */}
       <View style={menuEstilos.buttonsContainer}>
         {buttons.map((button, index) => (
