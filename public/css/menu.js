@@ -31,7 +31,7 @@ const menuEstilos = StyleSheet.create({
     borderRadius: 10,
     elevation: 5,
     marginBottom: 20,
-    height: "32%"
+    height: "35%",
   },
   cardHeader: {
     backgroundColor: '#4CAF50',
@@ -66,8 +66,9 @@ const menuEstilos = StyleSheet.create({
   imagenCards: {
     width: '30%',
     height: "30%",
-    marginLeft: "72%",
-    marginTop: "-23%"
+    position: 'absolute',
+    left: '70%',
+    bottom: '5%'
   },
 
   profileImage: {
@@ -87,14 +88,17 @@ const menuEstilos = StyleSheet.create({
     color: "#4A6289",
     paddingLeft: '5%',
   },
+
   cardTexts: {
     fontSize: 14,
     width: "80%",
     color: "#5b749e"
   },
+
   subida: {
-    marginTop: "-25%"
+   position: 'absolute',
   },
+
   buttonsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
