@@ -42,6 +42,7 @@ const beneficiosEstilos = StyleSheet.create({
         shadowOffset: { width: 2, height: 2 },
         elevation: 3,
         width:'95%',
+        height: '65%'
       },
       qrContainer: {
         alignItems: "center",
