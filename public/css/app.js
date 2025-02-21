@@ -6,6 +6,7 @@ const app = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: '100%',
+    height: '90%',
   },
   gradieFond: {
     width: '100%',
@@ -31,9 +32,10 @@ const app = StyleSheet.create({
   },
   button: {
     width: '80%',
-    marginLeft:'10%',
     borderRadius: 20,
-    marginTop:'45%'
+    position: 'absolute',
+    bottom: '5%',
+    left: '10%'
   },
   gradientButton: {
     paddingVertical: 10,

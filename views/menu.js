@@ -83,12 +83,18 @@ export default function menu() {
             </View>
 
             <View style={menuEstilos.subida}>
-              <Text style={menuEstilos.cardText}>CÉDULA: 1713489514</Text>
+              <Text style={menuEstilos.cardText}>
+                <Text style={{ fontWeight: 'bold' }}>CÉDULA:</Text> 1713489514
+              </Text>
               <Text style={menuEstilos.cardText}>Gerald Orlando Moreno Jadan</Text>
-              <Text style={menuEstilos.cardText}>GRADO: Teniente Coronel</Text>
-              <Text style={menuEstilos.cardText}>CADUCA: 01/01/2030</Text>
+              <Text style={menuEstilos.cardText}>
+                <Text style={{ fontWeight: 'bold' }}>GRADO:</Text> Teniente Coronel
+              </Text>
+              <Text style={menuEstilos.cardText}>
+                <Text style={{ fontWeight: 'bold' }}>CADUCA:</Text> 01/01/2030
+              </Text>
             </View>
-
+            
             <View style={menuEstilos.imagenCards}>
               <InstitutoSVG width='100%' height="100%" />
             </View>

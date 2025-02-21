@@ -28,14 +28,14 @@ export default function pasarela() {
       </View>
       <Text style={pasarelaEsitlos.title}>MI MEMBRESÍA</Text>
       <View style={pasarelaEsitlos.image}>
-        <PasarelaInicioSvg />
+        <PasarelaInicioSvg  />
       </View>
       <Text style={pasarelaEsitlos.description}>
         Disfruta de tus servicios internos y beneficios por un solo pago anual de:
       </Text>
       <Text style={pasarelaEsitlos.price}>$4,99/año</Text>
-      <View style={pasarelaEsitlos.images}>
-        <PasarelaFinalSvg />
+      <View style={pasarelaEsitlos.imagen}>
+        <PasarelaFinalSvg width='100%' height="100%"/>
       </View>
       <TouchableOpacity style={pasarelaEsitlos.payButton} onPress={handleMenu}>
         <LinearGradient

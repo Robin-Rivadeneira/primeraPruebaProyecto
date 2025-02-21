@@ -4,6 +4,8 @@ const pasarelaEsitlos = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 20,
         paddingTop: 50,
+        width:'100%',
+        height: '100%',
     },
     header: {
         flexDirection: 'row',
@@ -51,6 +53,10 @@ const pasarelaEsitlos = StyleSheet.create({
         width: '100%',
         height: '10%',
         alignSelf: 'center',
+    },
+    imagen: {
+        width: '100%',
+        height: '10%',
     },
     payButton: {
         padding: 15,

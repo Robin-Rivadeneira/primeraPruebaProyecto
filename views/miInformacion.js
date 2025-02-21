@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Button, Alert, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { View, Text, Button, Alert, TouchableOpacity, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import QRCode from 'react-native-qrcode-svg';
 import GoIdentitySVG from "../public/img/goIdentity.svg";
@@ -21,7 +21,8 @@ const MiIdentidad = () => {
   const [qrGenerated, setQrGenerated] = useState(false);
   const [facing, setFacing] = useState('back');
   const [permission, requestPermission] = useCameraPermissions();
-  const [loading, setLoading] = useState(false); // Estado para la animación de carga
+  const [cameraVisible, setCameraVisible] = useState(true); // Estado para controlar la visibilidad de la cámara
+  const [isProcessing, setIsProcessing] = useState(false); // Estado para mostrar "Cargando..."
 
   useEffect(() => {
     loadReferenceImage();
@@ -44,7 +45,6 @@ const MiIdentidad = () => {
     if (!cameraRef.current) return;
 
     try {
-      setLoading(true); // Iniciar animación de carga
       const photo = await cameraRef.current.takePictureAsync({
         quality: 1,
         base64: false,
@@ -56,11 +56,14 @@ const MiIdentidad = () => {
       });
 
       setPhotoBase64(base64);
+      setCameraVisible(false); // Ocultar la cámara después de tomar la foto
+      setIsProcessing(true); // Mostrar "Cargando..."
+      Alert.alert('Foto tomada', 'La foto se ha capturado correctamente.'); // Alerta de foto tomada
       await handleRegister(photo.uri, base64);
     } catch (error) {
       Alert.alert('Error', 'No se pudo tomar la foto');
-    } finally {
-      setLoading(false); // Detener animación de carga
+      setCameraVisible(true); // Restaurar la cámara en caso de error
+      setIsProcessing(false); // Ocultar "Cargando..."
     }
   };
 
@@ -85,7 +88,7 @@ const MiIdentidad = () => {
       });
 
       const luxandResult = await luxandResponse.json();
-
+      console.log(luxandResult)
       // Segunda petición a biometria_DEMO
       const biometricBody = {
         source_img: imageRefBase64,
@@ -102,8 +105,7 @@ const MiIdentidad = () => {
       });
 
       const biometricResult = await biometricResponse.json();
-
-      // Verificar ambas respuestas
+      console.log(biometricResult)
       if (luxandResult.status === 'success' && biometricResponse.ok) {
         setQrData({
           cedula: "1234567890",
@@ -112,14 +114,18 @@ const MiIdentidad = () => {
           caduca: "01/01/2030",
         });
         setQrGenerated(true);
+        setIsProcessing(false); // Ocultar "Cargando..."
         Alert.alert('Éxito', 'Verificación biométrica completada!');
       } else {
         const errorMessage = luxandResult.message || biometricResult.message || 'Error en la verificación';
         Alert.alert('Error', errorMessage);
+        setCameraVisible(true); // Restaurar la cámara en caso de error
+        setIsProcessing(false); // Ocultar "Cargando..."
       }
     } catch (error) {
       Alert.alert('Error', 'Problema de conexión');
-      console.error(error);
+      setCameraVisible(true); // Restaurar la cámara en caso de error
+      setIsProcessing(false); // Ocultar "Cargando..."
     }
   };
 
@@ -162,10 +168,16 @@ const MiIdentidad = () => {
             </View>
 
             <View style={menuEstilos.subida}>
-              <Text style={menuEstilos.cardText}>CÉDULA: 1713489514</Text>
+              <Text style={menuEstilos.cardText}>
+                <Text style={{ fontWeight: 'bold' }}>CÉDULA:</Text> 1713489514
+              </Text>
               <Text style={menuEstilos.cardText}>Gerald Orlando Moreno Jadan</Text>
-              <Text style={menuEstilos.cardText}>GRADO: Teniente Coronel</Text>
-              <Text style={menuEstilos.cardText}>CADUCA: 01/01/2030</Text>
+              <Text style={menuEstilos.cardText}>
+                <Text style={{ fontWeight: 'bold' }}>GRADO:</Text> Teniente Coronel
+              </Text>
+              <Text style={menuEstilos.cardText}>
+                <Text style={{ fontWeight: 'bold' }}>CADUCA:</Text> 01/01/2030
+              </Text>
             </View>
 
             <View style={menuEstilos.imagenCards}>
@@ -174,33 +186,35 @@ const MiIdentidad = () => {
           </View>
         </View>
 
-        {!qrGenerated && (
+        {!qrGenerated && cameraVisible && (
           <CameraView
             ref={cameraRef}
             style={miIdentidadEstilos.camera}
             facing={facing}
             enableTorch={false}
           >
-            {loading ? (
-              <ActivityIndicator size="large" color="#0000ff" />
-            ) : (
-              <View style={miIdentidadEstilos.buttonContainer}>
-                <TouchableOpacity
-                  style={miIdentidadEstilos.button}
-                  onPress={() => setFacing(current => current === 'back' ? 'front' : 'back')}
-                >
-                  <Text style={miIdentidadEstilos.text}>Cambiar cámara</Text>
-                </TouchableOpacity>
+            <View style={miIdentidadEstilos.buttonContainer}>
+              <TouchableOpacity
+                style={miIdentidadEstilos.button}
+                onPress={() => setFacing(current => current === 'back' ? 'front' : 'back')}
+              >
+                <Text style={miIdentidadEstilos.text}>Cambiar cámara</Text>
+              </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={miIdentidadEstilos.captureButton}
-                  onPress={takePhoto}
-                >
-                  <Text style={miIdentidadEstilos.text}>Tomar foto</Text>
-                </TouchableOpacity>
-              </View>
-            )}
+              <TouchableOpacity
+                style={miIdentidadEstilos.captureButton}
+                onPress={takePhoto}
+              >
+                <Text style={miIdentidadEstilos.text}>Tomar foto</Text>
+              </TouchableOpacity>
+            </View>
           </CameraView>
+        )}
+
+        {!cameraVisible && isProcessing && (
+          <View style={miIdentidadEstilos.loadingContainer}>
+            <Text style={miIdentidadEstilos.loadingText}>Cargando...</Text>
+          </View>
         )}
 
         {qrData && (

@@ -31,7 +31,7 @@ const menuEstilos = StyleSheet.create({
     borderRadius: 10,
     elevation: 5,
     marginBottom: 20,
-    height: "30%"
+    height: "32%"
   },
   cardHeader: {
     backgroundColor: '#4CAF50',
@@ -84,7 +84,8 @@ const menuEstilos = StyleSheet.create({
     fontSize: 16,
     marginBottom: 1,
     width: "60%",
-    color: "#4A6289"
+    color: "#4A6289",
+    paddingLeft: '5%',
   },
   cardTexts: {
     fontSize: 14,
