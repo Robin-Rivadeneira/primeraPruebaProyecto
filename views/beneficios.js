@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, ScrollView, Dimensions } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import QRCode from "react-native-qrcode-svg";
 import { useRoute } from "@react-navigation/native";
@@ -9,20 +9,32 @@ import QuincePorciento from "../public/img/quncieporcentaje.svg";
 import SmartFitSvg from "../public/img/smartFit.svg";
 import identidadInicialEstilos from '../public/css/identidad';
 import GoIdentitySVG from "../public/img/goIdentity.svg";
-// Datos de beneficios con imágenes SVG
+
 const beneficiosData = {
   Multicines: [
     {
       id: "1",
       nombre: "2x1 en entradas",
       horario: "Lunes y Jueves de 14H a 21H",
-      icono: <DosporUnoSvg width={100} height={100} />,
+      icono: <DosporUnoSvg width={100} height={100} />, 
     },
     {
       id: "2",
       nombre: "15% de descuento",
       horario: "Lunes y Jueves de 14H a 21H",
-      icono: <QuincePorciento width={100} height={100} />,
+      icono: <QuincePorciento width={100} height={100} />, 
+    },
+    {
+      id: "4",
+      nombre: "20% de descuento",
+      horario: "Lunes y Jueves de 14H a 21H",
+      icono: <QuincePorciento width={100} height={100} />, 
+    },
+    {
+      id: "5",
+      nombre: "10% de descuento adicional",
+      horario: "Viernes y Sábados de 10H a 22H",
+      icono: <QuincePorciento width={100} height={100} />, 
     },
   ],
   SmartFit: [
@@ -30,7 +42,7 @@ const beneficiosData = {
       id: "3",
       nombre: "Membresía 50% off",
       horario: "Lunes a Viernes de 8H a 18H",
-      icono: <SmartFitSvg width={100} height={100} />,
+      icono: <SmartFitSvg width={100} height={100} />, 
     },
   ],
 };
@@ -57,7 +69,6 @@ const BeneficiosScreen = () => {
         <GoIdentitySVG style={identidadInicialEstilos.logo} />
       </View>
       <Text style={beneficiosEstilos.title}>Beneficios de {beneficio.nombre}</Text>
-
       <View style={beneficiosEstilos.card}>
         {beneficio.icono}
         <View>
@@ -66,19 +77,24 @@ const BeneficiosScreen = () => {
         </View>
       </View>
       <Text style={beneficiosEstilos.title}>BENEFICIOS</Text>
-      <FlatList
-        data={beneficios}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handleBenefitPress(item)}>
-            <View style={beneficiosEstilos.benefitCard}>
-              {item.icono}
-              <Text style={beneficiosEstilos.name}>{item.nombre}</Text>
-              <Text style={beneficiosEstilos.date}>{item.horario}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+      <View style={beneficiosEstilos.benefitsContainer}>
+        <FlatList
+          data={beneficios}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleBenefitPress(item)}>
+              <View style={beneficiosEstilos.benefitCard}>
+                {item.icono}
+                <View>
+                  <Text style={beneficiosEstilos.name}>{item.nombre}</Text>
+                  <Text style={beneficiosEstilos.date}>{item.horario}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
       <Text style={beneficiosEstilos.subTitle}>QR verificación:</Text>
       {selectedBenefit && (
         <View style={beneficiosEstilos.qrContainer}>
