@@ -26,23 +26,24 @@ const miIdentidadEstilos = StyleSheet.create({
         gap: 20,
     },
     button: {
-        backgroundColor: 'rgba(20, 20, 20, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         padding: 15,
-        borderRadius: 10,
+        borderRadius: 500,
         position: 'absolute',
-        width: '70%',
+        width: '20%',
         top: '50%',
-        left: '15%'
+        left: '50%',
+        textAlign: 'center'
     },
     captureButton: {
-        backgroundColor: 'rgba(20, 20, 20, 0.3)',
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
         padding: 15,
-        borderRadius: 10,
+        borderRadius: 1000,
         borderWidth: 2,
         borderColor: 'white',
         position: 'absolute',
-        width: '70%',
-        left: '15%'
+        width: '20%',
+        left: '70%'
     },
     text: {
         fontSize: 16,
