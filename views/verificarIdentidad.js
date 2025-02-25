@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'; // Importa useEffect correctamente
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { LinearGradient } from 'expo-linear-gradient';
+import Lottie from 'lottie-react-native'; // Importa Lottie para la animación
 import GoIdentitySVG from "../public/img/goIdentity.svg";
 import InstitutoSVG from "../public/img/instituto.svg";
 import UsuarioSvg from "../public/img/usuarios.svg";
@@ -26,11 +27,10 @@ const QRScanner = () => {
   const handleBarcodeScanned = ({ data }) => {
     if (data && data !== qrData) {
       setQrData(data);
-      setIsCameraVisible(false);
       Alert.alert(
         "QR Escaneado",
         `Datos: ${data}`,
-        [{ text: "OK", onPress: () => setQrData(null) }]
+        [{ text: "OK", onPress: () => {} }]
       );
     }
   };
@@ -77,44 +77,57 @@ const QRScanner = () => {
             }}
             onBarcodeScanned={handleBarcodeScanned}
           />
+
+          {/* Animación de escaneo de QR */}
+          <View style={styles.animationContainer}>
+            <Lottie
+              source={require('../public/json/qrAnimacion.json')} // Ruta de la animación
+              autoPlay
+              loop
+              style={styles.animation}
+            />
+            <Text style={styles.scanningText}>Escaneando...</Text>
+          </View>
         </View>
       )}
 
       {qrData && (
-        <View style={menuEstilos.card}>
-          <View style={menuEstilos.cardHeader}>
-            <Text style={menuEstilos.cardTitle}>ISSFA</Text>
-          </View>
-
-          <View style={menuEstilos.cardContent}>
-            <View style={menuEstilos.cardImagen}>
-              <Image source={require('../public/img/imagenPrueba.jpg')} style={{
-                width: '100%',
-                height: '100%',
-                borderRadius: 12,
-              }} resizeMode="contain" />
+        <View style={styles.cardContainer}>
+          <View style={menuEstilos.card}>
+            <View style={menuEstilos.cardHeader}>
+              <Text style={menuEstilos.cardTitle}>ISSFA</Text>
             </View>
 
-            <View style={menuEstilos.cardInfo}>
-              <View style={menuEstilos.imagenCard}>
-                <LogoEjercito width='100%' height="100%" />
+            <View style={menuEstilos.cardContent}>
+              <View style={menuEstilos.cardImagen}>
+                <Image source={require('../public/img/imagenPrueba.jpg')} style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: 12,
+                }} resizeMode="contain" />
               </View>
 
-              <View style={menuEstilos.subida}>
-                <Text style={menuEstilos.cardText}>
-                  <Text style={{ fontWeight: 'bold' }}>CÉDULA:</Text> 1713489514
-                </Text>
-                <Text style={menuEstilos.cardText}>Gerald Orlando Moreno Jadan</Text>
-                <Text style={menuEstilos.cardText}>
-                  <Text style={{ fontWeight: 'bold' }}>GRADO:</Text> Teniente Coronel
-                </Text>
-                <Text style={menuEstilos.cardText}>
-                  <Text style={{ fontWeight: 'bold' }}>CADUCA:</Text> 01/01/2030
-                </Text>
-              </View>
+              <View style={menuEstilos.cardInfo}>
+                <View style={menuEstilos.imagenCard}>
+                  <LogoEjercito width='100%' height="100%" />
+                </View>
 
-              <View style={menuEstilos.imagenCards}>
-                <InstitutoSVG width='100%' height="100%" />
+                <View style={menuEstilos.subida}>
+                  <Text style={menuEstilos.cardText}>
+                    <Text style={{ fontWeight: 'bold' }}>CÉDULA:</Text> 1713489514
+                  </Text>
+                  <Text style={menuEstilos.cardText}>Gerald Orlando Moreno Jadan</Text>
+                  <Text style={menuEstilos.cardText}>
+                    <Text style={{ fontWeight: 'bold' }}>GRADO:</Text> Teniente Coronel
+                  </Text>
+                  <Text style={menuEstilos.cardText}>
+                    <Text style={{ fontWeight: 'bold' }}>CADUCA:</Text> 01/01/2030
+                  </Text>
+                </View>
+
+                <View style={menuEstilos.imagenCards}>
+                  <InstitutoSVG width='100%' height="100%" />
+                </View>
               </View>
             </View>
           </View>
@@ -160,7 +173,30 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
     elevation: 10,
     borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.3)'
+    borderColor: 'rgba(255,255,255,0.3)',
+    position: 'relative', // Para posicionar la animación y el texto
+  },
+  animationContainer: {
+    ...StyleSheet.absoluteFillObject, // Ocupa todo el espacio del contenedor de la cámara
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1, // Asegura que esté sobre la cámara
+  },
+  animation: {
+    width: '80%', // Tamaño de la animación
+    height: '80%',
+  },
+  scanningText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20, // Espacio entre la animación y el texto
+  },
+  cardContainer: {
+    width: '90%',
+    height: '100%',
+    alignSelf: 'center',
+    marginTop: 20,
   },
 });
 

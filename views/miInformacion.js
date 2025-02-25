@@ -25,32 +25,21 @@ const MiIdentidad = () => {
   const [permission, requestPermission] = useCameraPermissions();
   const [isProcessing, setIsProcessing] = useState(false);
   const [imageRefBase64, setImageRefBase64] = useState(null);
-  const [showBorderAnimation, setShowBorderAnimation] = useState(false);
+  const [showBiometricAnimation, setShowBiometricAnimation] = useState(true); // Animación de biometría
+  const [showCircleAnimation, setShowCircleAnimation] = useState(false); // Animación del círculo
+  const [showStartButton, setShowStartButton] = useState(true); // Mostrar botón "Iniciar" inicialmente
   const isMounted = useRef(true);
+  const [frameReceived, setFrameReceived] = useState(false);
 
   useEffect(() => {
     console.log("1. Componente montado");
     loadReferenceImage();
+
     return () => {
       isMounted.current = false;
       console.log("Componente desmontado");
     };
   }, []);
-
-  useEffect(() => {
-    const initializeCamera = async () => {
-      if (permission?.granted) {
-        console.log("2. Permisos concedidos, iniciando cámara...");
-        try {
-          await cameraRef.current?.resumePreview();
-          console.log("3. Cámara iniciada correctamente");
-        } catch (error) {
-          console.error("Error al iniciar cámara:", error);
-        }
-      }
-    };
-    initializeCamera();
-  }, [permission]);
 
   const loadReferenceImage = async () => {
     try {
@@ -67,62 +56,112 @@ const MiIdentidad = () => {
     }
   };
 
-  const processFrame = async (frame) => {
-    if (!isMounted.current || isProcessing || qrData) return;
-
-    console.log("Procesando frame...");
-    setIsProcessing(true);
-    setShowBorderAnimation(true);
+  const startVerification = async () => {
+    if (!cameraRef.current || isProcessing) return;
 
     try {
-      console.log("Dimensiones del frame:", frame.width, "x", frame.height);
-      if (!frame.base64) throw new Error("Frame sin datos base64");
+      setIsProcessing(true);
+      setShowBiometricAnimation(false); // Ocultar animación de biometría
+      setShowCircleAnimation(true); // Mostrar animación del círculo
+      setShowStartButton(false); // Ocultar botón "Iniciar"
 
-      const base64Data = `data:image/jpeg;base64,${frame.base64}`;
-      console.log("Base64 recibido:", base64Data.substring(0, 30) + "...");
+      // Capturar una foto manualmente
+      const photo = await cameraRef.current.takePictureAsync({
+        quality: 0.8,
+        base64: true,
+        skipProcessing: true,
+      });
+
+      console.log("Frame capturado manualmente:", photo.uri);
+      await saveBase64Image(photo.base64); // Guardar la imagen para depuración
+      await processImage(photo.base64); // Llamar a processImage
+    } catch (error) {
+      console.error("Error capturando frame manualmente:", error);
+      Alert.alert('Error', 'No se pudo capturar el frame');
+      resetUI(); // Restaurar animación y botón en caso de error
+    }
+  };
+
+  const resetUI = () => {
+    setIsProcessing(false);
+    setShowBiometricAnimation(true); // Restaurar animación de biometría
+    setShowCircleAnimation(false); // Ocultar animación del círculo
+    setShowStartButton(true); // Restaurar botón "Iniciar"
+  };
+
+  const saveBase64Image = async (base64Image) => {
+    try {
+      const fileUri = FileSystem.documentDirectory + 'debug_image.jpg';
+      await FileSystem.writeAsStringAsync(fileUri, base64Image, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      console.log("Imagen guardada en:", fileUri);
+    } catch (error) {
+      console.error("Error guardando la imagen:", error);
+    }
+  };
+
+  const processImage = async (base64Image) => {
+    try {
+      console.log("Procesando imagen capturada...");
 
       // 1. Detección de rostro
       console.log("Iniciando detección de rostro...");
-      const hasFace = await checkFace(base64Data);
+      const hasFace = await checkFace(base64Image);
       if (!hasFace) throw new Error('No se detectó un rostro');
       console.log("Rostro detectado correctamente.");
 
       // 2. Verificación de vivacidad
       console.log("Iniciando verificación de vivacidad...");
-      const livenessResult = await checkLiveness(base64Data);
-      if (!livenessResult.live) throw new Error('El rostro no parece ser real');
+      const livenessResult = await checkLiveness(base64Image);
+      if (livenessResult.result !== "real") throw new Error('El rostro no parece ser real');
       console.log("Vivacidad verificada correctamente:", livenessResult);
 
       // 3. Comparación biométrica
       console.log("Iniciando comparación biométrica...");
-      const biometricResult = await verifyBiometrics(base64Data);
+      const biometricResult = await verifyBiometrics(base64Image);
       if (!biometricResult.match) throw new Error('No coincide con la referencia');
       console.log("Comparación biométrica exitosa:", biometricResult);
 
       // Éxito en la verificación
       handleVerificationSuccess();
-
     } catch (error) {
-      console.error("Error en processFrame:", error);
+      console.error("Error en processImage:", error);
       Alert.alert('Error', error.message);
-    } finally {
-      setIsProcessing(false);
-      setShowBorderAnimation(false);
-      console.log("Procesamiento finalizado.");
+      resetUI(); // Restaurar animación y botón en caso de error
     }
   };
 
   const checkFace = async (base64Image) => {
     try {
       console.log("Enviando imagen a la API de detección de rostros...");
+
+      const formData = new FormData();
+      formData.append('photo', {
+        uri: `data:image/jpeg;base64,${base64Image}`,
+        name: 'photo.jpg',
+        type: 'image/jpeg',
+      });
+
       const response = await fetch('https://api.luxand.cloud/photo/detect', {
         method: 'POST',
-        headers: { 'token': 'ad37885a36ac42fca9f052f1b0487520' },
-        body: JSON.stringify({ photo: base64Image }),
+        headers: {
+          'token': 'ad37885a36ac42fca9f052f1b0487520', // Reemplaza con tu token
+          'Content-Type': 'multipart/form-data',
+        },
+        body: formData,
       });
+
       const result = await response.json();
       console.log("Respuesta de la API de detección de rostros:", result);
-      return result.faces?.length > 0;
+
+      // Verificar si la respuesta es un array y tiene al menos un elemento
+      if (Array.isArray(result) && result.length > 0) {
+        console.log("Rostro detectado correctamente.");
+        return true; // Hay al menos un rostro detectado
+      } else {
+        throw new Error('No se detectó un rostro');
+      }
     } catch (error) {
       console.error('Error en detección de rostro:', error);
       return false;
@@ -221,10 +260,10 @@ const MiIdentidad = () => {
 
         <View style={menuEstilos.cardContent}>
           <View style={menuEstilos.cardImagen}>
-            <Image 
-              source={require('../public/img/imagenPrueba.jpg')} 
+            <Image
+              source={require('../public/img/imagenPrueba.jpg')}
               style={styles.cardImage}
-              resizeMode="contain" 
+              resizeMode="contain"
             />
           </View>
 
@@ -253,39 +292,68 @@ const MiIdentidad = () => {
         </View>
 
         {!qrData && (
-          <View style={styles.cameraContainer}>
-            {showBorderAnimation && (
-              <View style={styles.borderAnimationContainer}>
-                <Lottie
-                  source={require('../public/json/circuloAnimation.json')}
-                  autoPlay
-                  loop
-                  style={styles.borderAnimation}
-                />
-              </View>
-            )}
+          <View style={styles.cameraSection}>
+            <View style={styles.cameraContainer}>
+              {showBiometricAnimation && (
+                <View style={styles.borderAnimationContainer}>
+                  <Lottie
+                    source={require('../public/json/biometrica.json')}
+                    autoPlay
+                    loop
+                    style={styles.borderAnimation}
+                  />
+                </View>
+              )}
 
-            <CameraView
-              ref={cameraRef}
-              style={styles.camera}
-              facing={facing}
-              enableTorch={false}
-              frameProcessor={(frame) => {
-                console.log("Frame recibido, timestamp:", frame.timestamp);
-                processFrame(frame);
-              }}
-              frameProcessorFps={5}
-              onCameraReady={() => console.log("Evento onCameraReady activado!")}
-              focusDepth={0}
-              autoFocus="on"
-              zoom={0}
-            />
+              {showCircleAnimation && (
+                <View style={styles.borderAnimationContainer}>
+                  <Lottie
+                    source={require('../public/json/circuloAnimation.json')}
+                    autoPlay
+                    loop
+                    style={styles.borderAnimation}
+                  />
+                </View>
+              )}
 
+              <CameraView
+                ref={cameraRef}
+                style={styles.camera}
+                facing={facing}
+                enableTorch={false}
+                frameProcessor={(frame) => {
+                  console.log("Frame recibido, timestamp:", frame.timestamp);
+                  processFrame(frame);
+                }}
+                frameProcessorFps={5}
+                onCameraReady={() => console.log("Evento onCameraReady activado!")}
+                focusDepth={0}
+                autoFocus="on"
+                zoom={0}
+              />
+
+              {showStartButton && (
+                <View style={styles.startButtonContainer}>
+                  <Text style={styles.preparationText}>
+                    Prepárate para la verificación biométrica
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.startButton}
+                    onPress={startVerification}
+                  >
+                    <Text style={styles.startButtonText}>Iniciar</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+
+            {/* Botón para cambiar cámara */}
             <TouchableOpacity
-              style={miIdentidadEstilos.button}
+              style={styles.switchCameraButton}
               onPress={switchCamera}
             >
               <MaterialIcons name="switch-camera" size={28} color="white" />
+              <Text style={styles.switchCameraButtonText}>Cambiar cámara</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -306,15 +374,20 @@ const MiIdentidad = () => {
 };
 
 const styles = StyleSheet.create({
+  cameraSection: {
+    width: '90%',
+    marginLeft: '5%',
+    marginVertical: 20,
+  },
   cameraContainer: {
     height: 300,
-    width: '90%',
-    marginVertical: 20,
-    borderRadius: 20,
+    borderRadius: 10000, // Bordes redondeados
     overflow: 'hidden',
     position: 'relative',
     backgroundColor: '#f0f0f0',
-    marginLeft: '5%',
+    borderWidth: 3, // Grosor del borde
+    borderColor: '#2c3e50', // Color del borde
+    elevation: 5,
   },
   camera: {
     flex: 1,
@@ -333,6 +406,48 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     borderRadius: 12,
+  },
+  startButtonContainer: {
+    position: 'absolute',
+    bottom: 20,
+    alignSelf: 'center',
+    alignItems: 'center',
+    zIndex: 2, // Asegura que el texto y el botón estén sobre la animación
+  },
+  preparationText: {
+    color: 'white',
+    fontSize: 25,
+    width: '50%',
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  startButton: {
+    backgroundColor: '#2c3e50',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+  },
+  startButtonText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  switchCameraButton: {
+    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#2c3e50',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+  },
+  switchCameraButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 10,
   },
 });
 
