@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Alert, StyleSheet, TouchableOpacity, Image, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, Button } from 'react-native'; // Asegúrate de importar Button
 import { LinearGradient } from 'expo-linear-gradient';
 import QRCode from 'react-native-qrcode-svg';
 import Lottie from 'lottie-react-native';
@@ -25,128 +25,170 @@ const MiIdentidad = () => {
   const [permission, requestPermission] = useCameraPermissions();
   const [isProcessing, setIsProcessing] = useState(false);
   const [imageRefBase64, setImageRefBase64] = useState(null);
-  const [showBiometricAnimation, setShowBiometricAnimation] = useState(true); // Animación de biometría
-  const [showCircleAnimation, setShowCircleAnimation] = useState(false); // Animación del círculo
-  const [showStartButton, setShowStartButton] = useState(true); // Mostrar botón "Iniciar" inicialmente
+  const [showBiometricAnimation, setShowBiometricAnimation] = useState(true);
+  const [showCircleAnimation, setShowCircleAnimation] = useState(false);
+  const [showStartButton, setShowStartButton] = useState(true);
+  const [validationAttempts, setValidationAttempts] = useState(0);
   const isMounted = useRef(true);
-  const [frameReceived, setFrameReceived] = useState(false);
+  const validationInterval = useRef(null);
+
+  // Función para mostrar alerta de error
+  const showErrorAlert = (message) => {
+    Alert.alert(
+      "Error de verificación",
+      message,
+      [
+        {
+          text: "Reintentar",
+          onPress: () => restartVerificationProcess(), // Reiniciar el proceso
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  // Función para reiniciar el proceso de verificación
+  const restartVerificationProcess = () => {
+    console.log("🔄 Reiniciando proceso de verificación...");
+    setShowStartButton(true);
+    setShowBiometricAnimation(true);
+    setShowCircleAnimation(false);
+    setValidationAttempts(0);
+    clearInterval(validationInterval.current);
+  };
 
   useEffect(() => {
-    console.log("1. Componente montado");
+    console.log("[1/5] 🚀 Componente montado");
     loadReferenceImage();
 
     return () => {
       isMounted.current = false;
-      console.log("Componente desmontado");
+      clearInterval(validationInterval.current);
+      console.log("[1/5] 🚀 Componente desmontado");
     };
   }, []);
 
-  // Efecto para depurar el estado qrData
   useEffect(() => {
     if (qrData) {
-      console.log("QR Data actualizado:", qrData);
-      // Detener todas las animaciones al mostrar el QR
+      console.log("[5/5] 🎉 QR generado con éxito");
       setShowCircleAnimation(false);
       setShowBiometricAnimation(false);
+      clearInterval(validationInterval.current);
     }
   }, [qrData]);
 
+  useEffect(() => {
+    if (validationAttempts > 0 && validationAttempts % 2 === 0) {
+      console.log("🔄 Reiniciando cámara para evitar sonidos...");
+      cameraRef.current?.pausePreview();
+      setTimeout(() => {
+        if (isMounted.current) cameraRef.current?.resumePreview();
+      }, 500);
+    }
+  }, [validationAttempts]);
+
   const loadReferenceImage = async () => {
     try {
-      console.log("Cargando imagen de referencia...");
-      //const asset = Asset.fromModule(require('../public/img/prueba2.jpeg'));
-      const asset = Asset.fromModule(require('../public/img/imagenPrueba.jpg'));
+      console.log("[1/5] 📂 Cargando imagen de referencia...");
+      const asset = Asset.fromModule(require('../public/img/prueba2.jpeg'));
       await asset.downloadAsync();
       const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
         encoding: FileSystem.EncodingType.Base64,
       });
       setImageRefBase64(base64);
-      console.log("Imagen de referencia cargada:", base64 ? "✅" : "❌");
+      console.log("[1/5] ✅ Imagen de referencia cargada");
     } catch (error) {
-      console.error('Error cargando imagen:', error);
+      console.error('[1/5] ❌ Error cargando imagen:', error);
+      showErrorAlert("Hubo un error al cargar la imagen de referencia. Por favor, reintente.");
     }
   };
 
   const startVerification = async () => {
     if (!cameraRef.current || isProcessing) return;
 
-    try {
-      setIsProcessing(true);
-      setShowBiometricAnimation(false); // Ocultar animación de biometría
-      setShowCircleAnimation(true); // Mostrar animación del círculo
-      setShowStartButton(false); // Ocultar botón "Iniciar"
+    console.log("[2/5] 🚦 Iniciando verificación...");
+    setShowStartButton(false);
+    setShowBiometricAnimation(false);
+    setShowCircleAnimation(true);
 
-      // Capturar una foto manualmente
-      const photo = await cameraRef.current.takePictureAsync({
-        quality: 0.8,
-        base64: true,
-        skipProcessing: true,
-      });
+    validationInterval.current = setInterval(async () => {
+      if (!isProcessing && !qrData && isMounted.current) {
+        try {
+          console.log(`[3/5] 📸 Intento de captura #${validationAttempts + 1}`);
+          setIsProcessing(true);
 
-      console.log("Frame capturado manualmente:", photo.uri);
-      await saveBase64Image(photo.base64); // Guardar la imagen para depuración
-      await processImage(photo.base64); // Llamar a processImage
-    } catch (error) {
-      console.error("Error capturando frame manualmente:", error);
-      Alert.alert('Error', 'No se pudo capturar el frame');
-      resetUI(); // Restaurar animación y botón en caso de error
-    }
+          const photo = await cameraRef.current.takePictureAsync({
+            quality: 0.8,
+            base64: true,
+            skipProcessing: true,
+            exif: false,
+            sound: false,
+            pauseAfterCapture: true,
+            mirror: false,
+            androidCameraPermissionOptions: {
+              title: 'Permiso de cámara',
+              message: 'Necesitamos acceso para la verificación',
+              buttonPositive: 'Aceptar',
+              buttonNegative: 'Cancelar'
+            }
+          });
+
+          console.log("[3/5] ✅ Foto capturada:", photo.uri.substring(0, 50) + '...');
+          setValidationAttempts(prev => prev + 1);
+
+          const success = await processImageSilently(photo.base64);
+
+          if (success) {
+            handleVerificationSuccess();
+          } else {
+            console.log("[4/5] ❌ Fallo en validación, reintentando...");
+            showErrorAlert("Por favor, enfoque bien su rostro en la cámara.");
+          }
+
+        } catch (error) {
+          console.log("[4/5] ⚠️ Error en captura:", error.message);
+          showErrorAlert("Hubo un error al capturar la imagen. Por favor, reintente.");
+        } finally {
+          setIsProcessing(false);
+        }
+      }
+    }, 5000);
   };
 
-  const resetUI = () => {
-    setIsProcessing(false);
-    setShowBiometricAnimation(true); // Restaurar animación de biometría
-    setShowCircleAnimation(false); // Ocultar animación del círculo
-    setShowStartButton(true); // Restaurar botón "Iniciar"
-  };
-
-  const saveBase64Image = async (base64Image) => {
+  const processImageSilently = async (base64Image) => {
     try {
-      const fileUri = FileSystem.documentDirectory + 'debug_image.jpg';
-      await FileSystem.writeAsStringAsync(fileUri, base64Image, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      console.log("Imagen guardada en:", fileUri);
-    } catch (error) {
-      console.error("Error guardando la imagen:", error);
-    }
-  };
+      console.log("[4/5] 🔍 Procesando imagen...");
 
-  const processImage = async (base64Image) => {
-    try {
-      console.log("Procesando imagen capturada...");
-
-      // 1. Detección de rostro
-      console.log("Iniciando detección de rostro...");
+      console.log("   └─ [Paso 1/3] Detectando rostro...");
       const hasFace = await checkFace(base64Image);
-      if (!hasFace) throw new Error('No se detectó un rostro');
-      console.log("Rostro detectado correctamente.");
+      console.log(`   └─ [Paso 1/3] ${hasFace ? '✅ Rostro detectado' : '❌ Sin rostro detectado'}`);
+      if (!hasFace) {
+        showErrorAlert("No se detectó un rostro. Por favor, enfoque bien su rostro en la cámara.");
+        return false;
+      }
 
-      // 2. Verificación de vivacidad
-      console.log("Iniciando verificación de vivacidad...");
+      console.log("   └─ [Paso 2/3] Verificando vivacidad...");
       const livenessResult = await checkLiveness(base64Image);
-      if (livenessResult.result !== "real") throw new Error('El rostro no parece ser real');
-      console.log("Vivacidad verificada correctamente:", livenessResult);
+      console.log(`   └─ [Paso 2/3] Vivacidad: ${livenessResult.result}`);
+      if (livenessResult.result !== "real") {
+        showErrorAlert("La verificación de vivacidad falló. Por favor, reintente.");
+        return false;
+      }
 
-      // 3. Comparación biométrica
-      console.log("Iniciando comparación biométrica...");
+      console.log("   └─ [Paso 3/3] Comparando biometría...");
       const biometricResult = await verifyBiometrics(base64Image);
-      if (!biometricResult.match) throw new Error('No coincide con la referencia');
-      console.log("Comparación biométrica exitosa:", biometricResult);
+      console.log(`   └─ [Paso 3/3] Coincidencia: ${biometricResult.match ? '✅ Éxito' : '❌ Fallo'}`);
+      return biometricResult.match;
 
-      // Éxito en la verificación
-      handleVerificationSuccess();
     } catch (error) {
-      console.error("Error en processImage:", error);
-      Alert.alert('Error', error.message);
-      resetUI(); // Restaurar animación y botón en caso de error
+      console.log("[4/5] ⚠️ Error en procesamiento:", error.message);
+      showErrorAlert("Hubo un error al procesar la imagen. Por favor, reintente.");
+      return false;
     }
   };
 
   const checkFace = async (base64Image) => {
     try {
-      console.log("Enviando imagen a la API de detección de rostros...");
-
       const formData = new FormData();
       formData.append('photo', {
         uri: `data:image/jpeg;base64,${base64Image}`,
@@ -157,31 +199,24 @@ const MiIdentidad = () => {
       const response = await fetch('https://api.luxand.cloud/photo/detect', {
         method: 'POST',
         headers: {
-          'token': 'ad37885a36ac42fca9f052f1b0487520', // Reemplaza con tu token
+          'token': 'ad37885a36ac42fca9f052f1b0487520',
           'Content-Type': 'multipart/form-data',
         },
         body: formData,
       });
 
       const result = await response.json();
-      console.log("Respuesta de la API de detección de rostros:", result);
-
-      // Verificar si la respuesta es un array y tiene al menos un elemento
-      if (Array.isArray(result) && result.length > 0) {
-        console.log("Rostro detectado correctamente.");
-        return true; // Hay al menos un rostro detectado
-      } else {
-        throw new Error('No se detectó un rostro');
-      }
+      console.log(result);
+      return Array.isArray(result) && result.length > 0;
     } catch (error) {
-      console.error('Error en detección de rostro:', error);
+      console.log("   └─ ❌ Error en detección de rostro:", error);
+      showErrorAlert("Hubo un error al detectar el rostro. Por favor, reintente.");
       return false;
     }
   };
 
   const checkLiveness = async (base64Image) => {
     try {
-      console.log("Enviando imagen a la API de verificación de vivacidad...");
       const formData = new FormData();
       formData.append('photo', {
         uri: `data:image/jpeg;base64,${base64Image}`,
@@ -194,18 +229,19 @@ const MiIdentidad = () => {
         headers: { 'token': 'ad37885a36ac42fca9f052f1b0487520' },
         body: formData,
       });
-      const result = await response.json();
-      console.log("Respuesta de la API de vivacidad:", result);
-      return result;
+      const livenessResult = await response.json();
+
+      console.log("   └─ [Paso 2/3] Vivacidad:", livenessResult);
+      return livenessResult;
     } catch (error) {
-      console.error('Error en verificación de vivacidad:', error);
+      console.log("   └─ ❌ Error en vivacidad:", error);
+      showErrorAlert("Hubo un error al verificar la vivacidad. Por favor, reintente.");
       return { status: 'error' };
     }
   };
 
   const verifyBiometrics = async (base64Image) => {
     try {
-      console.log("Enviando imagen a la API de verificación biométrica...");
       const response = await fetch('http://54.189.63.53:9100/biometria_DEMO', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -216,48 +252,31 @@ const MiIdentidad = () => {
         }),
       });
       const result = await response.json();
-      console.log("Respuesta de la API biométrica:", result);
-      
-      return {
-        match: result.is_same_person, // Usar la propiedad correcta de la respuesta
-        similarity: result.similarity
-      };
+      return { match: result.is_same_person };
     } catch (error) {
-      console.error('Error en verificación biométrica:', error);
+      console.log("   └─ ❌ Error en biometría:", error.message);
+      showErrorAlert("Hubo un error al verificar la biometría. Por favor, reintente.");
       return { match: false };
     }
   };
 
   const handleVerificationSuccess = () => {
-    try {
-      if (!isMounted.current) return;
-
-      console.log("Verificación exitosa. Generando QR...");
-      
-      // Forzar una actualización del estado
-      setQrData(null); // Resetear primero
-      setTimeout(() => {
-        setQrData({
-          cedula: "1234567890",
-          nombre: "LARREA PAREDES DIEGO FRANCISCO",
-          grado: "Teniente Coronel",
-          caduca: "01/01/2030",
-        });
-      }, 100);
-      
-    } catch (error) {
-      console.error("Error en handleVerificationSuccess:", error);
-    }
+    if (!isMounted.current) return;
+    console.log("[5/5] 🎉¡Verificación exitosa! Mostrando QR...");
+    setQrData({
+      cedula: "1234567890",
+      nombre: "LARREA PAREDES DIEGO FRANCISCO",
+      grado: "Teniente Coronel",
+      caduca: "01/01/2030",
+    });
   };
 
   const switchCamera = () => {
-    console.log("Cambiando de cámara...");
+    console.log("🔄 Cambiando cámara a", facing === 'back' ? 'frontal' : 'trasera');
     setFacing(current => current === 'back' ? 'front' : 'back');
   };
 
-  if (!permission) {
-    return <View />;
-  }
+  if (!permission) return <View />;
 
   if (!permission.granted) {
     return (
@@ -285,11 +304,11 @@ const MiIdentidad = () => {
 
         <View style={menuEstilos.cardContent}>
           <View style={menuEstilos.cardImagen}>
-            <Image
-              source={require('../public/img/imagenPrueba.jpg')}
-              style={styles.cardImage}
-              resizeMode="contain"
-            />
+            <Image source={require('../public/img/imagenPrueba.jpg')} style={{
+              width: '100%',
+              height: '100%',
+              borderRadius: 12,
+            }} resizeMode="contain" />
           </View>
 
           <View style={menuEstilos.cardInfo}>
@@ -346,15 +365,8 @@ const MiIdentidad = () => {
                 style={styles.camera}
                 facing={facing}
                 enableTorch={false}
-                frameProcessor={(frame) => {
-                  console.log("Frame recibido, timestamp:", frame.timestamp);
-                  processFrame(frame);
-                }}
-                frameProcessorFps={5}
-                onCameraReady={() => console.log("Evento onCameraReady activado!")}
-                focusDepth={0}
-                autoFocus="on"
-                zoom={0}
+                pictureSize="3840x2160"
+                useCamera2Api={true}
               />
 
               {showStartButton && (
@@ -366,25 +378,24 @@ const MiIdentidad = () => {
                     style={styles.startButton}
                     onPress={startVerification}
                   >
-                    <Text style={styles.startButtonText}>Iniciar</Text>
+                    <Text style={styles.startButtonText}>INICIAR VERIFICACIÓN</Text>
                   </TouchableOpacity>
                 </View>
               )}
             </View>
 
-            {/* Botón para cambiar cámara */}
             <TouchableOpacity
               style={styles.switchCameraButton}
               onPress={switchCamera}
             >
               <MaterialIcons name="switch-camera" size={28} color="white" />
-              <Text style={styles.switchCameraButtonText}>Cambiar cámara</Text>
+              <Text style={styles.switchCameraButtonText}>CAMBIAR CÁMARA</Text>
             </TouchableOpacity>
           </View>
         )}
 
         {qrData && (
-          <View style={miIdentidadEstilos.qrContainer}>
+          <View style={[miIdentidadEstilos.qrContainer, styles.qrBorder]}>
             <QRCode
               value={JSON.stringify(qrData)}
               size={250}
@@ -406,12 +417,12 @@ const styles = StyleSheet.create({
   },
   cameraContainer: {
     height: 300,
-    borderRadius: 10000, // Bordes redondeados
+    borderRadius: 1000,
     overflow: 'hidden',
     position: 'relative',
     backgroundColor: '#f0f0f0',
-    borderWidth: 3, // Grosor del borde
-    borderColor: '#2c3e50', // Color del borde
+    borderWidth: 3,
+    borderColor: '#2c3e50',
     elevation: 5,
   },
   camera: {
@@ -421,11 +432,11 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1,
+    zIndex: 2,
   },
   borderAnimation: {
-    width: '110%',
-    height: '110%',
+    width: '120%',
+    height: '120%',
   },
   cardImage: {
     width: '100%',
@@ -436,43 +447,61 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     alignSelf: 'center',
-    alignItems: 'center',
-    zIndex: 2, // Asegura que el texto y el botón estén sobre la animación
+    zIndex: 3,
   },
   preparationText: {
     color: 'white',
-    fontSize: 25,
-    width: '50%',
+    fontSize: 20,
+    width: '70%',
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 15,
     textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+    marginLeft:'15%'
   },
   startButton: {
     backgroundColor: '#2c3e50',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
+    paddingVertical: 15,
+    textAlign:'center',
+    borderRadius: 30,
+    elevation: 5,
+    width:'60%',
+    marginLeft:'20%',
   },
   startButtonText: {
     color: 'white',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
+    letterSpacing: 1,
+    width:'100%',
+    textAlign:'center',
   },
   switchCameraButton: {
-    marginTop: 10,
+    marginTop: 15,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#2c3e50',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 25,
     borderRadius: 20,
+    elevation: 3,
   },
   switchCameraButtonText: {
     color: 'white',
     fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 10,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
+  qrBorder: {
+    borderWidth: 3,
+    borderColor: '#2c3e50',
+    borderRadius: 15,
+    padding: 15,
+    backgroundColor: 'white',
+    elevation: 5,
   },
 });
 
