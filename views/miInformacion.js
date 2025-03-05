@@ -54,7 +54,8 @@ const MiIdentidad = () => {
   const loadReferenceImage = async () => {
     try {
       console.log("Cargando imagen de referencia...");
-      const asset = Asset.fromModule(require('../public/img/prueba2.jpeg'));
+      //const asset = Asset.fromModule(require('../public/img/prueba2.jpeg'));
+      const asset = Asset.fromModule(require('../public/img/imagenPrueba.jpg'));
       await asset.downloadAsync();
       const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
         encoding: FileSystem.EncodingType.Base64,
