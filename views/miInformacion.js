@@ -41,10 +41,20 @@ const MiIdentidad = () => {
     };
   }, []);
 
+  // Efecto para depurar el estado qrData
+  useEffect(() => {
+    if (qrData) {
+      console.log("QR Data actualizado:", qrData);
+      // Detener todas las animaciones al mostrar el QR
+      setShowCircleAnimation(false);
+      setShowBiometricAnimation(false);
+    }
+  }, [qrData]);
+
   const loadReferenceImage = async () => {
     try {
       console.log("Cargando imagen de referencia...");
-      const asset = Asset.fromModule(require('../public/img/imagenPrueba1.png'));
+      const asset = Asset.fromModule(require('../public/img/prueba2.jpeg'));
       await asset.downloadAsync();
       const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
         encoding: FileSystem.EncodingType.Base64,
@@ -206,7 +216,11 @@ const MiIdentidad = () => {
       });
       const result = await response.json();
       console.log("Respuesta de la API biométrica:", result);
-      return result;
+      
+      return {
+        match: result.is_same_person, // Usar la propiedad correcta de la respuesta
+        similarity: result.similarity
+      };
     } catch (error) {
       console.error('Error en verificación biométrica:', error);
       return { match: false };
@@ -214,15 +228,25 @@ const MiIdentidad = () => {
   };
 
   const handleVerificationSuccess = () => {
-    if (!isMounted.current) return;
+    try {
+      if (!isMounted.current) return;
 
-    console.log("Verificación exitosa. Generando QR...");
-    setQrData({
-      cedula: "1234567890",
-      nombre: "LARREA PAREDES DIEGO FRANCISCO",
-      grado: "Teniente Coronel",
-      caduca: "01/01/2030",
-    });
+      console.log("Verificación exitosa. Generando QR...");
+      
+      // Forzar una actualización del estado
+      setQrData(null); // Resetear primero
+      setTimeout(() => {
+        setQrData({
+          cedula: "1234567890",
+          nombre: "LARREA PAREDES DIEGO FRANCISCO",
+          grado: "Teniente Coronel",
+          caduca: "01/01/2030",
+        });
+      }, 100);
+      
+    } catch (error) {
+      console.error("Error en handleVerificationSuccess:", error);
+    }
   };
 
   const switchCamera = () => {
