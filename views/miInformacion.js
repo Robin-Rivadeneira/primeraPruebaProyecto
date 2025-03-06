@@ -371,15 +371,9 @@ const MiIdentidad = () => {
 
               {showStartButton && (
                 <View style={styles.startButtonContainer}>
-                  <Text style={styles.preparationText}>
+                  {/* <Text style={styles.preparationText}>
                     Prepárate para la verificación biométrica
-                  </Text>
-                  <TouchableOpacity
-                    style={styles.startButton}
-                    onPress={startVerification}
-                  >
-                    <Text style={styles.startButtonText}>INICIAR VERIFICACIÓN</Text>
-                  </TouchableOpacity>
+                  </Text> */}
                 </View>
               )}
             </View>
@@ -389,7 +383,12 @@ const MiIdentidad = () => {
               onPress={switchCamera}
             >
               <MaterialIcons name="switch-camera" size={28} color="white" />
-              <Text style={styles.switchCameraButtonText}>CAMBIAR CÁMARA</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.startButton}
+              onPress={startVerification}
+            >
+              <Text style={styles.startButtonText}>INICIAR VERIFICACIÓN</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -459,24 +458,26 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.3)',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
-    marginLeft:'15%'
+    marginLeft: '15%'
   },
   startButton: {
     backgroundColor: '#2c3e50',
     paddingVertical: 15,
-    textAlign:'center',
+    textAlign: 'center',
     borderRadius: 30,
     elevation: 5,
-    width:'60%',
-    marginLeft:'20%',
+    width: '80%',
+    position:'absolute',
+    bottom:'0%',
+    left:'20%',
   },
   startButtonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
     letterSpacing: 1,
-    width:'100%',
-    textAlign:'center',
+    width: '100%',
+    textAlign: 'center',
   },
   switchCameraButton: {
     marginTop: 15,
@@ -485,9 +486,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#2c3e50',
     paddingVertical: 12,
-    paddingHorizontal: 25,
-    borderRadius: 20,
+    borderRadius: 1000,
     elevation: 3,
+    width: '17%',
   },
   switchCameraButtonText: {
     color: 'white',
