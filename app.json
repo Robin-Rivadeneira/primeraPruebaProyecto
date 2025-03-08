@@ -28,7 +28,9 @@
         "CAMERA",
         "RECORD_AUDIO",
         "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO"
+        "android.permission.RECORD_AUDIO",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.FOREGROUND_SERVICE"
       ],
       "softwareKeyboardLayoutMode": "pan"
     },
@@ -49,7 +51,8 @@
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
           "recordAudioAndroid": true
         }
-      ]
+      ],
+      "expo-asset"
     ]
   }
 }
