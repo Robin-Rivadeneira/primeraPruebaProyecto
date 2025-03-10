@@ -31,7 +31,11 @@
       "package": "com.robinjos.firmaElectronica",
       "permissions": [
         "CAMERA",
-        "RECORD_AUDIO"
+        "RECORD_AUDIO",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.FOREGROUND_SERVICE"
       ],
       "softwareKeyboardLayoutMode": "pan"
     },
@@ -48,8 +52,8 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Permitir acceso a la cámara para verificación biométrica",
-          "microphonePermission": "Permitir acceso al micrófono para grabación de video",
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
           "recordAudioAndroid": true
         }
       ],
