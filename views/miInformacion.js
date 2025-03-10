@@ -153,17 +153,37 @@ const MiIdentidad = () => {
 
   const loadReferenceImage = async () => {
     try {
-      console.log("[1/5] 📂 Cargando imagen de referencia...");
+      console.log("[1/5] 📂 Iniciando carga de imagen...");
+      
+      // 1. Cargar asset
       const asset = Asset.fromModule(require('../public/img/prueba2.jpeg'));
-      await asset.downloadAsync();
+      console.log("Asset info:", JSON.stringify(asset, null, 2));
+  
+      // 2. Forzar descarga si es necesario
+      if (!asset.localUri) {
+        console.log("🔁 Descargando asset...");
+        await asset.downloadAsync();
+      }
+  
+      // 3. Verificar existencia del archivo
+      const fileInfo = await FileSystem.getInfoAsync(asset.localUri);
+      console.log("📄 Info archivo:", fileInfo);
+      
+      if (!fileInfo.exists) {
+        throw new Error(`Archivo no encontrado: ${asset.localUri}`);
+      }
+  
+      // 4. Leer como Base64
       const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
         encoding: FileSystem.EncodingType.Base64,
       });
+      
+      console.log("✅ Base64 length:", base64?.length);
       setImageRefBase64(base64);
-      console.log("[1/5] ✅ Imagen cargada");
+  
     } catch (error) {
-      console.error('[1/5] ❌ Error cargando imagen:', error);
-      showErrorAlert("Error cargando imagen de referencia");
+      console.error('❌ Error completo:', error);
+      showErrorAlert(`Fallo crítico: ${error.message}`);
     }
   };
 
