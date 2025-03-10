@@ -8,6 +8,7 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
 import { Audio } from 'expo-av';
+import * as VideoThumbnails from 'expo-video-thumbnails';
 
 // Componentes SVG
 import GoIdentitySVG from "../public/img/goIdentity.svg";
@@ -44,7 +45,7 @@ const MiIdentidad = () => {
         allowsRecordingIOS: false,
         playsInSilentModeIOS: true,
         shouldDuckAndroid: true,
-        volume: 0, // Volumen en 0 para silenciar completamente
+        volume: 0,
       });
 
       if (Platform.OS === 'android') {
@@ -72,33 +73,24 @@ const MiIdentidad = () => {
   };
 
   // ================================================================
-  // CAPTURA SILENCIOSA DE FOTOS
+  // CAPTURA DE VIDEO
   // ================================================================
-  const captureSilentPhoto = async () => {
+  const captureVideo = async () => {
     try {
       await silenceSystemCompletely();
-
-      const photoConfig = {
-        quality: 0.8,
-        base64: true,
-        exif: false,
-        sound: false, // Desactiva el sonido de la cámara
-        pauseAfterCapture: true,
-        mirror: false,
-        ...(Platform.OS === 'android' && {
-          disableShutterSound: true, // Desactiva el sonido del obturador en Android
-          skipProcessing: false,
-        }),
-      };
 
       if (!cameraRef.current) {
         throw new Error("Cámara no inicializada");
       }
 
-      const photo = await cameraRef.current.takePictureAsync(photoConfig);
-      return photo;
+      const video = await cameraRef.current.recordAsync({
+        maxDuration: 5,
+        quality: '1080p',
+      });
+
+      return video;
     } catch (error) {
-      console.log("Error en captura silenciosa:", error);
+      console.log("Error en captura de video:", error);
       throw error;
     } finally {
       await restoreSystemAudio();
@@ -109,7 +101,7 @@ const MiIdentidad = () => {
   // FUNCIONALIDAD PRINCIPAL
   // ================================================================
   const showErrorAlert = (message) => {
-    if (qrData) return; // No mostrar alertas si ya se generó el QR
+    if (qrData) return;
 
     Alert.alert(
       "Error de verificación",
@@ -175,6 +167,25 @@ const MiIdentidad = () => {
     }
   };
 
+  const extractFramesFromVideo = async (videoUri) => {
+    const frames = [];
+    try {
+      for (let time = 1; time <= 5; time++) {
+        const { uri } = await VideoThumbnails.getThumbnailAsync(videoUri, {
+          time: time * 1000,
+          quality: 0.8
+        });
+        const base64 = await FileSystem.readAsStringAsync(uri, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+        frames.push(base64);
+      }
+    } catch (error) {
+      console.error("Error extrayendo frames:", error);
+    }
+    return frames;
+  };
+
   const startVerification = async () => {
     if (!cameraRef.current || isProcessing) return;
 
@@ -183,50 +194,62 @@ const MiIdentidad = () => {
     setShowBiometricAnimation(false);
     setShowCircleAnimation(true);
 
-    validationInterval.current = setInterval(async () => {
-      if (!isProcessing && !qrData && isMounted.current) {
-        try {
-          console.log(`[3/5] 📸 Intento #${validationAttempts + 1}`);
-          setIsProcessing(true);
+    try {
+      setIsProcessing(true);
 
-          const photo = await captureSilentPhoto();
-          console.log("[3/5] ✅ Foto capturada:", photo.uri.substring(0, 30) + '...');
-          setValidationAttempts(prev => prev + 1);
+      console.log("[3/5] 🎥 Grabando video...");
+      const video = await captureVideo();
+      console.log("[3/5] ✅ Video grabado:", video.uri);
 
-          const success = await processImageSilently(photo.base64);
-          if (success) {
-            handleVerificationSuccess();
-            clearInterval(validationInterval.current);
-          } else {
-            showErrorAlert("Enfoque mejor su rostro");
-          }
+      console.log("[4/5] 🖼️ Extrayendo frames...");
+      const frames = await extractFramesFromVideo(video.uri);
+      if (frames.length === 0) throw new Error("No se pudieron extraer frames");
 
-        } catch (error) {
-          console.log("[4/5] ⚠️ Error en captura:", error.message);
-          showErrorAlert("Error al capturar imagen");
-        } finally {
-          setIsProcessing(false);
+      let verificationSuccess = false;
+      let validFrame = null;
+
+      // Primera pasada: Detección de rostro
+      for (const frame of frames) {
+        console.log("[4/5] 🔍 Verificando rostro...");
+        const faceDetection = await checkFace(frame);
+        if (faceDetection.success) {
+          validFrame = frame;
+          break;
         }
       }
-    }, 5000);
-  };
 
-  const processImageSilently = async (base64Image) => {
-    try {
-      console.log("[4/5] 🔍 Procesando imagen...");
+      if (!validFrame) {
+        throw new Error("No se encontró un frame válido con rostro detectado");
+      }
 
-      const hasFace = await checkFace(base64Image);
-      if (!hasFace) return false;
+      console.log("[4/5] ✅ Frame válido encontrado");
 
-      const livenessResult = await checkLiveness(base64Image);
-      if (livenessResult.result !== "real") return false;
+      // Segunda pasada: Vivacidad y biometría con el frame válido
+      console.log("[4/5] 🔍 Verificando vivacidad...");
+      const livenessResult = await checkLiveness(validFrame);
+      if (livenessResult.result !== "real") {
+        throw new Error("Prueba de vivacidad fallida");
+      }
 
-      const biometricResult = await verifyBiometrics(base64Image);
-      return biometricResult.match;
+      console.log("[4/5] 🔍 Verificando biometría...");
+      const biometricResult = await verifyBiometrics(validFrame);
+      if (!biometricResult.match) {
+        throw new Error("Verificación biométrica fallida");
+      }
 
+      verificationSuccess = true;
+
+      if (verificationSuccess) {
+        handleVerificationSuccess();
+      } else {
+        showErrorAlert("No se pudo verificar en ningún frame");
+      }
     } catch (error) {
-      console.log("[4/5] ⚠️ Error en procesamiento:", error);
-      return false;
+      console.log("[4/5] ⚠️ Error en verificación:", error.message);
+      showErrorAlert(error.message);
+    } finally {
+      setIsProcessing(false);
+      setShowCircleAnimation(false);
     }
   };
 
@@ -249,10 +272,14 @@ const MiIdentidad = () => {
       });
 
       const result = await response.json();
-      return Array.isArray(result) && result.length > 0;
+      console.log(result)
+      return {
+        success: Array.isArray(result) && result.length > 0,
+        data: result
+      };
     } catch (error) {
       console.log("❌ Error en detección de rostro:", error);
-      return false;
+      return { success: false };
     }
   };
 
@@ -267,13 +294,24 @@ const MiIdentidad = () => {
 
       const response = await fetch('https://api.luxand.cloud/photo/liveness/v2', {
         method: 'POST',
-        headers: { 'token': 'ad37885a36ac42fca9f052f1b0487520' },
+        headers: { 
+          'token': 'ad37885a36ac42fca9f052f1b0487520',
+          'Content-Type': 'multipart/form-data'
+        },
         body: formData,
       });
-      return await response.json();
+      console.log(response.json())
+      const clonedResponse = response.clone();
+      
+      if (!response.ok) {
+        const errorData = await clonedResponse.json();
+        throw new Error(`HTTP error! status: ${response.status} - ${JSON.stringify(errorData)}`);
+      }
+
+      return await clonedResponse.json();
     } catch (error) {
-      console.log("❌ Error en vivacidad:", error);
-      return { status: 'error' };
+      console.log("❌ Error en vivacidad:", error.message);
+      return { status: 'error', error: error.message };
     }
   };
 
@@ -289,6 +327,7 @@ const MiIdentidad = () => {
         }),
       });
       const result = await response.json();
+      console.log(result)
       return { match: result.is_same_person };
     } catch (error) {
       console.log("❌ Error en biometría:", error);
@@ -403,6 +442,7 @@ const MiIdentidad = () => {
                 enableTorch={false} // Desactiva el flash
                 pictureSize="3840x2160"
                 useCamera2Api={true}
+                mode="video"
               />
             </View>
 
