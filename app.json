@@ -12,6 +12,11 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "assetBundlePatterns": [
+      "**/*",
+      "./public/img/*",
+      "./public/json/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
@@ -26,11 +31,7 @@
       "package": "com.robinjos.firmaElectronica",
       "permissions": [
         "CAMERA",
-        "RECORD_AUDIO",
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO",
-        "android.permission.SYSTEM_ALERT_WINDOW",
-        "android.permission.FOREGROUND_SERVICE"
+        "RECORD_AUDIO"
       ],
       "softwareKeyboardLayoutMode": "pan"
     },
@@ -47,8 +48,8 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
-          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "cameraPermission": "Permitir acceso a la cámara para verificación biométrica",
+          "microphonePermission": "Permitir acceso al micrófono para grabación de video",
           "recordAudioAndroid": true
         }
       ],
