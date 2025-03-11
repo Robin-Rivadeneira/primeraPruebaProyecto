@@ -155,7 +155,7 @@ const MiIdentidad = () => {
     try {
       console.log("[1/5] 📂 Iniciando carga de imagen...");
       
-      // 1. Cargar asset
+      // 1. Cargar asset 
       const asset = Asset.fromModule(require('../public/img/prueba2.jpeg'));
       console.log("Asset info:", JSON.stringify(asset, null, 2));
   
