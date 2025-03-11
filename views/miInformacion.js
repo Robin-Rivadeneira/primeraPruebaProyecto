@@ -6,8 +6,6 @@ import Lottie from 'lottie-react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
-import { Asset } from 'expo-asset';
-import { Audio } from 'expo-av';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 
 // Componentes SVG
@@ -37,48 +35,10 @@ const MiIdentidad = () => {
   const [isVerificationActive, setIsVerificationActive] = useState(false);
 
   // ================================================================
-  // MÉTODOS PARA SILENCIO ABSOLUTO
-  // ================================================================
-  const silenceSystemCompletely = async () => {
-    try {
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-        playsInSilentModeIOS: true,
-        shouldDuckAndroid: true,
-        volume: 0,
-      });
-
-      if (Platform.OS === 'android') {
-        await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'sounds/', { intermediates: true });
-        await FileSystem.writeAsStringAsync(
-          FileSystem.documentDirectory + 'sounds/silent.mp3',
-          'dummy',
-          { encoding: FileSystem.EncodingType.UTF8 }
-        );
-      }
-
-      await new Promise(resolve => setTimeout(resolve, 50));
-    } catch (error) {
-      console.log("Error en configuración de silencio:", error);
-    }
-  };
-
-  const restoreSystemAudio = async () => {
-    await Audio.setAudioModeAsync({
-      allowsRecordingIOS: false,
-      playsInSilentModeIOS: false,
-      shouldDuckAndroid: false,
-      volume: 1,
-    });
-  };
-
-  // ================================================================
   // CAPTURA DE VIDEO
   // ================================================================
   const captureVideo = async () => {
     try {
-      await silenceSystemCompletely();
-
       if (!cameraRef.current) {
         throw new Error("Cámara no inicializada");
       }
@@ -92,8 +52,6 @@ const MiIdentidad = () => {
     } catch (error) {
       console.log("Error en captura de video:", error);
       throw error;
-    } finally {
-      await restoreSystemAudio();
     }
   };
 
@@ -128,7 +86,6 @@ const MiIdentidad = () => {
   useEffect(() => {
     const initializeComponent = async () => {
       console.log("[1/5] 🚀 Inicializando componente");
-      await silenceSystemCompletely();
       await loadReferenceImage();
     };
 
@@ -137,7 +94,6 @@ const MiIdentidad = () => {
     return () => {
       isMounted.current = false;
       clearInterval(validationInterval.current);
-      restoreSystemAudio();
       console.log("[1/5] 🚀 Componente desmontado");
     };
   }, []);
@@ -151,39 +107,19 @@ const MiIdentidad = () => {
     }
   }, [qrData]);
 
+  // Cargar la imagen de referencia como Base64
   const loadReferenceImage = async () => {
     try {
-      console.log("[1/5] 📂 Iniciando carga de imagen...");
-      
-      // 1. Cargar asset 
-      const asset = Asset.fromModule(require('../public/img/prueba2.jpeg'));
-      console.log("Asset info:", JSON.stringify(asset, null, 2));
-  
-      // 2. Forzar descarga si es necesario
-      if (!asset.localUri) {
-        console.log("🔁 Descargando asset...");
-        await asset.downloadAsync();
-      }
-  
-      // 3. Verificar existencia del archivo
-      const fileInfo = await FileSystem.getInfoAsync(asset.localUri);
-      console.log("📄 Info archivo:", fileInfo);
-      
-      if (!fileInfo.exists) {
-        throw new Error(`Archivo no encontrado: ${asset.localUri}`);
-      }
-  
-      // 4. Leer como Base64
+
+      const asset = Asset.fromModule(require('../public/img/imagenPrueba1.png'));
+      await asset.downloadAsync();
       const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
         encoding: FileSystem.EncodingType.Base64,
       });
-      
-      console.log("✅ Base64 length:", base64?.length);
       setImageRefBase64(base64);
-  
+
     } catch (error) {
-      console.error('❌ Error completo:', error);
-      showErrorAlert(`Fallo crítico: ${error.message}`);
+      console.error('Error cargando imagen:', error);
     }
   };
 
