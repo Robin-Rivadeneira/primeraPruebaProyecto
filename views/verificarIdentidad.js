@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   cameraContainer: {
     width: '60%',
     aspectRatio: 1,
-    borderRadius: 100,
+    borderRadius: 1000,
     overflow: 'hidden',
     marginVertical: 20,
     alignSelf: 'center',
@@ -183,14 +183,16 @@ const styles = StyleSheet.create({
     zIndex: 1, // Asegura que esté sobre la cámara
   },
   animation: {
-    width: '80%', // Tamaño de la animación
-    height: '80%',
+    width: '100%', // Tamaño de la animación
+    height: '90%',
+    position:'absolute'
   },
   scanningText: {
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 20, // Espacio entre la animación y el texto
+    position:'absolute',
+    bottom: 20, // Espacio entre la animación y el texto
   },
   cardContainer: {
     width: '90%',

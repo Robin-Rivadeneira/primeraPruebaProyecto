@@ -55,13 +55,13 @@ const RegistroBiometrico = () => {
                 base64: false,
                 skipProcessing: true
             });
-            
+
             setPhotoUri(photo.uri);
             const base64 = await FileSystem.readAsStringAsync(photo.uri, {
                 encoding: FileSystem.EncodingType.Base64,
             });
             setPhotoBase64(base64);
-            
+
         } catch (error) {
             Alert.alert('Error', 'Error al capturar foto');
         }
@@ -102,7 +102,7 @@ const RegistroBiometrico = () => {
                 style={registroEsrilo.container}
             >
                 <ScrollView contentContainerStyle={registroEsrilo.container}>
-                    
+
                     {/* Contenedor de cámara con marco oscuro */}
                     <View style={styles.cameraContainer}>
                         {!photoUri ? (
@@ -110,6 +110,8 @@ const RegistroBiometrico = () => {
                                 ref={cameraRef}
                                 style={StyleSheet.absoluteFill}
                                 facing="front"
+                                autoFocus="on"
+                                focusMode="continuous"
                             >
                                 <View style={styles.overlay}>
                                     <View style={styles.frame}>
