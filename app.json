@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "firmaElectronica",
-    "slug": "firmaElectronica",
+    "name": "firmaelectronica",
+    "slug": "firmaelectronica",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./public/img/goIdentity.png",
@@ -27,7 +27,7 @@
         "foregroundImage": "./public/img/goIdentity.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.robinjos.firmaElectronica",
+      "package": "com.robinjos.firmaelectronica",
       "permissions": [
         "CAMERA",
         "RECORD_AUDIO",
@@ -41,9 +41,6 @@
     "web": {
       "favicon": "./public/img/goIdentity.png"
     },
-    "extra": {
-    
-    },
     "owner": "robinjos",
     "plugins": [
       [
@@ -55,6 +52,11 @@
         }
       ],
       "expo-asset"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0b1e5ea3-a32e-47c1-ba65-a99d3c7296d1"
+      }
+    }
   }
 }
