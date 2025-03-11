@@ -4,7 +4,6 @@ import app from "../public/css/app";
 import { LinearGradient } from 'expo-linear-gradient';
 import GoIdentitySVG from "../public/img/goIdentity.svg";
 import InstitutoSVG from "../public/img/instituto.svg";
-import HuellaSVG from "../public/img/huella.svg";
 
 export default function inicio({ navigation }) {
   return (
