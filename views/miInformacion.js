@@ -8,6 +8,7 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import { Asset } from 'expo-asset';
+import { Audio } from 'expo-av';
 
 // Componentes SVG
 import GoIdentitySVG from "../public/img/goIdentity.svg";
@@ -34,6 +35,17 @@ const MiIdentidad = () => {
   const isMounted = useRef(true);
   const validationInterval = useRef(null);
   const [isVerificationActive, setIsVerificationActive] = useState(false);
+  const [microphonePermission, requestMicrophonePermission] = Audio.usePermissions();
+
+  const checkPermissions = async () => {
+    // Verificar permisos de cámara
+    const cameraStatus = await requestPermission();
+    
+    // Verificar permisos de micrófono
+    const microphoneStatus = await requestMicrophonePermission();
+    
+    return cameraStatus.granted && microphoneStatus.granted;
+  };
 
   // ================================================================
   // CAPTURA DE VIDEO
@@ -87,6 +99,17 @@ const MiIdentidad = () => {
   useEffect(() => {
     const initializeComponent = async () => {
       console.log("[1/5] 🚀 Inicializando componente");
+      const hasPermissions = await checkPermissions();
+      
+      if (!hasPermissions) {
+        Alert.alert(
+          "Permisos requeridos",
+          "Necesitamos acceso a la cámara y micrófono para continuar.",
+          [{ text: "OK" }]
+        );
+        return;
+      }
+      
       await loadReferenceImage();
     };
 
@@ -310,11 +333,21 @@ const MiIdentidad = () => {
 
   if (!permission) return <View />;
 
-  if (!permission.granted) {
+  if (!permission?.granted || !microphonePermission?.granted) {
     return (
       <View style={miIdentidadEstilos.container}>
-        <Text style={miIdentidadEstilos.message}>Permisos de cámara requeridos</Text>
-        <Button title="Otorgar permisos" onPress={requestPermission} />
+        <Text style={miIdentidadEstilos.message}>
+          Necesitamos acceso a:
+        </Text>
+        <Text style={miIdentidadEstilos.permissionItem}>🎥 Cámara</Text>
+        <Text style={miIdentidadEstilos.permissionItem}>🎤 Micrófono</Text>
+        <Button 
+          title="Otorgar permisos" 
+          onPress={() => {
+            requestPermission();
+            requestMicrophonePermission();
+          }} 
+        />
       </View>
     );
   }
