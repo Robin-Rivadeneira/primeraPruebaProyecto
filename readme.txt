@@ -1,0 +1,16 @@
+assets/
+    css/
+    img/
+    json/
+src/
+    components/
+    screens/
+    services/
+.gitignore
+App.js
+app.json
+eas.json
+index.js
+metro.config.js
+package-lock
+package.json
