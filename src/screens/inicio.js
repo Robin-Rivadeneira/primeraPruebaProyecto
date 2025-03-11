@@ -1,9 +1,9 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import app from "../public/css/app";
+import app from "../../assets/css/app";
 import { LinearGradient } from 'expo-linear-gradient';
-import GoIdentitySVG from "../public/img/goIdentity.svg";
-import InstitutoSVG from "../public/img/instituto.svg";
+import GoIdentitySVG from "../assets/img/goIdentity.svg";
+import InstitutoSVG from "../assets/img/instituto.svg";
 
 export default function inicio({ navigation }) {
   return (

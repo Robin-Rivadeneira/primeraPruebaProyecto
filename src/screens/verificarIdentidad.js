@@ -3,14 +3,14 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-na
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { LinearGradient } from 'expo-linear-gradient';
 import Lottie from 'lottie-react-native'; // Importa Lottie para la animación
-import GoIdentitySVG from "../public/img/goIdentity.svg";
-import InstitutoSVG from "../public/img/instituto.svg";
-import UsuarioSvg from "../public/img/usuarios.svg";
-import LogoEjercito from "../public/img/ejercito.svg";
-import FondoQrSvg from "../public/img/fondoQr.svg";
-import menuEstilos from '../public/css/menu';
-import identidadInicialEstilos from '../public/css/identidad';
-import pasarelaEsitlos from '../public/css/pasarela';
+import GoIdentitySVG from "../assets/img/goIdentity.svg";
+import InstitutoSVG from "../assets/img/instituto.svg";
+import UsuarioSvg from "../assets/img/usuarios.svg";
+import LogoEjercito from "../assets/img/ejercito.svg";
+import FondoQrSvg from "../assets/img/fondoQr.svg";
+import menuEstilos from '../../assets/css/menu';
+import identidadInicialEstilos from '../../assets/css/identidad';
+import pasarelaEsitlos from '../../assets/css/pasarela';
 
 const QRScanner = () => {
   const [qrData, setQrData] = useState(null);
@@ -81,7 +81,7 @@ const QRScanner = () => {
           {/* Animación de escaneo de QR */}
           <View style={styles.animationContainer}>
             <Lottie
-              source={require('../public/json/qrAnimacion.json')} // Ruta de la animación
+              source={require('../../assets/json/qrAnimacion.json')} // Ruta de la animación
               autoPlay
               loop
               style={styles.animation}
@@ -100,7 +100,7 @@ const QRScanner = () => {
 
             <View style={menuEstilos.cardContent}>
               <View style={menuEstilos.cardImagen}>
-                <Image source={require('../public/img/imagenPrueba.jpg')} style={{
+                <Image source={require('../assets/img/imagenPrueba.jpg')} style={{
                   width: '100%',
                   height: '100%',
                   borderRadius: 12,

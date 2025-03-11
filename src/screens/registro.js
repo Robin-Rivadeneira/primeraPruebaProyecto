@@ -5,7 +5,7 @@ import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import registroEsrilo from '../public/css/registro';
+import registroEsrilo from '../../assets/css/registro';
 
 const RegistroBiometrico = () => {
     const [photoUri, setPhotoUri] = useState(null);
@@ -24,7 +24,7 @@ const RegistroBiometrico = () => {
     // Cargar imagen de referencia
     const loadReferenceImage = async () => {
         try {
-            const asset = Asset.fromModule(require('../public/img/imagenPrueba1.png'));
+            const asset = Asset.fromModule(require('../assets/img/imagenPrueba1.png'));
             await asset.downloadAsync();
             const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
                 encoding: FileSystem.EncodingType.Base64,

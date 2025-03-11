@@ -11,9 +11,9 @@ import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 
 // Importa tus SVG
-import PrimerImagenCarucel from "../public/img/primerImagenCarucel.svg";
-import RegaloCarucel from "../public/img/regaloCarucel.svg";
-import InvitaAmigos from "../public/img/ivitaAmigos.svg";
+import PrimerImagenCarucel from "../assets/img/primerImagenCarucel.svg";
+import RegaloCarucel from "../assets/img/regaloCarucel.svg";
+import InvitaAmigos from "../assets/img/ivitaAmigos.svg";
 
 const { width: screenWidth } = Dimensions.get("window");
 

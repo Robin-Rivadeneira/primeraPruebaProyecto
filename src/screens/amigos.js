@@ -3,12 +3,12 @@ import { View, Text, FlatList, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
 // Importa los SVGs
-import Avatar1 from "../public/img/usuarios.svg";
-import Avatar2 from "../public/img/usuarios.svg";
-import Avatar3 from "../public/img/usuarios.svg";
-import amigosEstilos from "../public/css/amigos";
-import identidadInicialEstilos from '../public/css/identidad';
-import GoIdentitySVG from "../public/img/goIdentity.svg";
+import Avatar1 from "../../assets/img/usuarios.svg";
+import Avatar2 from "../../assets/img/usuarios.svg";
+import Avatar3 from "../../assets/img/usuarios.svg";
+import amigosEstilos from "../../../assets/css/amigos";
+import identidadInicialEstilos from '../../assets/css/identidad';
+import GoIdentitySVG from "../../assets/img/goIdentity.svg";
 // Datos de amigos con SVG
 const amigosData = [
   { id: "1", nombre: "Juan Pérez", desde: "01/01/2025", hasta: "01/01/2026", SvgIcon: Avatar1 },

@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import VerificarSbg from "../public/img/Verificar.svg";
-import MostrarSbg from "../public/img/generar.svg";
-import GoIdentitySVG from "../public/img/goIdentity.svg";
-import identidadInicialEstilos from '../public/css/identidad';
+import VerificarSbg from "../assets/img/Verificar.svg";
+import MostrarSbg from "../assets/img/generar.svg";
+import GoIdentitySVG from "../assets/img/goIdentity.svg";
+import identidadInicialEstilos from '../../assets/css/identidad';
 
 export default function IdentidadInicial() {
     const navigation = useNavigation();

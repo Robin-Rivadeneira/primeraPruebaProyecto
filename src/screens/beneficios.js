@@ -3,12 +3,12 @@ import { View, Text, FlatList, TouchableOpacity, ScrollView, Dimensions } from "
 import { LinearGradient } from "expo-linear-gradient";
 import QRCode from "react-native-qrcode-svg";
 import { useRoute } from "@react-navigation/native";
-import beneficiosEstilos from "../public/css/beneficios";
-import DosporUnoSvg from "../public/img/dosporuno.svg";
-import QuincePorciento from "../public/img/quncieporcentaje.svg";
-import SmartFitSvg from "../public/img/smartFit.svg";
-import identidadInicialEstilos from '../public/css/identidad';
-import GoIdentitySVG from "../public/img/goIdentity.svg";
+import beneficiosEstilos from "../../assets/css/beneficios";
+import DosporUnoSvg from "../assets/img/dosporuno.svg";
+import QuincePorciento from "../assets/img/quncieporcentaje.svg";
+import SmartFitSvg from "../assets/img/smartFit.svg";
+import identidadInicialEstilos from '../../assets/css/identidad';
+import GoIdentitySVG from "../assets/img/goIdentity.svg";
 
 const beneficiosData = {
   Multicines: [

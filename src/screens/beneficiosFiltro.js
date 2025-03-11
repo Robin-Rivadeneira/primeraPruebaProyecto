@@ -5,14 +5,14 @@ import { RadioButton } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
 // Importa los SVG como componentes de React
-import MultiCineSvg from "../public/img/multicines.svg";
-import SmartFitSvg from "../public/img/smartFit.svg";
-import EnextSvg from "../public/img/enext.svg";
-import SaludSaSvg from "../public/img/saludSa.svg";
+import MultiCineSvg from "../assets/img/multicines.svg";
+import SmartFitSvg from "../assets/img/smartFit.svg";
+import EnextSvg from "../assets/img/enext.svg";
+import SaludSaSvg from "../assets/img/saludSa.svg";
 
-import filtroBeneficiosEstilos from "../public/css/filtroBeneficios";
-import identidadInicialEstilos from '../public/css/identidad';
-import GoIdentitySVG from "../public/img/goIdentity.svg";
+import filtroBeneficiosEstilos from "../../assets/css/filtroBeneficios";
+import identidadInicialEstilos from '../../assets/css/identidad';
+import GoIdentitySVG from "../assets/img/goIdentity.svg";
 // Datos de beneficios con sus respectivos iconos
 const beneficiosData = {
   Quito: [

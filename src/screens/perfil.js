@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
-import UsuarioSvg from "../public/img/usuarios.svg";
-import GoIdentitySVG from "../public/img/goIdentity.svg";
-import perfil from '../public/css/perfil';
+import UsuarioSvg from "../assets/img/usuarios.svg";
+import GoIdentitySVG from "../assets/img/goIdentity.svg";
+import perfil from '../../assets/css/perfil';
 
 export default function Perfil() {
   const [isEditing, setIsEditing] = useState(false);

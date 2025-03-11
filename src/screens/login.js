@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import loginEstilos from '../public/css/login';
-import GoIdentitySVG from "../public/img/goIdentity.svg";
+import loginEstilos from '../../assets/css/login';
+import GoIdentitySVG from "../assets/img/goIdentity.svg";
 
 const Login = () => {
     const [isChecked, setIsChecked] = useState(false);

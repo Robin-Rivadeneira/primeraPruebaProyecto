@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { WebView } from "react-native-webview"; // Importamos WebView
-import identidadInicialEstilos from '../public/css/identidad';
-import VerificarSbg from "../public/img/serviciosSupervivencia.svg";
-import MostrarSbg from "../public/img/firmarCredito.svg";
-import GoIdentitySVG from "../public/img/goIdentity.svg";
-import menuEstilos from '../public/css/menu';
-import InstitutoSVG from "../public/img/instituto.svg";
+import identidadInicialEstilos from '../../assets/css/identidad';
+import VerificarSbg from "../assets/img/serviciosSupervivencia.svg";
+import MostrarSbg from "../assets/img/firmarCredito.svg";
+import GoIdentitySVG from "../assets/img/goIdentity.svg";
+import menuEstilos from '../../assets/css/menu';
+import InstitutoSVG from "../assets/img/instituto.svg";
 
 const ServiciosScreen = () => {
   const [currentUrl, setCurrentUrl] = useState(null); // Estado para controlar la URL
@@ -47,7 +47,7 @@ const ServiciosScreen = () => {
       <Text style={identidadInicialEstilos.title}>Mis Servicios</Text>
       <Text style={identidadInicialEstilos.parrafo}>ISSFA</Text>
 
-      <TouchableOpacity style={identidadInicialEstilos.button} onPress={() => openInApp('https://enext.online/issfa_creditos/public/index.php?s=JnVzPXByb2Nlc29zRXF1aWZheEBnbWFpbC5jb20mcGFzcz1hVVFMSkgmaWRUcmFtaXRlPTE2OTg0')}>
+      <TouchableOpacity style={identidadInicialEstilos.button} onPress={() => openInApp('https://enext.online/issfa_creditos/assets/index.php?s=JnVzPXByb2Nlc29zRXF1aWZheEBnbWFpbC5jb20mcGFzcz1hVVFMSkgmaWRUcmFtaXRlPTE2OTg0')}>
         <View style={identidadInicialEstilos.card}>
           <View style={identidadInicialEstilos.cardInfo}>
             <View style={menuEstilos.imagenCard}>
@@ -61,7 +61,7 @@ const ServiciosScreen = () => {
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity style={identidadInicialEstilos.buttons} onPress={() => openInApp('https://enext.online/issfa_supervivencia/public/index.php?s=JnVzPWhjYXJyZXJhQGVuZXh0LmVjJnBhc3M9WTBHOUE2JmlkVHJhbWl0ZT0zNTAy')}>
+      <TouchableOpacity style={identidadInicialEstilos.buttons} onPress={() => openInApp('https://enext.online/issfa_supervivencia/assets/index.php?s=JnVzPWhjYXJyZXJhQGVuZXh0LmVjJnBhc3M9WTBHOUE2JmlkVHJhbWl0ZT0zNTAy')}>
         <View style={identidadInicialEstilos.card}>
           <View style={identidadInicialEstilos.cardInfo}>
             <View style={menuEstilos.imagenCard}>

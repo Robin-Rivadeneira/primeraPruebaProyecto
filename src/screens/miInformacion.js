@@ -11,14 +11,14 @@ import { Asset } from 'expo-asset';
 import { Audio } from 'expo-av';
 
 // Componentes SVG
-import GoIdentitySVG from "../public/img/goIdentity.svg";
-import InstitutoSVG from "../public/img/instituto.svg";
-import LogoEjercito from "../public/img/ejercito.svg";
+import GoIdentitySVG from "../assets/img/goIdentity.svg";
+import InstitutoSVG from "../assets/img/instituto.svg";
+import LogoEjercito from "../assets/img/ejercito.svg";
 
 // Estilos
-import menuEstilos from '../public/css/menu';
-import miIdentidadEstilos from '../public/css/miIdentidad';
-import identidadInicialEstilos from '../public/css/identidad';
+import menuEstilos from '../../assets/css/menu';
+import miIdentidadEstilos from '../../assets/css/miIdentidad';
+import identidadInicialEstilos from '../../assets/css/identidad';
 
 const { width, height } = Dimensions.get('window');
 
@@ -135,7 +135,7 @@ const MiIdentidad = () => {
   const loadReferenceImage = async () => {
     try {
 
-      const asset = Asset.fromModule(require('../public/img/imagenPrueba1.png'));
+      const asset = Asset.fromModule(require('../assets/img/imagenPrueba1.png'));
       await asset.downloadAsync();
       const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
         encoding: FileSystem.EncodingType.Base64,
@@ -370,7 +370,7 @@ const MiIdentidad = () => {
         <View style={menuEstilos.cardContent}>
           <View style={menuEstilos.cardImagen}>
             <Image 
-              source={require('../public/img/imagenPrueba.jpg')} 
+              source={require('../assets/img/imagenPrueba.jpg')} 
               style={styles.cardImage}
               resizeMode="contain" 
             />
@@ -406,7 +406,7 @@ const MiIdentidad = () => {
               {showBiometricAnimation && (
                 <View style={styles.borderAnimationContainer}>
                   <Lottie
-                    source={require('../public/json/biometrica.json')}
+                    source={require('../../assets/json/biometrica.json')}
                     autoPlay
                     loop
                     style={styles.borderAnimation}
@@ -417,7 +417,7 @@ const MiIdentidad = () => {
               {showCircleAnimation && (
                 <View style={styles.borderAnimationContainer}>
                   <Lottie
-                    source={require('../public/json/circuloAnimation.json')}
+                    source={require('../../assets/json/circuloAnimation.json')}
                     autoPlay
                     loop
                     style={styles.borderAnimation}

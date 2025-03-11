@@ -2,13 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { LinearGradient } from 'expo-linear-gradient';
-import GoIdentitySVG from "../public/img/goIdentity.svg";
-import InstitutoSVG from "../public/img/instituto.svg";
-import UsuarioSvg from "../public/img/usuarios.svg";
-import LogoEjercito from "../public/img/ejercito.svg";
-import FondoQrSvg from "../public/img/fondoQr.svg";
-import menuEstilos from '../public/css/menu';
-import identidadInicialEstilos from '../public/css/identidad';
+import GoIdentitySVG from "../assets/img/goIdentity.svg";
+import InstitutoSVG from "../assets/img/instituto.svg";
+import UsuarioSvg from "../assets/img/usuarios.svg";
+import LogoEjercito from "../assets/img/ejercito.svg";
+import FondoQrSvg from "../assets/img/fondoQr.svg";
+import menuEstilos from '../../assets/css/menu';
+import identidadInicialEstilos from '../../assets/css/identidad';
 
 const Ingresar = () => {
     const [permission, requestPermission] = useCameraPermissions();
