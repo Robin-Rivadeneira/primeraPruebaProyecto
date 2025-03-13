@@ -11,6 +11,7 @@ import FondoQrSvg from "../assets/img/fondoQr.svg";
 import menuEstilos from '../../assets/css/menu';
 import identidadInicialEstilos from '../../assets/css/identidad';
 import pasarelaEsitlos from '../../assets/css/pasarela';
+import BerficarEstilos from '../../assets/css/verificar';
 
 const QRScanner = () => {
   const [qrData, setQrData] = useState(null);
@@ -30,7 +31,7 @@ const QRScanner = () => {
       Alert.alert(
         "QR Escaneado",
         `Datos: ${data}`,
-        [{ text: "OK", onPress: () => {} }]
+        [{ text: "OK", onPress: () => { } }]
       );
     }
   };
@@ -51,23 +52,23 @@ const QRScanner = () => {
         <GoIdentitySVG style={identidadInicialEstilos.logo} />
       </View>
 
-      <Text style={styles.title}>Verificar Identidad</Text>
+      <Text style={BerficarEstilos.title}>Verificar Identidad</Text>
 
       {!isCameraVisible && (
-        <TouchableOpacity style={styles.verifyButton} onPress={handleVerifyPress}>
+        <TouchableOpacity style={BerficarEstilos.verifyButton} onPress={handleVerifyPress}>
           <LinearGradient
             colors={['#e5ecfd', '#bdccf4']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={pasarelaEsitlos.gradientButton}
           >
-            <Text style={styles.verifyButtonText}>Verificar</Text>
+            <Text style={BerficarEstilos.verifyButtonText}>Verificar</Text>
           </LinearGradient>
         </TouchableOpacity>
       )}
 
       {isCameraVisible && (
-        <View style={styles.cameraContainer}>
+        <View style={BerficarEstilos.cameraContainer}>
           <CameraView
             ref={cameraRef}
             style={StyleSheet.absoluteFill}
@@ -79,14 +80,14 @@ const QRScanner = () => {
           />
 
           {/* Animación de escaneo de QR */}
-          <View style={styles.animationContainer}>
+          <View style={BerficarEstilos.animationContainer}>
             <Lottie
               source={require('../../assets/json/qrAnimacion.json')} // Ruta de la animación
               autoPlay
               loop
-              style={styles.animation}
+              style={BerficarEstilos.animation}
             />
-            <Text style={styles.scanningText}>Escaneando...</Text>
+            <Text style={BerficarEstilos.scanningText}>Escaneando...</Text>
           </View>
         </View>
       )}
@@ -136,70 +137,5 @@ const QRScanner = () => {
     </LinearGradient>
   );
 };
-
-const styles = StyleSheet.create({
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#4A6289',
-    textAlign: 'center',
-    marginVertical: 20,
-  },
-  verifyButton: {
-    padding: 15,
-    borderRadius: 10,
-    alignSelf: 'center',
-    marginVertical: 20,
-    width: '80%',
-  },
-  verifyButtonText: {
-    color: '#5b749e',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  cameraContainer: {
-    width: '60%',
-    aspectRatio: 1,
-    borderRadius: 1000,
-    overflow: 'hidden',
-    marginVertical: 20,
-    alignSelf: 'center',
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 15,
-    elevation: 10,
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.3)',
-    position: 'relative', // Para posicionar la animación y el texto
-  },
-  animationContainer: {
-    ...StyleSheet.absoluteFillObject, // Ocupa todo el espacio del contenedor de la cámara
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1, // Asegura que esté sobre la cámara
-  },
-  animation: {
-    width: '100%', // Tamaño de la animación
-    height: '90%',
-    position:'absolute'
-  },
-  scanningText: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-    position:'absolute',
-    bottom: 20, // Espacio entre la animación y el texto
-  },
-  cardContainer: {
-    width: '90%',
-    height: '100%',
-    alignSelf: 'center',
-    marginTop: 20,
-  },
-});
 
 export default QRScanner;

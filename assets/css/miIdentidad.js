@@ -56,6 +56,76 @@ const miIdentidadEstilos = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center'
     },
+
+    cameraSection: {
+        width: '70%',
+        marginLeft: '15%',
+        marginVertical: 20,
+      },
+      cameraContainer: {
+        height: height * 0.3,
+        borderRadius: 1000,
+        overflow: 'hidden',
+        position: 'relative',
+        backgroundColor: '#f0f0f0',
+        borderWidth: 3,
+        borderColor: '#2c3e50',
+        elevation: 5,
+      },
+      camera: {
+        flex: 1,
+      },
+      borderAnimationContainer: {
+        ...StyleSheet.absoluteFillObject,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 2,
+      },
+      borderAnimation: {
+        width: '120%',
+        height: '120%',
+      },
+      cardImage: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 12,
+      },
+      startButton: {
+        backgroundColor: '#2c3e50',
+        paddingVertical: 15,
+        borderRadius: 30,
+        elevation: 5,
+        width: '80%',
+        alignSelf: 'center',
+        marginTop: 20,
+      },
+      disabledButton: {
+        backgroundColor: '#6c7c8c',
+        opacity: 0.7,
+      },
+      startButtonText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center',
+      },
+      switchCameraButton: {
+        position: 'absolute',
+        top: 20,
+        right: 10,
+        backgroundColor: '#2c3e50',
+        padding: 10,
+        borderRadius: 1000,
+        elevation: 3,
+      },
+      qrBorder: {
+        borderWidth: 3,
+        borderColor: '#2c3e50',
+        borderRadius: 15,
+        padding: 15,
+        backgroundColor: 'white',
+        elevation: 5,
+      },
 })
 
 export default miIdentidadEstilos

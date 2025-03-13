@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, TextInput, ScrollView } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import * as FileSystem from 'expo-file-system';
-import { Asset } from 'expo-asset';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import registroEsrilo from '../../assets/css/registro';
+
+// Importar lógica de negocio
+import { loadReferenceImage, takePicture, registerUser } from './registroLogic';
 
 const RegistroBiometrico = () => {
     const [photoUri, setPhotoUri] = useState(null);
@@ -21,53 +22,38 @@ const RegistroBiometrico = () => {
     const cameraRef = useRef(null);
     const navigation = useNavigation();
 
-    // Cargar imagen de referencia
-    const loadReferenceImage = async () => {
-        try {
-            const asset = Asset.fromModule(require('../assets/img/imagenPrueba1.png'));
-            await asset.downloadAsync();
-            const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
-                encoding: FileSystem.EncodingType.Base64,
-            });
-            setImageRefBase64(base64);
-        } catch (error) {
-            console.error('Error cargando imagen:', error);
-        }
-    };
-
+    // Cargar imagen de referencia al montar el componente
     useEffect(() => {
-        loadReferenceImage();
+        const loadImage = async () => {
+            try {
+                const base64 = await loadReferenceImage();
+                setImageRefBase64(base64);
+            } catch (error) {
+                Alert.alert('Error', 'No se pudo cargar la imagen de referencia');
+            }
+        };
+        loadImage();
     }, []);
 
-    // Manejar permisos de cámara
+    // Solicitar permisos de cámara
     useEffect(() => {
         if (!permission?.granted) {
             requestPermission();
         }
     }, [permission]);
 
-    // Tomar foto
-    const takePicture = async () => {
-        if (!cameraRef.current) return;
+    // Manejar la captura de foto
+    const handleTakePicture = async () => {
         try {
-            const photo = await cameraRef.current.takePictureAsync({
-                quality: 1,
-                base64: false,
-                skipProcessing: true
-            });
-
-            setPhotoUri(photo.uri);
-            const base64 = await FileSystem.readAsStringAsync(photo.uri, {
-                encoding: FileSystem.EncodingType.Base64,
-            });
+            const { uri, base64 } = await takePicture(cameraRef);
+            setPhotoUri(uri);
             setPhotoBase64(base64);
-
         } catch (error) {
-            Alert.alert('Error', 'Error al capturar foto');
+            Alert.alert('Error', 'No se pudo capturar la foto');
         }
     };
 
-    // Registro
+    // Manejar el registro
     const handleRegister = async () => {
         if (!name || !surname || !idNumber || !fingerCode || !email || !isChecked || !photoBase64 || !imageRefBase64) {
             Alert.alert('Error', 'Complete todos los campos');
@@ -75,20 +61,18 @@ const RegistroBiometrico = () => {
         }
 
         try {
-            const response = await fetch('http://54.189.63.53:9100/biometria_DEMO', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    source_img: imageRefBase64,
-                    target_img: photoBase64,
-                    id: Math.random().toString(36).substr(2, 10),
-                }),
+            await registerUser({
+                imageRefBase64,
+                photoBase64,
+                name,
+                surname,
+                idNumber,
+                fingerCode,
+                email,
             });
-
-            const result = await response.json();
-            response.ok ? navigation.navigate('pasarela') : Alert.alert('Error', result.message);
+            navigation.navigate('pasarela');
         } catch (error) {
-            Alert.alert('Error', 'Error de conexión');
+            Alert.alert('Error', error.message || 'Error en el registro');
         }
     };
 
@@ -102,41 +86,40 @@ const RegistroBiometrico = () => {
                 style={registroEsrilo.container}
             >
                 <ScrollView contentContainerStyle={registroEsrilo.container}>
-
                     {/* Contenedor de cámara con marco oscuro */}
-                    <View style={styles.cameraContainer}>
+                    <View style={registroEsrilo.cameraContainer}>
                         {!photoUri ? (
                             <CameraView
                                 ref={cameraRef}
-                                style={StyleSheet.absoluteFill}
+                                style={registroEsriloheet.absoluteFill}
                                 facing="front"
                                 autoFocus="on"
                                 focusMode="continuous"
                             >
-                                <View style={styles.overlay}>
-                                    <View style={styles.frame}>
-                                        <View style={styles.frameInner}>
-                                            <View style={styles.guideLines} />
+                                <View style={registroEsrilo.overlay}>
+                                    <View style={registroEsrilo.frame}>
+                                        <View style={registroEsrilo.frameInner}>
+                                            <View style={registroEsrilo.guideLines} />
                                         </View>
                                     </View>
                                     <TouchableOpacity
-                                        style={styles.captureButton}
-                                        onPress={takePicture}
+                                        style={registroEsrilo.captureButton}
+                                        onPress={handleTakePicture}
                                     />
                                 </View>
                             </CameraView>
                         ) : (
-                            <Image source={{ uri: photoUri }} style={styles.previewImage} />
+                            <Image source={{ uri: photoUri }} style={registroEsrilo.previewImage} />
                         )}
                     </View>
 
                     {/* Botón para retomar foto */}
                     {photoUri && (
                         <TouchableOpacity
-                            style={styles.retakeButton}
+                            style={registroEsrilo.retakeButton}
                             onPress={() => setPhotoUri(null)}
                         >
-                            <Text style={styles.retakeText}>VOLVER A TOMAR FOTO</Text>
+                            <Text style={registroEsrilo.retakeText}>VOLVER A TOMAR FOTO</Text>
                         </TouchableOpacity>
                     )}
 
@@ -197,28 +180,5 @@ const RegistroBiometrico = () => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    cameraContainer: {
-        width: '50%',
-        aspectRatio: 1,
-        borderRadius: 20,
-        overflow: 'hidden',
-        marginVertical: 20,
-        alignSelf: 'center',
-        // Sombra exterior
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 5,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 15,
-        elevation: 15, // Para Android
-        // Borde
-        borderWidth: 5,
-        borderColor: 'rgba(255,255,255,0.5)'
-    },
-});
 
 export default RegistroBiometrico;

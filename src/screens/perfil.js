@@ -1,62 +1,37 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import * as Location from 'expo-location';
 import UsuarioSvg from "../assets/img/usuarios.svg";
 import GoIdentitySVG from "../assets/img/goIdentity.svg";
 import perfil from '../../assets/css/perfil';
 
+// Importar lógica de negocio
+import { getCurrentAddress, initialUserInfo } from '../services/perfil.Service';
+
 export default function Perfil() {
   const [isEditing, setIsEditing] = useState(false);
-  const [userInfo, setUserInfo] = useState({
-    name: 'DIEGO FRANCISCO',
-    lastName: 'LARREA PAREDES',
-    cedula: '1234567890',
-    direccion: '',
-    celular: '0976289216',
-  });
-  const [tempInfo, setTempInfo] = useState({ ...userInfo });
+  const [userInfo, setUserInfo] = useState(initialUserInfo);
+  const [tempInfo, setTempInfo] = useState({ ...initialUserInfo });
 
   const handleEditToggle = async () => {
     if (isEditing) {
       // Actualizar la información del perfil
       setUserInfo({ ...tempInfo });
+      Alert.alert('Perfil actualizado', 'La información se ha guardado correctamente.');
     } else {
-      // Obtener la dirección actual
-      const address = await getCurrentAddress();
-      if (address) {
-        setTempInfo({ ...tempInfo, direccion: address });
+      // Obtener la dirección actual si está vacía
+      if (!tempInfo.direccion) {
+        try {
+          const address = await getCurrentAddress();
+          if (address) {
+            setTempInfo({ ...tempInfo, direccion: address });
+          }
+        } catch (error) {
+          Alert.alert('Error', error.message);
+        }
       }
     }
     setIsEditing(!isEditing);
-  };
-
-  const getCurrentAddress = async () => {
-    try {
-      // Solicitar permisos
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permiso denegado', 'Es necesario otorgar permisos de ubicación para completar este campo.');
-        return null;
-      }
-
-      // Obtener ubicación actual
-      const location = await Location.getCurrentPositionAsync({});
-      const { latitude, longitude } = location.coords;
-
-      // Obtener dirección desde las coordenadas
-      const reverseGeocode = await Location.reverseGeocodeAsync({ latitude, longitude });
-      if (reverseGeocode.length > 0) {
-        const { street, city, region, postalCode } = reverseGeocode[0];
-        return `${street}, ${city}, ${region}, ${postalCode}`;
-      } else {
-        return 'Dirección no encontrada';
-      }
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Error', 'No se pudo obtener la ubicación actual.');
-      return null;
-    }
   };
 
   return (
@@ -73,7 +48,7 @@ export default function Perfil() {
       </View>
 
       <View style={perfil.profileCard}>
-        <UsuarioSvg style={perfil.profileImage}></UsuarioSvg>
+        <UsuarioSvg style={perfil.profileImage} />
         <View style={perfil.infoContainer}>
           <Text style={perfil.label}>Nombres:</Text>
           {isEditing ? (

@@ -4,30 +4,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { RadioButton } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
-// Importa los SVG como componentes de React
-import MultiCineSvg from "../assets/img/multicines.svg";
-import SmartFitSvg from "../assets/img/smartFit.svg";
-import EnextSvg from "../assets/img/enext.svg";
-import SaludSaSvg from "../assets/img/saludSa.svg";
-
 import filtroBeneficiosEstilos from "../../assets/css/filtroBeneficios";
 import identidadInicialEstilos from '../../assets/css/identidad';
 import GoIdentitySVG from "../assets/img/goIdentity.svg";
-// Datos de beneficios con sus respectivos iconos
-const beneficiosData = {
-  Quito: [
-    { id: "1", nombre: "Multicines", icono: <MultiCineSvg width={100} height={100} />, ciudad: "Quito" },
-    { id: "2", nombre: "SmartFit", icono: <SmartFitSvg width={100} height={100} />, ciudad: "Quito" },
-  ],
-  Guayaquil: [
-    { id: "3", nombre: "Enext", icono: <EnextSvg width={100} height={100} />, ciudad: "Guayaquil" },
-    { id: "4", nombre: "Saludsa", icono: <SaludSaSvg width={100} height={100} />, ciudad: "Guayaquil" },
-  ],
-  Cuenca: [
-    { id: "5", nombre: "Multicines", icono: <MultiCineSvg width={100} height={100} />, ciudad: "Cuenca" },
-    { id: "6", nombre: "Saludsa", icono: <SaludSaSvg width={100} height={100} />, ciudad: "Cuenca" },
-  ],
-};
+
+// Importa los datos de beneficios
+import beneficiosFiltro from "../services/beneficiosFiltro.Service";
 
 const BeneficiosFiltro = () => {
   const [ciudadSeleccionada, setCiudadSeleccionada] = useState("Quito");
@@ -64,7 +46,7 @@ const BeneficiosFiltro = () => {
       </View>
 
       <FlatList
-        data={beneficiosData[ciudadSeleccionada]}
+        data={beneficiosFiltro[ciudadSeleccionada]}
         keyExtractor={(item) => item.id}
         numColumns={2}
         columnWrapperStyle={filtroBeneficiosEstilos.row}

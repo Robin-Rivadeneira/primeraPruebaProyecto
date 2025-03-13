@@ -9,6 +9,7 @@ import LogoEjercito from "../assets/img/ejercito.svg";
 import FondoQrSvg from "../assets/img/fondoQr.svg";
 import menuEstilos from '../../assets/css/menu';
 import identidadInicialEstilos from '../../assets/css/identidad';
+import ingresarEstilos from '../../assets/css/ingresar';
 
 const Ingresar = () => {
     const [permission, requestPermission] = useCameraPermissions();
@@ -36,91 +37,38 @@ const Ingresar = () => {
             {/* Título "Ingresar" */}
             <View style={identidadInicialEstilos.header}>
                 <GoIdentitySVG style={identidadInicialEstilos.logo} />
-                <Text style={styles.title}>Ingresar</Text>
+                <Text style={ingresarEstilos.title}>Ingresar</Text>
             </View>
 
             {/* Iconos de las vistas anteriores */}
-            <View style={styles.iconContainer}>
-                <TouchableOpacity style={styles.iconButton}>
+            <View style={ingresarEstilos.iconContainer}>
+                <TouchableOpacity style={ingresarEstilos.iconButton}>
                     <InstitutoSVG width={50} height={50} />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.iconButton}>
+                <TouchableOpacity style={ingresarEstilos.iconButton}>
                     <UsuarioSvg width={50} height={50} />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.iconButton}>
+                <TouchableOpacity style={ingresarEstilos.iconButton}>
                     <LogoEjercito width={50} height={50} />
                 </TouchableOpacity>
             </View>
 
             {/* Cámara en un círculo */}
-            <View style={styles.cameraCircleContainer}>
+            <View style={ingresarEstilos.cameraCircleContainer}>
                 {isCameraVisible ? (
                     <CameraView
                         ref={cameraRef}
-                        style={styles.camera}
+                        style={ingresarEstilos.camera}
                         facing="back"
                     />
                 ) : (
-                    <TouchableOpacity style={styles.cameraPlaceholder} onPress={handleCameraToggle}>
-                        <Text style={styles.cameraPlaceholderText}>Activar Cámara</Text>
+                    <TouchableOpacity style={ingresarEstilos.cameraPlaceholder} onPress={handleCameraToggle}>
+                        <Text style={ingresarEstilos.cameraPlaceholderText}>Activar Cámara</Text>
                     </TouchableOpacity>
                 )}
             </View>
         </LinearGradient>
     );
 };
-
-const styles = StyleSheet.create({
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#2c3e50',
-        textAlign: 'center',
-        marginVertical: 20,
-    },
-    iconContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginVertical: 20,
-    },
-    iconButton: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    cameraCircleContainer: {
-        width: 200,
-        height: 200,
-        borderRadius: 100,
-        overflow: 'hidden',
-        alignSelf: 'center',
-        marginVertical: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f0f0f0',
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 5,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 15,
-        elevation: 10,
-    },
-    camera: {
-        width: '100%',
-        height: '100%',
-    },
-    cameraPlaceholder: {
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    cameraPlaceholderText: {
-        fontSize: 16,
-        color: '#2c3e50',
-        fontWeight: 'bold',
-    },
-});
 
 export default Ingresar;

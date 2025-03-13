@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, Button, Platform, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Alert, Button, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import QRCode from 'react-native-qrcode-svg';
 import Lottie from 'lottie-react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import * as FileSystem from 'expo-file-system';
-import * as VideoThumbnails from 'expo-video-thumbnails';
-import { Asset } from 'expo-asset';
 import { Audio } from 'expo-av';
 
 // Componentes SVG
@@ -19,6 +16,16 @@ import LogoEjercito from "../assets/img/ejercito.svg";
 import menuEstilos from '../../assets/css/menu';
 import miIdentidadEstilos from '../../assets/css/miIdentidad';
 import identidadInicialEstilos from '../../assets/css/identidad';
+
+// Funciones y datos de configuración
+import {
+  loadReferenceImage,
+  extractFramesFromVideo,
+  checkFace,
+  checkLiveness,
+  verifyBiometrics,
+  QR_DATA,
+} from '../services/miIdentidadConfig.Service.js';
 
 const { width, height } = Dimensions.get('window');
 
@@ -38,29 +45,18 @@ const MiIdentidad = () => {
   const [microphonePermission, requestMicrophonePermission] = Audio.usePermissions();
 
   const checkPermissions = async () => {
-    // Verificar permisos de cámara
     const cameraStatus = await requestPermission();
-    
-    // Verificar permisos de micrófono
     const microphoneStatus = await requestMicrophonePermission();
-    
     return cameraStatus.granted && microphoneStatus.granted;
   };
 
-  // ================================================================
-  // CAPTURA DE VIDEO
-  // ================================================================
   const captureVideo = async () => {
     try {
-      if (!cameraRef.current) {
-        throw new Error("Cámara no inicializada");
-      }
-
+      if (!cameraRef.current) throw new Error("Cámara no inicializada");
       const video = await cameraRef.current.recordAsync({
         maxDuration: 5,
         quality: '1080p',
       });
-
       return video;
     } catch (error) {
       console.log("Error en captura de video:", error);
@@ -68,23 +64,11 @@ const MiIdentidad = () => {
     }
   };
 
-  // ================================================================
-  // FUNCIONALIDAD PRINCIPAL
-  // ================================================================
   const showErrorAlert = (message) => {
     if (qrData) return;
-
-    Alert.alert(
-      "Error de verificación",
-      message,
-      [
-        {
-          text: "Reintentar",
-          onPress: () => restartVerificationProcess(),
-        },
-      ],
-      { cancelable: false }
-    );
+    Alert.alert("Error de verificación", message, [
+      { text: "Reintentar", onPress: () => restartVerificationProcess() },
+    ], { cancelable: false });
   };
 
   const restartVerificationProcess = () => {
@@ -100,17 +84,12 @@ const MiIdentidad = () => {
     const initializeComponent = async () => {
       console.log("[1/5] 🚀 Inicializando componente");
       const hasPermissions = await checkPermissions();
-      
       if (!hasPermissions) {
-        Alert.alert(
-          "Permisos requeridos",
-          "Necesitamos acceso a la cámara y micrófono para continuar.",
-          [{ text: "OK" }]
-        );
+        Alert.alert("Permisos requeridos", "Necesitamos acceso a la cámara y micrófono para continuar.", [{ text: "OK" }]);
         return;
       }
-      
-      await loadReferenceImage();
+      const base64 = await loadReferenceImage();
+      setImageRefBase64(base64);
     };
 
     initializeComponent();
@@ -130,41 +109,6 @@ const MiIdentidad = () => {
       clearInterval(validationInterval.current);
     }
   }, [qrData]);
-
-  // Cargar la imagen de referencia como Base64
-  const loadReferenceImage = async () => {
-    try {
-
-      const asset = Asset.fromModule(require('../assets/img/imagenPrueba1.png'));
-      await asset.downloadAsync();
-      const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      setImageRefBase64(base64);
-
-    } catch (error) {
-      console.error('Error cargando imagen:', error);
-    }
-  };
-
-  const extractFramesFromVideo = async (videoUri) => {
-    const frames = [];
-    try {
-      for (let time = 1; time <= 5; time++) {
-        const { uri } = await VideoThumbnails.getThumbnailAsync(videoUri, {
-          time: time * 1000,
-          quality: 0.8
-        });
-        const base64 = await FileSystem.readAsStringAsync(uri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
-        frames.push(base64);
-      }
-    } catch (error) {
-      console.error("Error extrayendo frames:", error);
-    }
-    return frames;
-  };
 
   const startVerification = async () => {
     if (!cameraRef.current || isProcessing) return;
@@ -188,7 +132,6 @@ const MiIdentidad = () => {
       let verificationSuccess = false;
       let validFrame = null;
 
-      // Primera pasada: Detección de rostro
       for (const frame of frames) {
         console.log("[4/5] 🔍 Verificando rostro...");
         const faceDetection = await checkFace(frame);
@@ -198,32 +141,21 @@ const MiIdentidad = () => {
         }
       }
 
-      if (!validFrame) {
-        throw new Error("No se encontró un frame válido con rostro detectado");
-      }
-
+      if (!validFrame) throw new Error("No se encontró un frame válido con rostro detectado");
       console.log("[4/5] ✅ Frame válido encontrado");
 
-      // Segunda pasada: Vivacidad y biometría con el frame válido
       console.log("[4/5] 🔍 Verificando vivacidad...");
       const livenessResult = await checkLiveness(validFrame);
-      if (livenessResult.result !== "real") {
-        throw new Error("Prueba de vivacidad fallida");
-      }
+      if (livenessResult.result !== "real") throw new Error("Prueba de vivacidad fallida");
 
       console.log("[4/5] 🔍 Verificando biometría...");
-      const biometricResult = await verifyBiometrics(validFrame);
-      if (!biometricResult.match) {
-        throw new Error("Verificación biométrica fallida");
-      }
+      const biometricResult = await verifyBiometrics(imageRefBase64, validFrame);
+      if (!biometricResult.match) throw new Error("Verificación biométrica fallida");
 
       verificationSuccess = true;
 
-      if (verificationSuccess) {
-        handleVerificationSuccess();
-      } else {
-        showErrorAlert("No se pudo verificar en ningún frame");
-      }
+      if (verificationSuccess) handleVerificationSuccess();
+      else showErrorAlert("No se pudo verificar en ningún frame");
     } catch (error) {
       console.log("[4/5] ⚠️ Error en verificación:", error.message);
       showErrorAlert(error.message);
@@ -233,98 +165,11 @@ const MiIdentidad = () => {
     }
   };
 
-  const checkFace = async (base64Image) => {
-    try {
-      const formData = new FormData();
-      formData.append('photo', {
-        uri: `data:image/jpeg;base64,${base64Image}`,
-        name: 'photo.jpg',
-        type: 'image/jpeg',
-      });
-
-      const response = await fetch('https://api.luxand.cloud/photo/detect', {
-        method: 'POST',
-        headers: {
-          'token': 'ad37885a36ac42fca9f052f1b0487520',
-          'Content-Type': 'multipart/form-data',
-        },
-        body: formData,
-      });
-
-      const result = await response.json();
-      console.log(result)
-      return {
-        success: Array.isArray(result) && result.length > 0,
-        data: result
-      };
-    } catch (error) {
-      console.log("❌ Error en detección de rostro:", error);
-      return { success: false };
-    }
-  };
-
-  const checkLiveness = async (base64Image) => {
-    try {
-      const formData = new FormData();
-      formData.append('photo', {
-        uri: `data:image/jpeg;base64,${base64Image}`,
-        name: 'photo.jpg',
-        type: 'image/jpeg',
-      });
-
-      const response = await fetch('https://api.luxand.cloud/photo/liveness/v2', {
-        method: 'POST',
-        headers: { 
-          'token': 'ad37885a36ac42fca9f052f1b0487520',
-          'Content-Type': 'multipart/form-data'
-        },
-        body: formData,
-      });
-      console.log(response.json())
-      const clonedResponse = response.clone();
-      
-      if (!response.ok) {
-        const errorData = await clonedResponse.json();
-        throw new Error(`HTTP error! status: ${response.status} - ${JSON.stringify(errorData)}`);
-      }
-
-      return await clonedResponse.json();
-    } catch (error) {
-      console.log("❌ Error en vivacidad:", error.message);
-      return { status: 'error', error: error.message };
-    }
-  };
-
-  const verifyBiometrics = async (base64Image) => {
-    try {
-      const response = await fetch('http://54.189.63.53:9100/biometria_DEMO', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          source_img: imageRefBase64,
-          target_img: base64Image,
-          id: Math.random().toString(36).substr(2, 10),
-        }),
-      });
-      const result = await response.json();
-      console.log(result)
-      return { match: result.is_same_person };
-    } catch (error) {
-      console.log("❌ Error en biometría:", error);
-      return { match: false };
-    }
-  };
-
   const handleVerificationSuccess = () => {
     if (!isMounted.current) return;
     console.log("[5/5] 🎉¡Verificación exitosa!");
     setIsVerificationActive(false);
-    setQrData({
-      cedula: "1234567890",
-      nombre: "LARREA PAREDES DIEGO FRANCISCO",
-      grado: "Teniente Coronel",
-      caduca: "01/01/2030",
-    });
+    setQrData(QR_DATA);
   };
 
   const switchCamera = () => {
@@ -336,9 +181,7 @@ const MiIdentidad = () => {
   if (!permission?.granted || !microphonePermission?.granted) {
     return (
       <View style={miIdentidadEstilos.container}>
-        <Text style={miIdentidadEstilos.message}>
-          Necesitamos acceso a:
-        </Text>
+        <Text style={miIdentidadEstilos.message}>Necesitamos acceso a:</Text>
         <Text style={miIdentidadEstilos.permissionItem}>🎥 Cámara</Text>
         <Text style={miIdentidadEstilos.permissionItem}>🎤 Micrófono</Text>
         <Button 
@@ -371,7 +214,7 @@ const MiIdentidad = () => {
           <View style={menuEstilos.cardImagen}>
             <Image 
               source={require('../assets/img/imagenPrueba.jpg')} 
-              style={styles.cardImage}
+              style={miIdentidadEstilos.cardImage}
               resizeMode="contain" 
             />
           </View>
@@ -401,35 +244,35 @@ const MiIdentidad = () => {
         </View>
 
         {!qrData && (
-          <View style={styles.cameraSection}>
-            <View style={styles.cameraContainer}>
+          <View style={miIdentidadEstilos.cameraSection}>
+            <View style={miIdentidadEstilos.cameraContainer}>
               {showBiometricAnimation && (
-                <View style={styles.borderAnimationContainer}>
+                <View style={miIdentidadEstilos.borderAnimationContainer}>
                   <Lottie
                     source={require('../../assets/json/biometrica.json')}
                     autoPlay
                     loop
-                    style={styles.borderAnimation}
+                    style={miIdentidadEstilos.borderAnimation}
                   />
                 </View>
               )}
 
               {showCircleAnimation && (
-                <View style={styles.borderAnimationContainer}>
+                <View style={miIdentidadEstilos.borderAnimationContainer}>
                   <Lottie
                     source={require('../../assets/json/circuloAnimation.json')}
                     autoPlay
                     loop
-                    style={styles.borderAnimation}
+                    style={miIdentidadEstilos.borderAnimation}
                   />
                 </View>
               )}
 
               <CameraView
                 ref={cameraRef}
-                style={styles.camera}
+                style={miIdentidadEstilos.camera}
                 facing={facing}
-                enableTorch={false} // Desactiva el flash
+                enableTorch={false}
                 pictureSize="3840x2160"
                 useCamera2Api={true}
                 mode="video"
@@ -437,20 +280,20 @@ const MiIdentidad = () => {
             </View>
 
             <TouchableOpacity
-              style={styles.switchCameraButton}
+              style={miIdentidadEstilos.switchCameraButton}
               onPress={switchCamera}
             >
               <MaterialIcons name="flip-camera-ios" size={28} color="white" />
             </TouchableOpacity>
             <TouchableOpacity
               style={[
-                styles.startButton,
-                isVerificationActive && styles.disabledButton
+                miIdentidadEstilos.startButton,
+                isVerificationActive && miIdentidadEstilos.disabledButton
               ]}
               onPress={startVerification}
               disabled={isVerificationActive}
             >
-              <Text style={styles.startButtonText}>
+              <Text style={miIdentidadEstilos.startButtonText}>
                 {isVerificationActive ? "VERIFICANDO..." : "INICIAR VERIFICACIÓN"}
               </Text>
             </TouchableOpacity>
@@ -458,7 +301,7 @@ const MiIdentidad = () => {
         )}
 
         {qrData && (
-          <View style={[miIdentidadEstilos.qrContainer, styles.qrBorder]}>
+          <View style={[miIdentidadEstilos.qrContainer, miIdentidadEstilos.qrBorder]}>
             <QRCode
               value={JSON.stringify(qrData)}
               size={250}
@@ -471,77 +314,5 @@ const MiIdentidad = () => {
     </LinearGradient>
   );
 };
-
-const styles = StyleSheet.create({
-  cameraSection: {
-    width: '70%',
-    marginLeft: '15%',
-    marginVertical: 20,
-  },
-  cameraContainer: {
-    height: height * 0.3,
-    borderRadius: 1000,
-    overflow: 'hidden',
-    position: 'relative',
-    backgroundColor: '#f0f0f0',
-    borderWidth: 3,
-    borderColor: '#2c3e50',
-    elevation: 5,
-  },
-  camera: {
-    flex: 1,
-  },
-  borderAnimationContainer: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 2,
-  },
-  borderAnimation: {
-    width: '120%',
-    height: '120%',
-  },
-  cardImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 12,
-  },
-  startButton: {
-    backgroundColor: '#2c3e50',
-    paddingVertical: 15,
-    borderRadius: 30,
-    elevation: 5,
-    width: '80%',
-    alignSelf: 'center',
-    marginTop: 20,
-  },
-  disabledButton: {
-    backgroundColor: '#6c7c8c',
-    opacity: 0.7,
-  },
-  startButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  switchCameraButton: {
-    position: 'absolute',
-    top: 20,
-    right: 10,
-    backgroundColor: '#2c3e50',
-    padding: 10,
-    borderRadius: 1000,
-    elevation: 3,
-  },
-  qrBorder: {
-    borderWidth: 3,
-    borderColor: '#2c3e50',
-    borderRadius: 15,
-    padding: 15,
-    backgroundColor: 'white',
-    elevation: 5,
-  },
-});
 
 export default MiIdentidad;
