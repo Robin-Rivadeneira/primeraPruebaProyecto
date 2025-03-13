@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import UsuarioSvg from "../assets/img/usuarios.svg";
-import GoIdentitySVG from "../assets/img/goIdentity.svg";
+import UsuarioSvg from "../../assets/img/usuarios.svg";
+import GoIdentitySVG from "../../assets/img/goIdentity.svg";
 import perfil from '../../assets/css/perfil';
 
 // Importar lógica de negocio

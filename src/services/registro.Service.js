@@ -5,7 +5,7 @@ import { Asset } from 'expo-asset';
 // Cargar imagen de referencia
 export const loadReferenceImage = async () => {
     try {
-        const asset = Asset.fromModule(require('../assets/img/imagenPrueba1.png'));
+        const asset = Asset.fromModule(require('../../assets/img/imagenPrueba1.png'));
         await asset.downloadAsync();
         const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
             encoding: FileSystem.EncodingType.Base64,

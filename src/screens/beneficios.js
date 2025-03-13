@@ -5,7 +5,7 @@ import QRCode from "react-native-qrcode-svg";
 import { useRoute } from "@react-navigation/native";
 import beneficiosEstilos from "../../assets/css/beneficios";
 import identidadInicialEstilos from '../../assets/css/identidad';
-import GoIdentitySVG from "../assets/img/goIdentity.svg";
+import GoIdentitySVG from "../../assets/img/goIdentity.svg";
 
 // Importa los datos de beneficios
 import beneficiosData from "../services/beneficios.Service";

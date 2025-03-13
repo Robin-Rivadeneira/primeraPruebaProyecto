@@ -6,12 +6,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import Avatar1 from "../../assets/img/usuarios.svg";
 import Avatar2 from "../../assets/img/usuarios.svg";
 import Avatar3 from "../../assets/img/usuarios.svg";
-import amigosEstilos from "../../../assets/css/amigos";
+import amigosEstilos from "../../assets/css/amigos";
 import identidadInicialEstilos from '../../assets/css/identidad';
 import GoIdentitySVG from "../../assets/img/goIdentity.svg";
 
 // Importa los datos de amigos
-import amigosData from "../services/amigos.service";
+import amigosData from "../services/amigos.Service";
 
 const AmigosScreen = () => {
   // Mapea los nombres de los SVGs a los componentes

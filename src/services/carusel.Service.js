@@ -1,7 +1,7 @@
 // carucelData.js
-import PrimerImagenCarucel from "../assets/img/primerImagenCarucel.svg";
-import RegaloCarucel from "../assets/img/regaloCarucel.svg";
-import InvitaAmigos from "../assets/img/ivitaAmigos.svg";
+import PrimerImagenCarucel from "../../assets/img/primerImagenCarucel.svg";
+import RegaloCarucel from "../../assets/img/regaloCarucel.svg";
+import InvitaAmigos from "../../assets/img/ivitaAmigos.svg";
 
 const dataCarucels = [
   {

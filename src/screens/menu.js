@@ -2,15 +2,15 @@ import React from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import GoIdentitySVG from "../assets/img/goIdentity.svg";
-import InstitutoSVG from "../assets/img/instituto.svg";
-import UsuarioSvg from "../assets/img/usuarios.svg";
-import LogoEjercito from "../assets/img/ejercito.svg"
+import GoIdentitySVG from "../../assets/img/goIdentity.svg";
+import InstitutoSVG from "../../assets/img/instituto.svg";
+import UsuarioSvg from "../../assets/img/usuarios.svg";
+import LogoEjercito from "../../assets/img/ejercito.svg"
 import menuEstilos from '../../assets/css/menu';
-import IdentidadSVG from "../assets/img/qr.svg";
-import ServiciosSVG from "../assets/img/servicios.svg";
-import BeneficiosSVG from "../assets/img/beneficios.svg";
-import AmigosSVG from "../assets/img/amigosMenu.svg";
+import IdentidadSVG from "../../assets/img/qr.svg";
+import ServiciosSVG from "../../assets/img/servicios.svg";
+import BeneficiosSVG from "../../assets/img/beneficios.svg";
+import AmigosSVG from "../../assets/img/amigosMenu.svg";
 
 export default function menu() {
 
@@ -70,7 +70,7 @@ export default function menu() {
 
         <View style={menuEstilos.cardContent}>
           <View style={menuEstilos.cardImagen}>
-            <Image source={require('../assets/img/imagenPrueba.jpg')} style={{
+            <Image source={require('../../assets/img/imagenPrueba.jpg')} style={{
               width: '100%',
               height: '100%',
               borderRadius: 12,

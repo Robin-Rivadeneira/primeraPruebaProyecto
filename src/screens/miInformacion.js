@@ -8,9 +8,9 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { Audio } from 'expo-av';
 
 // Componentes SVG
-import GoIdentitySVG from "../assets/img/goIdentity.svg";
-import InstitutoSVG from "../assets/img/instituto.svg";
-import LogoEjercito from "../assets/img/ejercito.svg";
+import GoIdentitySVG from "../../assets/img/goIdentity.svg";
+import InstitutoSVG from "../../assets/img/instituto.svg";
+import LogoEjercito from "../../assets/img/ejercito.svg";
 
 // Estilos
 import menuEstilos from '../../assets/css/menu';
@@ -27,7 +27,7 @@ import {
   QR_DATA,
 } from '../services/miIdentidadConfig.Service.js';
 
-const { width, height } = Dimensions.get('window');
+
 
 const MiIdentidad = () => {
   const cameraRef = useRef(null);
@@ -213,7 +213,7 @@ const MiIdentidad = () => {
         <View style={menuEstilos.cardContent}>
           <View style={menuEstilos.cardImagen}>
             <Image 
-              source={require('../assets/img/imagenPrueba.jpg')} 
+              source={require('../../assets/img/imagenPrueba.jpg')} 
               style={miIdentidadEstilos.cardImage}
               resizeMode="contain" 
             />

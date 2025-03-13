@@ -54,7 +54,7 @@ const Carucel = () => {
       >
         <FlatList
           ref={flatListRef}
-          data={data}
+          data={dataCarucels}
           renderItem={renderItem}
           horizontal
           pagingEnabled
@@ -70,7 +70,7 @@ const Carucel = () => {
         />
 
         <View style={carucelEstilo.pagination}>
-          {data.map((_, index) => (
+          {dataCarucels.map((_, index) => (
             <TouchableOpacity
               key={index}
               style={[

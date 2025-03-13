@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import filtroBeneficiosEstilos from "../../assets/css/filtroBeneficios";
 import identidadInicialEstilos from '../../assets/css/identidad';
-import GoIdentitySVG from "../assets/img/goIdentity.svg";
+import GoIdentitySVG from "../../assets/img/goIdentity.svg";
 
 // Importa los datos de beneficios
 import beneficiosFiltro from "../services/beneficiosFiltro.Service";

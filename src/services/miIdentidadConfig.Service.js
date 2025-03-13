@@ -14,7 +14,7 @@ const API_CONFIG = {
 // Cargar la imagen de referencia como Base64
 export const loadReferenceImage = async () => {
   try {
-    const asset = Asset.fromModule(require('../assets/img/imagenPrueba1.png'));
+    const asset = Asset.fromModule(require('../../assets/img/imagenPrueba1.png'));
     await asset.downloadAsync();
     const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
       encoding: FileSystem.EncodingType.Base64,

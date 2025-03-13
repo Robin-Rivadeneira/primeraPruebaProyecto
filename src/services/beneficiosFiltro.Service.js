@@ -1,8 +1,8 @@
 // beneficiosData.js
-import MultiCineSvg from "../assets/img/multicines.svg";
-import SmartFitSvg from "../assets/img/smartFit.svg";
-import EnextSvg from "../assets/img/enext.svg";
-import SaludSaSvg from "../assets/img/saludSa.svg";
+import MultiCineSvg from "../../assets/img/multicines.svg";
+import SmartFitSvg from "../../assets/img/smartFit.svg";
+import EnextSvg from "../../assets/img/enext.svg";
+import SaludSaSvg from "../../assets/img/saludSa.svg";
 
 const beneficiosFiltro = {
   Quito: [

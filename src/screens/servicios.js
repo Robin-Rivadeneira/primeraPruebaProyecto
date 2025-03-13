@@ -3,11 +3,11 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { WebView } from "react-native-webview"; // Importamos WebView
 import identidadInicialEstilos from '../../assets/css/identidad';
-import VerificarSbg from "../assets/img/serviciosSupervivencia.svg";
-import MostrarSbg from "../assets/img/firmarCredito.svg";
-import GoIdentitySVG from "../assets/img/goIdentity.svg";
+import VerificarSbg from "../../assets/img/serviciosSupervivencia.svg";
+import MostrarSbg from "../../assets/img/firmarCredito.svg";
+import GoIdentitySVG from "../../assets/img/goIdentity.svg";
 import menuEstilos from '../../assets/css/menu';
-import InstitutoSVG from "../assets/img/instituto.svg";
+import InstitutoSVG from "../../assets/img/instituto.svg";
 
 const ServiciosScreen = () => {
   const [currentUrl, setCurrentUrl] = useState(null); // Estado para controlar la URL

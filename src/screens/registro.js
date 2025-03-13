@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import registroEsrilo from '../../assets/css/registro';
 
 // Importar lógica de negocio
-import { loadReferenceImage, takePicture, registerUser } from './registroLogic';
+import { loadReferenceImage, takePicture, registerUser } from '../services/registro.Service';
 
 const RegistroBiometrico = () => {
     const [photoUri, setPhotoUri] = useState(null);
@@ -37,10 +37,13 @@ const RegistroBiometrico = () => {
 
     // Solicitar permisos de cámara
     useEffect(() => {
-        if (!permission?.granted) {
-            requestPermission();
-        }
-    }, [permission]);
+        (async () => {
+            const { status } = await requestPermission();
+            if (status !== 'granted') {
+                Alert.alert('Permisos de cámara no otorgados', 'Necesitas otorgar permisos para usar la cámara.');
+            }
+        })();
+    }, []);
 
     // Manejar la captura de foto
     const handleTakePicture = async () => {
@@ -76,6 +79,14 @@ const RegistroBiometrico = () => {
         }
     };
 
+    if (!permission?.granted) {
+        return (
+            <View>
+                <Text>Necesitas otorgar permisos para usar la cámara.</Text>
+            </View>
+        );
+    }
+
     return (
         <View style={{ flex: 1 }}>
             <LinearGradient
@@ -91,23 +102,11 @@ const RegistroBiometrico = () => {
                         {!photoUri ? (
                             <CameraView
                                 ref={cameraRef}
-                                style={registroEsriloheet.absoluteFill}
+                                style={{ flex: 1 }} 
                                 facing="front"
                                 autoFocus="on"
                                 focusMode="continuous"
-                            >
-                                <View style={registroEsrilo.overlay}>
-                                    <View style={registroEsrilo.frame}>
-                                        <View style={registroEsrilo.frameInner}>
-                                            <View style={registroEsrilo.guideLines} />
-                                        </View>
-                                    </View>
-                                    <TouchableOpacity
-                                        style={registroEsrilo.captureButton}
-                                        onPress={handleTakePicture}
-                                    />
-                                </View>
-                            </CameraView>
+                            />
                         ) : (
                             <Image source={{ uri: photoUri }} style={registroEsrilo.previewImage} />
                         )}

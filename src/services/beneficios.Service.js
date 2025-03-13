@@ -1,7 +1,7 @@
 // beneficiosData.js
-import DosporUnoSvg from "../assets/img/dosporuno.svg";
-import QuincePorciento from "../assets/img/quncieporcentaje.svg";
-import SmartFitSvg from "../assets/img/smartFit.svg";
+import DosporUnoSvg from "../../assets/img/dosporuno.svg";
+import QuincePorciento from "../../assets/img/quncieporcentaje.svg";
+import SmartFitSvg from "../../assets/img/smartFit.svg";
 
 const beneficiosData = {
   Multicines: [

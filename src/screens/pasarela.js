@@ -3,9 +3,9 @@ import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import pasarelaEsitlos from '../../assets/css/pasarela';
 import { useNavigation } from '@react-navigation/native';
-import GoIdentitySVG from "../assets/img/goIdentity.svg";
-import PasarelaInicioSvg from "../assets/img/pasarelainicio.svg"
-import PasarelaFinalSvg from "../assets/img/pasarelafinal.svg"
+import GoIdentitySVG from "../../assets/img/goIdentity.svg";
+import PasarelaInicioSvg from "../../assets/img/pasarelainicio.svg"
+import PasarelaFinalSvg from "../../assets/img/pasarelafinal.svg"
 
 
 export default function pasarela() {

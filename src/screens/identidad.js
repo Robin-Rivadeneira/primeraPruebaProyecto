@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import VerificarSbg from "../assets/img/Verificar.svg";
-import MostrarSbg from "../assets/img/generar.svg";
-import GoIdentitySVG from "../assets/img/goIdentity.svg";
+import VerificarSbg from "../../assets/img/Verificar.svg";
+import MostrarSbg from "../../assets/img/generar.svg";
+import GoIdentitySVG from "../../assets/img/goIdentity.svg";
 import identidadInicialEstilos from '../../assets/css/identidad';
 
 export default function IdentidadInicial() {
