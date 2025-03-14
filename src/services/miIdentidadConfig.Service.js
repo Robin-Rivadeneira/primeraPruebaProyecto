@@ -11,21 +11,6 @@ const API_CONFIG = {
   LUXAND_TOKEN: 'ad37885a36ac42fca9f052f1b0487520',
 };
 
-// Cargar la imagen de referencia como Base64
-export const loadReferenceImage = async () => {
-  try {
-    const asset = Asset.fromModule(require('../../assets/img/imagenPrueba1.png'));
-    await asset.downloadAsync();
-    const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-    return base64;
-  } catch (error) {
-    console.error('Error cargando imagen:', error);
-    throw error;
-  }
-};
-
 // Extraer frames de un video
 export const extractFramesFromVideo = async (videoUri) => {
   const frames = [];
@@ -122,6 +107,7 @@ export const verifyBiometrics = async (sourceImg, targetImg) => {
       }),
     });
     const result = await response.json();
+    console.log(result)
     return { match: result.is_same_person };
   } catch (error) {
     console.log("❌ Error en biometría:", error);

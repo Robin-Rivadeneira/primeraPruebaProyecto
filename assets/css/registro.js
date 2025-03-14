@@ -27,6 +27,21 @@ const registroEsrilo = StyleSheet.create({
         borderWidth: 5,
         borderColor: 'rgba(255,255,255,0.5)'
     },
+    photoOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semitransparente
+    },
+    previewImage: {
+        width: '80%', // Ajusta el tamaño de la imagen
+        height: '80%',
+        borderRadius: 10, // Bordes redondeados
+    },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
