@@ -4,6 +4,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import loginEstilos from '../../assets/css/login';
 import GoIdentitySVG from "../../assets/img/goIdentity.svg";
+import { login } from '../services/login.Service'; // Importa el servicio de autenticación
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
     const [isChecked, setIsChecked] = useState(false);
@@ -11,23 +13,33 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const navigation = useNavigation();
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         if (!isChecked) {
             Alert.alert('Error', 'Debe aceptar los términos y condiciones.');
             return;
         }
-        // Navegar a la pantalla "Home" después de iniciar sesión
-        navigation.navigate('pasarela');
+
+        if (!email || !password) {
+            Alert.alert('Error', 'Por favor, complete todos los campos.');
+            return;
+        }
+
+        try {
+            // Llamar al servicio de autenticación
+            const token = await login(email, password);
+            console.log("Token recibido:", token.data.token);
+            // Guardar el token en el almacenamiento local (AsyncStorage)
+            await AsyncStorage.setItem('userToken', token.data.token);
+
+            // Navegar a la pantalla "Home" o "Pasarela" después de iniciar sesión
+            navigation.navigate('pasarela');
+        } catch (error) {
+            Alert.alert('Error', error.message || 'Error al iniciar sesión');
+        }
     };
 
     const handleCrearCuenta = () => {
-        // Navegar a la pantalla "CrearCuenta"
         navigation.navigate('registro');
-    };
-
-    const handlePasarela = () => {
-        // Navegar a la pantalla "pasarela"
-        navigation.navigate('pasarela');
     };
 
     return (
@@ -76,7 +88,7 @@ const Login = () => {
                 style={loginEstilos.gradientButton}
             >
                 <TouchableOpacity style={loginEstilos.button} onPress={handleLogin}>
-                    <Text style={loginEstilos.buttonText} onPress={handlePasarela}>INGRESAR</Text>
+                    <Text style={loginEstilos.buttonText}>INGRESAR</Text>
                 </TouchableOpacity>
             </LinearGradient>
             <Text style={loginEstilos.footerText}>
