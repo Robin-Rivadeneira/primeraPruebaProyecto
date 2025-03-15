@@ -1,6 +1,11 @@
+// App.js - Versión completa y optimizada
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
+// Importa todas tus pantallas
 import inicio from "./src/screens/inicio";
 import carucel from "./src/screens/carucel";
 import login from "./src/screens/login";
@@ -20,82 +25,104 @@ const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="inicio">
-        {/* Vista inicial */}
-        <Stack.Screen
-          name="inicio"
-          component={inicio}
-          options={{ headerShown: false }}
-        />
-        {/* Vista del carrusel */}
-        <Stack.Screen
-          name="carucel"
-          component={carucel}
-          options={{ headerShown: false }}
-        />
-        {/* Vista del login */}
-        <Stack.Screen
-          name="login"
-          component={login}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="registro"
-          component={RegistroBiometrico}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="pasarela"
-          component={pasarela}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="menu"
-          component={menu}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="perfil"
-          component={Perfil}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="identidadInicial"
-          component={IdentidadInicial}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="verificar"
-          component={ImagePickerExample}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="miIdentidad"
-          component={miIdentidad}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="servicios"
-          component={ServiciosScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="beneficioFiltro"
-          component={BeneficiosFiltro}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="BeneficiosScreen"
-          component={BeneficiosScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="amigos"
-          component={AmigosScreen}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="inicio"
+            screenOptions={{
+              headerShown: false,
+              animationEnabled: false,
+              gestureEnabled: true,
+              cardStyle: { backgroundColor: '#FFFFFF' } // Fondo blanco para todas las pantallas
+            }}
+          >
+            {/* Vista inicial */}
+            <Stack.Screen
+              name="inicio"
+              component={inicio}
+            />
+
+            {/* Vista del carrusel */}
+            <Stack.Screen
+              name="carucel"
+              component={carucel}
+            />
+
+            {/* Vista del login */}
+            <Stack.Screen
+              name="login"
+              component={login}
+            />
+
+            {/* Registro biométrico */}
+            <Stack.Screen
+              name="registro"
+              component={RegistroBiometrico}
+            />
+
+            {/* Pasarela */}
+            <Stack.Screen
+              name="pasarela"
+              component={pasarela}
+            />
+
+            {/* Menú principal */}
+            <Stack.Screen
+              name="menu"
+              component={menu}
+            />
+
+            {/* Perfil del usuario */}
+            <Stack.Screen
+              name="perfil"
+              component={Perfil}
+            />
+
+            {/* Identidad inicial */}
+            <Stack.Screen
+              name="identidadInicial"
+              component={IdentidadInicial}
+            />
+
+            {/* Verificación de identidad */}
+            <Stack.Screen
+              name="verificar"
+              component={ImagePickerExample}
+            />
+
+            {/* Mi identidad */}
+            <Stack.Screen
+              name="miIdentidad"
+              component={miIdentidad}
+            />
+
+            {/* Servicios */}
+            <Stack.Screen
+              name="servicios"
+              component={ServiciosScreen}
+            />
+
+            {/* Beneficios filtrados */}
+            <Stack.Screen
+              name="beneficioFiltro"
+              component={BeneficiosFiltro}
+            />
+
+            {/* Beneficios */}
+            <Stack.Screen
+              name="BeneficiosScreen"
+              component={BeneficiosScreen}
+            />
+
+            {/* Amigos */}
+            <Stack.Screen
+              name="amigos"
+              component={AmigosScreen}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }

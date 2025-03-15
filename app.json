@@ -6,18 +6,18 @@
     "orientation": "portrait",
     "icon": "./assets/img/goIdentity.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/img/goIdentity.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#FFFFFF"
     },
     "assetBundlePatterns": [
-      "**/*",
-      "./assets/**/*"
+      "**/*"
     ],
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.robinjos.firmaelectronica",
       "infoPlist": {
         "NSCameraUsageDescription": "Esta aplicación necesita acceso a la cámara para escanear códigos QR."
       }
@@ -25,17 +25,14 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/img/goIdentity.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#FFFFFF"
       },
       "package": "com.robinjos.firmaelectronica",
       "permissions": [
         "CAMERA",
-        "RECORD_AUDIO",
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO",
-        "android.permission.SYSTEM_ALERT_WINDOW",
-        "android.permission.FOREGROUND_SERVICE"
+        "RECORD_AUDIO"
       ],
+      "versionCode": 1,
       "softwareKeyboardLayoutMode": "pan"
     },
     "web": {
@@ -46,17 +43,18 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
-          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
-          "recordAudioAndroid": true
+          "cameraPermission": "Permiso para usar la cámara",
+          "microphonePermission": "Permiso para usar el micrófono"
         }
-      ],
-      "expo-asset"
+      ]
     ],
     "extra": {
       "eas": {
         "projectId": "0b1e5ea3-a32e-47c1-ba65-a99d3c7296d1"
       }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }
