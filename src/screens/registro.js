@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, TextInput, ScrollView } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import * as FileSystem from 'expo-file-system';
-import { Asset } from 'expo-asset';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import registroEsrilo from '../public/css/registro';
+import registroEsrilo from '../../assets/css/registro';
+
+// Importar lógica de negocio
+import { loadReferenceImage, takePicture, registerUser } from '../services/registro.Service';
+import { verifyBiometrics } from '../services/miIdentidadConfig.Service'; // Importar la función de verificación biométrica
 
 const RegistroBiometrico = () => {
     const [photoUri, setPhotoUri] = useState(null);
@@ -16,81 +18,100 @@ const RegistroBiometrico = () => {
     const [idNumber, setIdNumber] = useState('');
     const [fingerCode, setFingerCode] = useState('');
     const [email, setEmail] = useState('');
+    const [contrasena, setContrasena] = useState('');
     const [isChecked, setIsChecked] = useState(false);
     const [permission, requestPermission] = useCameraPermissions();
+    const [countdown, setCountdown] = useState(5); // Estado para la cuenta regresiva
     const cameraRef = useRef(null);
     const navigation = useNavigation();
 
-    // Cargar imagen de referencia
-    const loadReferenceImage = async () => {
-        try {
-            const asset = Asset.fromModule(require('../public/img/imagenPrueba1.png'));
-            await asset.downloadAsync();
-            const base64 = await FileSystem.readAsStringAsync(asset.localUri, {
-                encoding: FileSystem.EncodingType.Base64,
-            });
-            setImageRefBase64(base64);
-        } catch (error) {
-            console.error('Error cargando imagen:', error);
-        }
-    };
-
+    // Solicitar permisos de cámara
     useEffect(() => {
-        loadReferenceImage();
+        (async () => {
+            const { status } = await requestPermission();
+            if (status !== 'granted') {
+                Alert.alert('Permisos de cámara no otorgados', 'Necesitas otorgar permisos para usar la cámara.');
+            }
+        })();
     }, []);
 
-    // Manejar permisos de cámara
+    // Temporizador para tomar la foto automáticamente después de 5 segundos
     useEffect(() => {
-        if (!permission?.granted) {
-            requestPermission();
+        if (permission?.granted && !photoUri) {
+            const timer = setInterval(() => {
+                setCountdown((prev) => {
+                    if (prev === 1) {
+                        clearInterval(timer); // Detener el temporizador
+                        handleTakePicture(); // Tomar la foto
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000); // Actualizar cada segundo
+
+            // Limpiar el temporizador si el componente se desmonta
+            return () => clearInterval(timer);
         }
-    }, [permission]);
+    }, [permission, photoUri]);
 
-    // Tomar foto
-    const takePicture = async () => {
-        if (!cameraRef.current) return;
+    // Manejar la captura de foto
+    const handleTakePicture = async () => {
         try {
-            const photo = await cameraRef.current.takePictureAsync({
-                quality: 1,
-                base64: false,
-                skipProcessing: true
-            });
-
-            setPhotoUri(photo.uri);
-            const base64 = await FileSystem.readAsStringAsync(photo.uri, {
-                encoding: FileSystem.EncodingType.Base64,
-            });
+            console.log("Capturando foto...");
+            const { uri, base64 } = await takePicture(cameraRef);
+            console.log("Foto capturada:", uri);
+            setPhotoUri(uri);
             setPhotoBase64(base64);
-
         } catch (error) {
-            Alert.alert('Error', 'Error al capturar foto');
+            console.error("Error al capturar foto:", error);
+            Alert.alert('Error', 'No se pudo capturar la foto');
         }
     };
 
-    // Registro
+    // Manejar el registro
     const handleRegister = async () => {
-        if (!name || !surname || !idNumber || !fingerCode || !email || !isChecked || !photoBase64 || !imageRefBase64) {
+        if (!name || !surname || !idNumber || !fingerCode || !email || !contrasena || !isChecked || !photoBase64) {
             Alert.alert('Error', 'Complete todos los campos');
             return;
         }
 
         try {
-            const response = await fetch('http://54.189.63.53:9100/biometria_DEMO', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    source_img: imageRefBase64,
-                    target_img: photoBase64,
-                    id: Math.random().toString(36).substr(2, 10),
-                }),
+            // Registrar al usuario
+            const registroResult = await registerUser({
+                name,
+                surname,
+                idNumber,
+                fingerCode,
+                email,
+                contrasena
             });
 
-            const result = await response.json();
-            response.ok ? navigation.navigate('pasarela') : Alert.alert('Error', result.message);
+            if (registroResult.success) {
+                // Obtener la imagen de referencia desde el backend
+                const referenceImage = registroResult.referenceImage;
+                console.log('holas',registroResult)
+                // Comparar la imagen de referencia con la imagen tomada por la cámara
+                const biometricResult = await verifyBiometrics(referenceImage, photoBase64);
+                console.log(biometricResult)
+                if (biometricResult.match) {
+                    Alert.alert('Éxito', 'Verificación biométrica exitosa');
+                    navigation.navigate('login');
+                } else {
+                    Alert.alert('Error', 'La verificación biométrica falló. Las imágenes no coinciden.');
+                }
+            }
         } catch (error) {
-            Alert.alert('Error', 'Error de conexión');
+            Alert.alert('Error', error.message || 'Error en el registro');
         }
     };
+
+    if (!permission?.granted) {
+        return (
+            <View>
+                <Text>Necesitas otorgar permisos para usar la cámara.</Text>
+            </View>
+        );
+    }
 
     return (
         <View style={{ flex: 1 }}>
@@ -102,41 +123,32 @@ const RegistroBiometrico = () => {
                 style={registroEsrilo.container}
             >
                 <ScrollView contentContainerStyle={registroEsrilo.container}>
-
                     {/* Contenedor de cámara con marco oscuro */}
-                    <View style={styles.cameraContainer}>
-                        {!photoUri ? (
-                            <CameraView
-                                ref={cameraRef}
-                                style={StyleSheet.absoluteFill}
-                                facing="front"
-                                autoFocus="on"
-                                focusMode="continuous"
-                            >
-                                <View style={styles.overlay}>
-                                    <View style={styles.frame}>
-                                        <View style={styles.frameInner}>
-                                            <View style={styles.guideLines} />
-                                        </View>
-                                    </View>
-                                    <TouchableOpacity
-                                        style={styles.captureButton}
-                                        onPress={takePicture}
-                                    />
-                                </View>
-                            </CameraView>
-                        ) : (
-                            <Image source={{ uri: photoUri }} style={styles.previewImage} />
+                    <View style={registroEsrilo.cameraContainer}>
+                        <CameraView
+                            ref={cameraRef}
+                            style={{ flex: 1 }}
+                            facing="front"
+                            autoFocus="on"
+                            focusMode="continuous"
+                        />
+                        {photoUri && (
+                            <View style={registroEsrilo.photoOverlay}>
+                                <Image source={{ uri: photoUri }} style={registroEsrilo.previewImage} />
+                            </View>
                         )}
+                        <Text style={registroEsrilo.countdownText}>
+                            La foto se tomará en {countdown} segundos...
+                        </Text>
                     </View>
 
                     {/* Botón para retomar foto */}
                     {photoUri && (
                         <TouchableOpacity
-                            style={styles.retakeButton}
+                            style={registroEsrilo.retakeButton}
                             onPress={() => setPhotoUri(null)}
                         >
-                            <Text style={styles.retakeText}>VOLVER A TOMAR FOTO</Text>
+                            <Text style={registroEsrilo.retakeText}>VOLVER A TOMAR FOTO</Text>
                         </TouchableOpacity>
                     )}
 
@@ -173,6 +185,13 @@ const RegistroBiometrico = () => {
                         onChangeText={setEmail}
                     />
 
+                    <TextInput
+                        style={registroEsrilo.input}
+                        placeholder="Contraseña"
+                        value={contrasena}
+                        onChangeText={setContrasena}
+                    />
+
                     {/* Checkbox y botón de registro */}
                     <View style={registroEsrilo.checkboxContainer}>
                         <TouchableOpacity
@@ -197,28 +216,5 @@ const RegistroBiometrico = () => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    cameraContainer: {
-        width: '50%',
-        aspectRatio: 1,
-        borderRadius: 20,
-        overflow: 'hidden',
-        marginVertical: 20,
-        alignSelf: 'center',
-        // Sombra exterior
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 5,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 15,
-        elevation: 15, // Para Android
-        // Borde
-        borderWidth: 5,
-        borderColor: 'rgba(255,255,255,0.5)'
-    },
-});
 
 export default RegistroBiometrico;

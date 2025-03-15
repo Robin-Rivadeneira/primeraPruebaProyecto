@@ -1,51 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, ScrollView, Dimensions } from "react-native";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import QRCode from "react-native-qrcode-svg";
 import { useRoute } from "@react-navigation/native";
-import beneficiosEstilos from "../public/css/beneficios";
-import DosporUnoSvg from "../public/img/dosporuno.svg";
-import QuincePorciento from "../public/img/quncieporcentaje.svg";
-import SmartFitSvg from "../public/img/smartFit.svg";
-import identidadInicialEstilos from '../public/css/identidad';
-import GoIdentitySVG from "../public/img/goIdentity.svg";
+import beneficiosEstilos from "../../assets/css/beneficios";
+import identidadInicialEstilos from '../../assets/css/identidad';
+import GoIdentitySVG from "../../assets/img/goIdentity.svg";
 
-const beneficiosData = {
-  Multicines: [
-    {
-      id: "1",
-      nombre: "2x1 en entradas",
-      horario: "Lunes y Jueves de 14H a 21H",
-      icono: <DosporUnoSvg width={100} height={100} />, 
-    },
-    {
-      id: "2",
-      nombre: "15% de descuento",
-      horario: "Lunes y Jueves de 14H a 21H",
-      icono: <QuincePorciento width={100} height={100} />, 
-    },
-    {
-      id: "4",
-      nombre: "20% de descuento",
-      horario: "Lunes y Jueves de 14H a 21H",
-      icono: <QuincePorciento width={100} height={100} />, 
-    },
-    {
-      id: "5",
-      nombre: "10% de descuento adicional",
-      horario: "Viernes y Sábados de 10H a 22H",
-      icono: <QuincePorciento width={100} height={100} />, 
-    },
-  ],
-  SmartFit: [
-    {
-      id: "3",
-      nombre: "Membresía 50% off",
-      horario: "Lunes a Viernes de 8H a 18H",
-      icono: <SmartFitSvg width={100} height={100} />, 
-    },
-  ],
-};
+// Importa los datos de beneficios
+import beneficiosData from "../services/beneficios.Service";
 
 const BeneficiosScreen = () => {
   const route = useRoute();

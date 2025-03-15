@@ -7,6 +7,41 @@ const registroEsrilo = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
     },
+    cameraContainer: {
+        width: '50%',
+        aspectRatio: 1,
+        borderRadius: 20,
+        overflow: 'hidden',
+        marginVertical: 20,
+        alignSelf: 'center',
+        // Sombra exterior
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 5,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 15,
+        elevation: 15, // Para Android
+        // Borde
+        borderWidth: 5,
+        borderColor: 'rgba(255,255,255,0.5)'
+    },
+    photoOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo semitransparente
+    },
+    previewImage: {
+        width: '80%', // Ajusta el tamaño de la imagen
+        height: '80%',
+        borderRadius: 10, // Bordes redondeados
+    },
     title: {
         fontSize: 24,
         fontWeight: 'bold',

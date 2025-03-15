@@ -4,17 +4,17 @@
     "slug": "firmaElectronica",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./public/img/goIdentity.png",
+    "icon": "./assets/img/goIdentity.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./public/img/goIdentity.png",
+      "image": "./assets/img/goIdentity.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
       "**/*",
-      "./public/**/*"
+      "./asset/**/*"
     ],
     "ios": {
       "supportsTablet": true,
@@ -24,7 +24,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./public/img/goIdentity.png",
+        "foregroundImage": "./assets/img/goIdentity.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.robinjos.firmaElectronica",
@@ -39,10 +39,12 @@
       "softwareKeyboardLayoutMode": "pan"
     },
     "web": {
-      "favicon": "./public/img/goIdentity.png"
+      "favicon": "./assets/img/goIdentity.png"
     },
     "extra": {
-    
+      "eas": {
+        "projectId": "032198ff-d0c0-48df-9a22-15f595e11314"
+      }
     },
     "owner": "robinjos",
     "plugins": [

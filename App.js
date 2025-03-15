@@ -1,20 +1,20 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import inicio from "./views/inicio";
-import carucel from "./views/carucel";
-import login from "./views/login";
-import RegistroBiometrico from "./views/registro";
-import pasarela from "./views/pasarela";
-import menu from "./views/menu";
-import Perfil from "./views/perfil";
-import IdentidadInicial from "./views/identidad";
-import ImagePickerExample from "./views/verificarIdentidad";
-import miIdentidad from "./views/miInformacion";
-import ServiciosScreen from "./views/servicios";
-import BeneficiosFiltro from "./views/beneficiosFiltro";
-import BeneficiosScreen from "./views/beneficios";
-import AmigosScreen from "./views/amigos";
+import inicio from "./src/screens/inicio";
+import carucel from "./src/screens/carucel";
+import login from "./src/screens/login";
+import RegistroBiometrico from "./src/screens/registro";
+import pasarela from "./src/screens/pasarela";
+import menu from "./src/screens/menu";
+import Perfil from "./src/screens/perfil";
+import IdentidadInicial from "./src/screens/identidad";
+import ImagePickerExample from "./src/screens/verificarIdentidad";
+import miIdentidad from "./src/screens/miInformacion";
+import ServiciosScreen from "./src/screens/servicios";
+import BeneficiosFiltro from "./src/screens/beneficiosFiltro";
+import BeneficiosScreen from "./src/screens/beneficios";
+import AmigosScreen from "./src/screens/amigos";
 
 const Stack = createStackNavigator();
 
