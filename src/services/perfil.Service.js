@@ -1,6 +1,8 @@
 // perfilLogic.js
+import apiConeccion from './coneccion.Service';
 import { getTokenData } from './token.service'; // Importar el servicio de token
 import * as Location from 'expo-location';
+
 
 // Función para obtener los datos del usuario combinados con el token y el registro civil
 export const getUserInfo = async () => {
@@ -13,7 +15,7 @@ export const getUserInfo = async () => {
         const idIdentidad = tokenData.idIdentidad;
 
         // Realizar la petición HTTP para obtener los datos del registro civil
-        const response = await fetch(`http://52.70.109.55:3007/api/registrocivil/${idIdentidad}`, {
+        const response = await fetch(`${apiConeccion.coneccionRegsitro}/registrocivil/${idIdentidad}`, {
             method: 'GET',
             headers: {
                 'accept': 'application/json',
