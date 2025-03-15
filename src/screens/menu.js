@@ -78,14 +78,10 @@ export default function Menu() {
             <View style={menuEstilos.header}>
                 <GoIdentitySVG style={menuEstilos.logo} />
                 <TouchableOpacity style={menuEstilos.menuButton} onPress={handPerfil}>
-                    {menuData.imagenPerfil ? (
-                        <Image
-                            source={{ uri: `data:image/png;base64,${menuData.imagenPerfil}` }}
-                            style={menuEstilos.profileImage}
-                        />
-                    ) : (
-                        <UsuarioSvg width='100%' height="100%" />
-                    )}
+                    <Image
+                        source={{ uri: `data:image/png;base64,${menuData.imagenPerfil}` }}
+                        style={menuEstilos.profileImage}
+                    />
                 </TouchableOpacity>
             </View>
 
@@ -100,19 +96,11 @@ export default function Menu() {
 
                 <View style={menuEstilos.cardContent}>
                     <View style={menuEstilos.cardImagen}>
-                        {menuData.imagenTarjeta ? (
-                            <Image
-                                source={{ uri: `data:image/png;base64,${menuData.imagenTarjeta}` }}
-                               width='100%' height="100%"
-                                resizeMode="contain"
-                            />
-                        ) : (
-                            <Image
-                                source={require('../../assets/img/imagenPrueba.jpg')}
-                                style={menuEstilos.cardImage}
-                                resizeMode="contain"
-                            />
-                        )}
+                        <Image
+                            source={{ uri: `data:image/png;base64,${menuData.imagenTarjeta}` }}
+                            width='100%' height="100%"
+                            resizeMode="contain"
+                        />
                     </View>
 
                     <View style={menuEstilos.cardInfo}>

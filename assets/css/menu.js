@@ -72,8 +72,8 @@ const menuEstilos = StyleSheet.create({
   },
 
   profileImage: {
-    width: "60%",
-    height: "80%",
+    width: "90%",
+    height: "100%",
     borderRadius: 40,
     marginRight: 10,
   },

@@ -24,9 +24,9 @@ import {
   checkFace,
   checkLiveness,
   verifyBiometrics,
-  QR_DATA,
+  getQRData,
 } from '../services/miIdentidadConfig.Service.js';
-
+import { getMenuData } from '../services/menu.Service';
 
 
 const MiIdentidad = () => {
@@ -43,6 +43,15 @@ const MiIdentidad = () => {
   const validationInterval = useRef(null);
   const [isVerificationActive, setIsVerificationActive] = useState(false);
   const [microphonePermission, requestMicrophonePermission] = Audio.usePermissions();
+
+  const [menuData, setMenuData] = useState({
+    cedula: '1713489514',
+    nombre: 'Gerald Orlando Moreno Jadan',
+    grado: 'Teniente Coronel',
+    caduca: '01/01/2030',
+    imagenPerfil: '',
+    imagenTarjeta: '',
+  });
 
   const checkPermissions = async () => {
     const cameraStatus = await requestPermission();
@@ -93,6 +102,16 @@ const MiIdentidad = () => {
     };
 
     initializeComponent();
+
+    const loadMenuData = async () => {
+      try {
+        const data = await getMenuData();
+        setMenuData(data);
+      } catch (error) {
+        Alert.alert('Error', 'No se pudieron cargar los datos del menú.');
+      }
+    };
+    loadMenuData();
 
     return () => {
       isMounted.current = false;
@@ -149,7 +168,7 @@ const MiIdentidad = () => {
       if (livenessResult.result !== "real") throw new Error("Prueba de vivacidad fallida");
 
       console.log("[4/5] 🔍 Verificando biometría...");
-      const biometricResult = await verifyBiometrics(imageRefBase64, validFrame);
+      const biometricResult = await verifyBiometrics(menuData.imagenTarjeta, validFrame);
       if (!biometricResult.match) throw new Error("Verificación biométrica fallida");
 
       verificationSuccess = true;
@@ -165,11 +184,18 @@ const MiIdentidad = () => {
     }
   };
 
-  const handleVerificationSuccess = () => {
+  const handleVerificationSuccess = async () => {
     if (!isMounted.current) return;
     console.log("[5/5] 🎉¡Verificación exitosa!");
     setIsVerificationActive(false);
-    setQrData(QR_DATA);
+
+    try {
+      const qrData = await getQRData(); // Obtiene los datos del QR
+      setQrData(qrData); // Establece los datos en el estado
+    } catch (error) {
+      console.error("Error al obtener los datos del QR:", error);
+      showErrorAlert("Error al generar el código QR. Intente nuevamente.");
+    }
   };
 
   const switchCamera = () => {
@@ -184,12 +210,12 @@ const MiIdentidad = () => {
         <Text style={miIdentidadEstilos.message}>Necesitamos acceso a:</Text>
         <Text style={miIdentidadEstilos.permissionItem}>🎥 Cámara</Text>
         <Text style={miIdentidadEstilos.permissionItem}>🎤 Micrófono</Text>
-        <Button 
-          title="Otorgar permisos" 
+        <Button
+          title="Otorgar permisos"
           onPress={() => {
             requestPermission();
             requestMicrophonePermission();
-          }} 
+          }}
         />
       </View>
     );
@@ -212,10 +238,10 @@ const MiIdentidad = () => {
 
         <View style={menuEstilos.cardContent}>
           <View style={menuEstilos.cardImagen}>
-            <Image 
-              source={require('../../assets/img/imagenPrueba.jpg')} 
-              style={miIdentidadEstilos.cardImage}
-              resizeMode="contain" 
+            <Image
+              source={{ uri: `data:image/png;base64,${menuData.imagenTarjeta}` }}
+              width='100%' height="100%"
+              resizeMode="contain"
             />
           </View>
 
@@ -226,14 +252,14 @@ const MiIdentidad = () => {
 
             <View style={menuEstilos.subida}>
               <Text style={menuEstilos.cardText}>
-                <Text style={{ fontWeight: 'bold' }}>CÉDULA:</Text> 1713489514
+                <Text style={{ fontWeight: 'bold' }}>CÉDULA:</Text> {menuData.cedula}
               </Text>
-              <Text style={menuEstilos.cardText}>Gerald Orlando Moreno Jadan</Text>
+              <Text style={menuEstilos.cardText}>{menuData.nombre}</Text>
               <Text style={menuEstilos.cardText}>
-                <Text style={{ fontWeight: 'bold' }}>GRADO:</Text> Teniente Coronel
+                <Text style={{ fontWeight: 'bold' }}>GRADO:</Text> {menuData.grado}
               </Text>
               <Text style={menuEstilos.cardText}>
-                <Text style={{ fontWeight: 'bold' }}>CADUCA:</Text> 01/01/2030
+                <Text style={{ fontWeight: 'bold' }}>CADUCA:</Text> {menuData.caduca}
               </Text>
             </View>
 
@@ -303,7 +329,7 @@ const MiIdentidad = () => {
         {qrData && (
           <View style={[miIdentidadEstilos.qrContainer, miIdentidadEstilos.qrBorder]}>
             <QRCode
-              value={JSON.stringify(qrData)}
+              value={JSON.stringify(qrData)} // Convierte el objeto a JSON
               size={250}
               color="#2c3e50"
               backgroundColor="#ffffff"

@@ -2,6 +2,8 @@
 import * as FileSystem from 'expo-file-system';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import { Asset } from 'expo-asset';
+import { getTokenData } from './token.service';
+
 
 // URLs y tokens de la API
 const API_CONFIG = {
@@ -116,9 +118,18 @@ export const verifyBiometrics = async (sourceImg, targetImg) => {
 };
 
 // Datos de ejemplo para el QR
-export const QR_DATA = {
-  cedula: "1234567890",
-  nombre: "LARREA PAREDES DIEGO FRANCISCO",
-  grado: "Teniente Coronel",
-  caduca: "01/01/2030",
+export const getQRData = async () => {
+  try {
+    const tokenData = await getTokenData();
+    if (!tokenData || !tokenData.idIdentidad) {
+      throw new Error("No se pudo obtener el idIdentidad del token.");
+    }
+    console.log("Datos del QR:", tokenData);
+    return {
+      idIdentidad: tokenData.idIdentidad,
+    };
+  } catch (error) {
+    console.error("Error al obtener los datos del QR:", error);
+    throw error;
+  }
 };
