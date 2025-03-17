@@ -27,30 +27,36 @@ export const login = async (email, password) => {
   } catch (error) {
     console.error("Error en la solicitud:", error);
 
+    let errorMessage = 'Error al iniciar sesión'; // Mensaje de error por defecto
+
     if (error.response) {
       // El servidor respondió con un código de estado fuera del rango 2xx
-      Alert.alert(
-        "Error del servidor",
-        JSON.stringify(error.response.data, null, 2),
-        [{ text: "OK" }]
-      );
-      throw new Error(error.response.data.message || 'Error al iniciar sesión');
+      const { data } = error.response;
+
+      // Extraer el mensaje de error del servidor
+      if (data && data.message) {
+        errorMessage = data.message; // Usar el mensaje del servidor
+      } else if (data && data.error) {
+        errorMessage = data.error; // Usar el campo "error" si existe
+      } else {
+        errorMessage = 'Error en el servidor'; // Mensaje genérico si no hay detalles
+      }
     } else if (error.request) {
       // La solicitud fue hecha pero no se recibió respuesta
-      Alert.alert(
-        "Error de conexión",
-        "No se recibió respuesta del servidor. Verifica tu conexión a Internet.",
-        [{ text: "OK" }]
-      );
-      throw new Error('No se pudo conectar al servidor');
+      errorMessage = 'No se recibió respuesta del servidor. Verifica tu conexión a Internet.';
     } else {
       // Algo más causó el error
-      Alert.alert(
-        "Error",
-        error.message || 'Error al iniciar sesión',
-        [{ text: "OK" }]
-      );
-      throw new Error('Error al iniciar sesión');
+      errorMessage = error.message || 'Error al iniciar sesión';
     }
+
+    // Mostrar el mensaje de error en una alerta
+    Alert.alert(
+      "Error",
+      errorMessage,
+      [{ text: "OK" }]
+    );
+
+    // Lanzar el error para que pueda ser manejado por el componente que llama a esta función
+    throw new Error(errorMessage);
   }
 };

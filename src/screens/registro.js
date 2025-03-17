@@ -4,10 +4,21 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import registroEsrilo from '../../assets/css/registro';
+import { MaterialIcons } from '@expo/vector-icons'; // Para el ícono del ojo
 
 // Importar lógica de negocio
 import { loadReferenceImage, takePicture, registerUser } from '../services/registro.Service';
-import { verifyBiometrics } from '../services/miIdentidadConfig.Service'; // Importar la función de verificación biométrica
+import { verifyBiometrics } from '../services/miIdentidadConfig.Service';
+
+// Importar validaciones
+import {
+    validateName,
+    validateCedula,
+    validateFingerCode,
+    validateEmail,
+    validatePassword,
+    validatePasswordMatch,
+} from '../utils/regsiterValidacion';
 
 const RegistroBiometrico = () => {
     const [photoUri, setPhotoUri] = useState(null);
@@ -19,9 +30,12 @@ const RegistroBiometrico = () => {
     const [fingerCode, setFingerCode] = useState('');
     const [email, setEmail] = useState('');
     const [contrasena, setContrasena] = useState('');
+    const [confirmContrasena, setConfirmContrasena] = useState('');
     const [isChecked, setIsChecked] = useState(false);
     const [permission, requestPermission] = useCameraPermissions();
-    const [countdown, setCountdown] = useState(5); // Estado para la cuenta regresiva
+    const [countdown, setCountdown] = useState(5);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const cameraRef = useRef(null);
     const navigation = useNavigation();
 
@@ -68,10 +82,72 @@ const RegistroBiometrico = () => {
         }
     };
 
+    // Manejar cambios en el nombre y apellido
+    const handleNameChange = (text, setState) => {
+        if (validateName(text)) {
+            setState(text);
+        }
+    };
+
+    // Manejar cambios en la cédula (solo números, máximo 10 dígitos)
+    const handleCedulaChange = (text, setState) => {
+        if (validateCedula(text)) {
+            setState(text);
+        }
+    };
+
+    // Manejar cambios en el código dactilar (texto y números, máximo 10 caracteres)
+    const handleFingerCodeChange = (text, setState) => {
+        if (validateFingerCode(text)) {
+            setState(text);
+        }
+    };
+
+    // Manejar cambios en el correo electrónico
+    const handleEmailChange = (text, setState) => {
+        setState(text);
+    };
+
+    // Manejar cambios en la contraseña
+    const handlePasswordChange = (text, setState) => {
+        setState(text);
+    };
+
     // Manejar el registro
     const handleRegister = async () => {
-        if (!name || !surname || !idNumber || !fingerCode || !email || !contrasena || !isChecked || !photoBase64) {
+        if (!name || !surname || !idNumber || !fingerCode || !email || !contrasena || !confirmContrasena || !isChecked || !photoBase64) {
             Alert.alert('Error', 'Complete todos los campos');
+            return;
+        }
+
+        // Validaciones
+        if (!validateName(name) || !validateName(surname)) {
+            Alert.alert('Error', 'Nombre y apellido solo pueden contener letras y espacios.');
+            return;
+        }
+
+        if (!validateCedula(idNumber)) {
+            Alert.alert('Error', 'La cédula debe tener 10 dígitos.');
+            return;
+        }
+
+        if (!validateFingerCode(fingerCode)) {
+            Alert.alert('Error', 'El código dactilar debe tener exactamente 10 caracteres (letras y números).');
+            return;
+        }
+
+        if (!validateEmail(email)) {
+            Alert.alert('Error', 'Ingrese un correo electrónico válido.');
+            return;
+        }
+
+        if (!validatePassword(contrasena)) {
+            Alert.alert('Error', 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.');
+            return;
+        }
+
+        if (!validatePasswordMatch(contrasena, confirmContrasena)) {
+            Alert.alert('Error', 'Las contraseñas no coinciden.');
             return;
         }
 
@@ -83,16 +159,16 @@ const RegistroBiometrico = () => {
                 idNumber,
                 fingerCode,
                 email,
-                contrasena
+                contrasena,
             });
 
             if (registroResult.success) {
                 // Obtener la imagen de referencia desde el backend
                 const referenceImage = registroResult.referenceImage;
-                console.log('holas',registroResult)
+                console.log('holas', registroResult);
                 // Comparar la imagen de referencia con la imagen tomada por la cámara
                 const biometricResult = await verifyBiometrics(referenceImage, photoBase64);
-                console.log(biometricResult)
+                console.log(biometricResult);
                 if (biometricResult.match) {
                     Alert.alert('Éxito', 'Verificación biométrica exitosa');
                     navigation.navigate('login');
@@ -158,39 +234,78 @@ const RegistroBiometrico = () => {
                         style={registroEsrilo.input}
                         placeholder="Nombres"
                         value={name}
-                        onChangeText={setName}
+                        onChangeText={(text) => handleNameChange(text, setName)}
                     />
                     <TextInput
                         style={registroEsrilo.input}
                         placeholder="Apellidos"
                         value={surname}
-                        onChangeText={setSurname}
+                        onChangeText={(text) => handleNameChange(text, setSurname)}
                     />
                     <TextInput
                         style={registroEsrilo.input}
                         placeholder="Cédula"
                         value={idNumber}
-                        onChangeText={setIdNumber}
+                        onChangeText={(text) => handleCedulaChange(text, setIdNumber)}
+                        keyboardType="numeric"
+                        maxLength={10}
                     />
                     <TextInput
                         style={registroEsrilo.input}
                         placeholder="Código Dactilar"
                         value={fingerCode}
-                        onChangeText={setFingerCode}
+                        onChangeText={(text) => handleFingerCodeChange(text, setFingerCode)}
+                        maxLength={10}
                     />
                     <TextInput
                         style={registroEsrilo.input}
                         placeholder="Correo Electrónico"
                         value={email}
-                        onChangeText={setEmail}
+                        onChangeText={(text) => handleEmailChange(text, setEmail)}
+                        keyboardType="email-address"
                     />
 
-                    <TextInput
-                        style={registroEsrilo.input}
-                        placeholder="Contraseña"
-                        value={contrasena}
-                        onChangeText={setContrasena}
-                    />
+                    {/* Campo de contraseña */}
+                    <View style={registroEsrilo.passwordContainer}>
+                        <TextInput
+                            style={registroEsrilo.input}
+                            placeholder="Contraseña"
+                            value={contrasena}
+                            onChangeText={(text) => handlePasswordChange(text, setContrasena)}
+                            secureTextEntry={!showPassword}
+                        />
+                        <TouchableOpacity
+                            style={registroEsrilo.eyeIcon}
+                            onPress={() => setShowPassword(!showPassword)}
+                        >
+                            <MaterialIcons
+                                name={showPassword ? 'visibility-off' : 'visibility'}
+                                size={24}
+                                color="#666"
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                    {/* Campo de confirmación de contraseña */}
+                    <View style={registroEsrilo.passwordContainer}>
+                        <TextInput
+                            style={registroEsrilo.input}
+                            placeholder="Confirmar Contraseña"
+                            value={confirmContrasena}
+                            onChangeText={(text) => handlePasswordChange(text, setConfirmContrasena)}
+                            secureTextEntry={!showConfirmPassword}
+                        />
+                        <TouchableOpacity
+                            style={registroEsrilo.eyeIcon}
+                            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                            <MaterialIcons
+                                name={showConfirmPassword ? 'visibility-off' : 'visibility'}
+                                size={24}
+                                color="#666"
+                            />
+                        </TouchableOpacity>
+                    </View>
 
                     {/* Checkbox y botón de registro */}
                     <View style={registroEsrilo.checkboxContainer}>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
+import { MaterialIcons } from '@expo/vector-icons'; // Importa el ícono del ojo
 import loginEstilos from '../../assets/css/login';
 import GoIdentitySVG from "../../assets/img/goIdentity.svg";
 import { login } from '../services/login.Service'; // Importa el servicio de autenticación
@@ -11,6 +12,7 @@ const Login = () => {
     const [isChecked, setIsChecked] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
     const navigation = useNavigation();
 
     const handleLogin = async () => {
@@ -65,14 +67,26 @@ const Login = () => {
                 autoCapitalize="none"
             />
             <Text style={loginEstilos.letras}>Contraseña</Text>
-            <TextInput
-                style={loginEstilos.input}
-                placeholder="CONTRASEÑA"
-                placeholderTextColor="#BDBDBD"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-            />
+            <View style={loginEstilos.passwordContainer}>
+                <TextInput
+                    style={loginEstilos.input}
+                    placeholder="CONTRASEÑA"
+                    placeholderTextColor="#BDBDBD"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={!showPassword} // Alternar entre mostrar/ocultar contraseña
+                />
+                <TouchableOpacity
+                    style={loginEstilos.eyeIcon}
+                    onPress={() => setShowPassword(!showPassword)} // Alternar el estado
+                >
+                    <MaterialIcons
+                        name={showPassword ? 'visibility-off' : 'visibility'} // Cambiar el ícono
+                        size={24}
+                        color="#666"
+                    />
+                </TouchableOpacity>
+            </View>
 
             <View style={loginEstilos.checkboxContainer}>
                 <TouchableOpacity

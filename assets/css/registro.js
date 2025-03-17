@@ -124,6 +124,15 @@ const registroEsrilo = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 15,
+    },
+    eyeIcon: {
+        position: 'absolute',
+        right: 10,
+    },
 });
 
 export default registroEsrilo

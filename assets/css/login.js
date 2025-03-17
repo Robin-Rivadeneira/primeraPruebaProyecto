@@ -21,6 +21,16 @@ const loginEstilos = StyleSheet.create({
         marginBottom: 20,
         color: '#5b749e',
     },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 15,
+        position: 'relative', // Para posicionar el ícono del ojo
+    },
+    eyeIcon: {
+        position: 'absolute',
+        right: 10, // Posición del ícono
+    },
     input: {
         width: '100%',
         height: 50,
