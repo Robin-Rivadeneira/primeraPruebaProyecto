@@ -1,3 +1,4 @@
+import apiConeccion from '../services/coneccion.Service';
 export const getQrIdormationData = async (idIdentidadFromQR) => { // Recibir idIdentidad como parámetro
     try {
         // Validar que tenemos el idIdentidad
@@ -6,7 +7,7 @@ export const getQrIdormationData = async (idIdentidadFromQR) => { // Recibir idI
         }
 
         // Realizar la petición HTTP usando el id del QR
-        const response = await fetch(`http://52.70.109.55:3007/api/registrocivil/${idIdentidadFromQR}`, {
+        const response = await fetch(`${apiConeccion.coneccionRegsitro}/registrocivil/${idIdentidadFromQR}`, {
             method: 'GET',
             headers: {
                 'accept': 'application/json',
@@ -34,7 +35,7 @@ export const getQrIdormationData = async (idIdentidadFromQR) => { // Recibir idI
         };
 
         return menuData;
-        
+
     } catch (error) {
         console.error("Error al obtener los datos del menú:", error);
         throw error;

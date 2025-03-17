@@ -12,7 +12,7 @@ export const getMenuData = async () => {
         const idIdentidad = tokenData.idIdentidad;
 
         // Realizar la petición HTTP para obtener los datos del registro civil
-        const response = await fetch(`http://52.70.109.55:3007/api/registrocivil/${idIdentidad}`, {
+        const response = await fetch(`${apiConeccion.coneccionRegsitro}/registrocivil/${idIdentidad}`, {
             method: 'GET',
             headers: {
                 'accept': 'application/json',

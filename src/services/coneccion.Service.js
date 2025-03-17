@@ -1,10 +1,27 @@
+// services/apiConeccion.js
+import {
+    API_GENERAL_URL,
+    API_REGISTRO_URL,
+    FACE_DETECTION_URL,
+    LIVENESS_CHECK_URL,
+    BIOMETRICS_URL,
+    LUXAND_TOKEN,
+} from '@env'; // Importa las variables de entorno
+
+console.log("API_GENERAL_URL:", API_GENERAL_URL);
+console.log("API_REGISTRO_URL:", API_REGISTRO_URL);
+console.log("FACE_DETECTION_URL:", FACE_DETECTION_URL);
+console.log("LIVENESS_CHECK_URL:", LIVENESS_CHECK_URL);
+console.log("BIOMETRICS_URL:", BIOMETRICS_URL);
+console.log("LUXAND_TOKEN:", LUXAND_TOKEN);
+
 const apiConeccion = {
-    coneccionGeneral: 'http://52.70.109.55:3006/api',
-    coneccionRegsitro: 'http://52.70.109.55:3007/api',
-    FACE_DETECTION_URL: 'https://api.luxand.cloud/photo/detect',
-    LIVENESS_CHECK_URL: 'https://api.luxand.cloud/photo/liveness/v2',
-    BIOMETRICS_URL: 'http://54.189.63.53:9100/biometria_DEMO',
-    LUXAND_TOKEN: 'ad37885a36ac42fca9f052f1b0487520',
-}
+    coneccionGeneral: API_GENERAL_URL,
+    coneccionRegsitro: API_REGISTRO_URL,
+    FACE_DETECTION_URL: FACE_DETECTION_URL,
+    LIVENESS_CHECK_URL: LIVENESS_CHECK_URL,
+    BIOMETRICS_URL: BIOMETRICS_URL,
+    LUXAND_TOKEN: LUXAND_TOKEN,
+};
 
 export default apiConeccion;
