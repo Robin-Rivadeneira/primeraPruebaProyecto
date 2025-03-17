@@ -1,6 +1,6 @@
 // menuLogic.js
 import { getTokenData } from './token.service'; // Importar el servicio de token
-
+import apiConeccion from './coneccion.Service';
 // Función para obtener los datos de la tarjeta ISSFA y la foto de perfil
 export const getMenuData = async () => {
     try {
