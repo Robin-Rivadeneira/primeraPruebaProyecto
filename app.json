@@ -27,6 +27,7 @@
         "foregroundImage": "./assets/img/goIdentity.png",
         "backgroundColor": "#ffffff"
       },
+      "usesCleartextTraffic": true,
       "package": "com.robinjos.firmaElectronica",
       "permissions": [
         "CAMERA",
@@ -34,7 +35,9 @@
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO",
         "android.permission.SYSTEM_ALERT_WINDOW",
-        "android.permission.FOREGROUND_SERVICE"
+        "android.permission.FOREGROUND_SERVICE",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
       ],
       "softwareKeyboardLayoutMode": "pan"
     },
@@ -43,10 +46,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "032198ff-d0c0-48df-9a22-15f595e11314"
+        "projectId": "0be3f0dd-055e-4563-9630-d665216a1124"
       }
     },
-    "owner": "robinjos",
     "plugins": [
       [
         "expo-camera",

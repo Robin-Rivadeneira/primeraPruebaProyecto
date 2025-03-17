@@ -3,16 +3,7 @@ import * as FileSystem from 'expo-file-system';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import { Asset } from 'expo-asset';
 import { getTokenData } from './token.service';
-
-
-// URLs y tokens de la API
-const API_CONFIG = {
-  FACE_DETECTION_URL: 'https://api.luxand.cloud/photo/detect',
-  LIVENESS_CHECK_URL: 'https://api.luxand.cloud/photo/liveness/v2',
-  BIOMETRICS_URL: 'http://54.189.63.53:9100/biometria_DEMO',
-  LUXAND_TOKEN: 'ad37885a36ac42fca9f052f1b0487520',
-};
-
+import apiConeccion from '../services/coneccion.Service';
 // Extraer frames de un video
 export const extractFramesFromVideo = async (videoUri) => {
   const frames = [];
@@ -44,10 +35,10 @@ export const checkFace = async (base64Image) => {
       type: 'image/jpeg',
     });
 
-    const response = await fetch(API_CONFIG.FACE_DETECTION_URL, {
+    const response = await fetch(apiConeccion.FACE_DETECTION_URL, {
       method: 'POST',
       headers: {
-        'token': API_CONFIG.LUXAND_TOKEN,
+        'token': apiConeccion.LUXAND_TOKEN,
         'Content-Type': 'multipart/form-data',
       },
       body: formData,
@@ -74,10 +65,10 @@ export const checkLiveness = async (base64Image) => {
       type: 'image/jpeg',
     });
 
-    const response = await fetch(API_CONFIG.LIVENESS_CHECK_URL, {
+    const response = await fetch(apiConeccion.LIVENESS_CHECK_URL, {
       method: 'POST',
       headers: {
-        'token': API_CONFIG.LUXAND_TOKEN,
+        'token': apiConeccion.LUXAND_TOKEN,
         'Content-Type': 'multipart/form-data',
       },
       body: formData,
@@ -99,7 +90,8 @@ export const checkLiveness = async (base64Image) => {
 // Verificar biometría
 export const verifyBiometrics = async (sourceImg, targetImg) => {
   try {
-    const response = await fetch(API_CONFIG.BIOMETRICS_URL, {
+    console.log("Enviando imágenes para verificación biométrica...");
+    const response = await fetch(apiConeccion.BIOMETRICS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -108,12 +100,22 @@ export const verifyBiometrics = async (sourceImg, targetImg) => {
         id: Math.random().toString(36).substr(2, 10),
       }),
     });
+
+    if (!response.ok) {
+      throw new Error(`Error en la respuesta: ${response.status}`);
+    }
+
     const result = await response.json();
-    console.log(result)
+    console.log("Respuesta de la API:", result);
+
+    if (!result.hasOwnProperty('is_same_person')) {
+      throw new Error("Respuesta inválida de la API");
+    }
+
     return { match: result.is_same_person };
   } catch (error) {
-    console.log("❌ Error en biometría:", error);
-    return { match: false };
+    console.error("❌ Error en biometría:", error);
+    return { match: false, error: error.message };
   }
 };
 

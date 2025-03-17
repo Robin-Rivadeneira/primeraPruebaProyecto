@@ -169,7 +169,10 @@ const MiIdentidad = () => {
 
       console.log("[4/5] 🔍 Verificando biometría...");
       const biometricResult = await verifyBiometrics(menuData.imagenTarjeta, validFrame);
-      if (!biometricResult.match) throw new Error("Verificación biométrica fallida");
+      if (biometricResult.match == false) {
+        console.error("Error en verificación biométrica:", biometricResult.error);
+        throw new Error("Verificación biométrica fallida", biometricResult.error);
+      }
 
       verificationSuccess = true;
 
