@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
@@ -15,7 +15,7 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
     const navigation = useNavigation();
 
-    const handleLogin = async () => {
+    const handleLogin = useCallback(async () => {
         if (!isChecked) {
             Alert.alert('Error', 'Debe aceptar los términos y condiciones.');
             return;
@@ -38,11 +38,11 @@ const Login = () => {
         } catch (error) {
             Alert.alert('Error', error.message || 'Error al iniciar sesión');
         }
-    };
+    }, [isChecked, email, password, navigation]);
 
-    const handleCrearCuenta = () => {
+    const handleCrearCuenta = useCallback(() => {
         navigation.navigate('registro');
-    };
+    }, [navigation]);
 
     return (
         <LinearGradient
@@ -115,4 +115,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default React.memo(Login); // Evitar rerenders innecesarios

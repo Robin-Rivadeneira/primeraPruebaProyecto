@@ -14,8 +14,6 @@ const api = axios.create({
 
 export const login = async (email, password) => {
   try {
-    console.log("URL de la solicitud:", `${apiConeccion.coneccionGeneral}/auth`);
-    console.log("Datos enviados:", { email, password });
 
     // Realiza la solicitud POST con Axios
     const response = await api.post('/auth', {

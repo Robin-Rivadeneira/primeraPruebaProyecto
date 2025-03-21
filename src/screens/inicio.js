@@ -1,46 +1,40 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import app from "../../assets/css/app";
 import { LinearGradient } from 'expo-linear-gradient';
 import GoIdentitySVG from "../../assets/img/goIdentity.svg";
 import InstitutoSVG from "../../assets/img/instituto.svg";
+import styles from "../../assets/css/app"; // Importar estilos
 
-export default function inicio({ navigation }) {
+const Inicio = ({ navigation }) => {
+  const handlePress = useCallback(() => {
+    navigation.navigate("carucel");
+  }, [navigation]);
+
   return (
-    <View style={app.container}>
+    <View style={styles.container}>
       <LinearGradient
-          colors={[
-            '#bed9f4',        // Color 1
-            '#c4f4fd',        // Color 2
-            'rgb(236, 242, 255)', // Color 3 con opacidad
-            'rgba(255, 255, 255, 0.38)',  // Color 4 (blanco sin opacidad)
-          ]}
-          locations={[0.2, 0.5, 0.7, 0.8]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={app.gradieFond}
-        >
-      {/* Logo y título */}
-      <GoIdentitySVG width="100%" style={app.issfaLogo} />
-
-      {/* Logo y título */}
-      <InstitutoSVG  width="50%" style={app.issfaLogos}/>
-
-      {/* Botón de ingresar */}
-      <TouchableOpacity
-        style={app.button}
-        onPress={() => navigation.navigate("carucel")} // Navegar a la vista del carrusel
+        colors={['#bed9f4', '#c4f4fd', 'rgb(236, 242, 255)', 'rgba(255, 255, 255, 0.38)']}
+        locations={[0.2, 0.5, 0.7, 0.8]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={styles.gradieFond}
       >
-        <LinearGradient
-          colors={['#e5ecfd', '#bdccf4']} // Colores del gradiente
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={app.gradientButton}
-        >
-          <Text style={app.buttonText}>INGRESAR</Text>
-        </LinearGradient>
-      </TouchableOpacity>
+        <GoIdentitySVG width="100%" style={styles.issfaLogo} />
+        <InstitutoSVG width="50%" style={styles.issfaLogos} />
+
+        <TouchableOpacity style={styles.button} onPress={handlePress}>
+          <LinearGradient
+            colors={['#e5ecfd', '#bdccf4']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.gradientButton}
+          >
+            <Text style={styles.buttonText}>INGRESAR</Text>
+          </LinearGradient>
+        </TouchableOpacity>
       </LinearGradient>
     </View>
   );
-}
+};
+
+export default React.memo(Inicio); // Evitar rerenders innecesarios

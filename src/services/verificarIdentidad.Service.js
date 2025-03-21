@@ -18,7 +18,6 @@ export const getQrIdormationData = async (idIdentidadFromQR) => { // Recibir idI
         // Resto del código se mantiene igual...
         if (!response.ok) {
             const errorData = await response.json();
-            console.error("Error en la solicitud:", errorData);
             throw new Error(errorData.message || 'Error al obtener los datos del registro civil');
         }
 

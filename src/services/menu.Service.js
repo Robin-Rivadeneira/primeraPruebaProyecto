@@ -6,7 +6,6 @@ export const getMenuData = async () => {
     try {
         // Obtener los datos del token
         const tokenData = await getTokenData();
-        console.log("Datos del token:", tokenData);
 
         // Extraer el idIdentidad del token
         const idIdentidad = tokenData.idIdentidad;
@@ -23,13 +22,11 @@ export const getMenuData = async () => {
         // Verificar si la respuesta es exitosa
         if (!response.ok) {
             const errorData = await response.json();
-            console.error("Error en la solicitud:", errorData);
             throw new Error(errorData.message || 'Error al obtener los datos del registro civil');
         }
 
         // Obtener los datos de la respuesta
         const registroCivilData = await response.json();
-        console.log("Datos del registro civil:", registroCivilData);
 
         // Actualizar los datos de la tarjeta ISSFA y la foto de perfil
         const menuData = {
@@ -40,8 +37,6 @@ export const getMenuData = async () => {
             imagenPerfil: registroCivilData.fotografia || '', // Usa la imagen en Base64 del token o un valor por defecto
             imagenTarjeta: registroCivilData.fotografia || '', // Usa la imagen en Base64 de la tarjeta ISSFA o un valor por defecto
         };
-
-        console.log("Datos del menú:", menuData.imagenTarjeta);
 
         return menuData; // Retornar los datos actualizados
     } catch (error) {

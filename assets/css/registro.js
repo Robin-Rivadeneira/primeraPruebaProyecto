@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet } from "react-native";
 
 const registroEsrilo = StyleSheet.create({
     container: {
@@ -135,4 +135,4 @@ const registroEsrilo = StyleSheet.create({
     },
 });
 
-export default registroEsrilo
+export default registroEsrilo;

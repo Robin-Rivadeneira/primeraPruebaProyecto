@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet } from "react-native";
 
 const loginEstilos = StyleSheet.create({
     container: {
@@ -13,7 +13,6 @@ const loginEstilos = StyleSheet.create({
         width: '60%',
         height: '30%'
     },
-
     welcomeText: {
         fontSize: 30,
         fontWeight: 'bold',
@@ -67,7 +66,7 @@ const loginEstilos = StyleSheet.create({
         fontSize: 18,
         color: '#5b749e',
         width: '100%',
-        marginTop:'5%',
+        marginTop: '5%',
     },
     button: {
         width: '100%',
@@ -98,4 +97,4 @@ const loginEstilos = StyleSheet.create({
     },
 });
 
-export default loginEstilos
+export default loginEstilos;

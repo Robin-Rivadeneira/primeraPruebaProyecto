@@ -1,10 +1,11 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet } from "react-native";
+
 const pasarelaEsitlos = StyleSheet.create({
     container: {
         flex: 1,
         paddingHorizontal: 20,
         paddingTop: 50,
-        width:'100%',
+        width: '100%',
         height: '100%',
     },
     header: {
@@ -12,7 +13,7 @@ const pasarelaEsitlos = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'left',
         width: '22%',
-        height:'10%',
+        height: '10%',
     },
     logo: {
         width: 100,
@@ -64,7 +65,7 @@ const pasarelaEsitlos = StyleSheet.create({
         alignItems: 'center',
         marginTop: '10%',
         width: "80%",
-        marginLeft:'10%',
+        marginLeft: '10%',
     },
     payButtonText: {
         fontSize: 18,
@@ -82,4 +83,4 @@ const pasarelaEsitlos = StyleSheet.create({
     },
 });
 
-export default pasarelaEsitlos
+export default pasarelaEsitlos;

@@ -8,6 +8,8 @@ node_modules/
 dist/
 web-build/
 expo-env.d.ts
+#keys compilacion android
+my-release-key.jks
 
 # Native
 *.orig.*

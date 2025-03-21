@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Image, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
@@ -15,7 +15,7 @@ import menuEstilos from '../../assets/css/menu';
 // Importar lógica de negocio
 import { getMenuData } from '../services/menu.Service';
 
-export default function Menu() {
+const Menu = () => {
     const navigation = useNavigation();
     const [menuData, setMenuData] = useState({
         cedula: '1713489514',
@@ -39,25 +39,25 @@ export default function Menu() {
         loadMenuData();
     }, []);
 
-    const handPerfil = () => {
+    const handPerfil = useCallback(() => {
         navigation.navigate('perfil');
-    };
+    }, [navigation]);
 
-    const handIdentidad = () => {
+    const handIdentidad = useCallback(() => {
         navigation.navigate('identidadInicial');
-    };
+    }, [navigation]);
 
-    const handServicos = () => {
+    const handServicos = useCallback(() => {
         navigation.navigate('servicios');
-    };
+    }, [navigation]);
 
-    const handBeneficios = () => {
+    const handBeneficios = useCallback(() => {
         navigation.navigate('beneficioFiltro');
-    };
+    }, [navigation]);
 
-    const handAmigos = () => {
+    const handAmigos = useCallback(() => {
         navigation.navigate('amigos');
-    };
+    }, [navigation]);
 
     const buttons = [
         { text: 'Identidad', icon: <IdentidadSVG width={60} height={60} />, link: handIdentidad },
@@ -139,4 +139,6 @@ export default function Menu() {
             </View>
         </LinearGradient>
     );
-}
+};
+
+export default React.memo(Menu); // Evitar rerenders innecesarios

@@ -49,7 +49,6 @@ export const registerUser = async (userData) => {
         });
 
         const data = await response.json();
-        console.log("Respuesta del backend:", data.data.apiResponse); // Depuración: Ver la respuesta completa
 
         // Verificar si el correo ya está registrado
         if (data.data && data.data.message === "El correo electronico se encuentra registrado.") {

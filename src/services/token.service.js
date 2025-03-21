@@ -5,14 +5,12 @@ export const getTokenData = async () => {
     try {
         // Obtener el token de AsyncStorage
         const token = await AsyncStorage.getItem('userToken');
-        console.log("Token almacenado:", token);
 
         if (token) {
             // Verificar que el token tenga el formato correcto
             if (typeof token === 'string' && token.split('.').length === 3) {
                 // Decodificar el token
                 const decodedToken = jwtDecode(token);
-                console.log("Información del token:", decodedToken);
                 return decodedToken;
             } else {
                 console.error("El token no tiene un formato válido.");

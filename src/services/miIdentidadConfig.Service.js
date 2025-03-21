@@ -90,7 +90,6 @@ export const checkLiveness = async (base64Image) => {
 // Verificar biometría
 export const verifyBiometrics = async (sourceImg, targetImg) => {
   try {
-    console.log("Enviando imágenes para verificación biométrica...");
     const response = await fetch(apiConeccion.BIOMETRICS_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -106,7 +105,6 @@ export const verifyBiometrics = async (sourceImg, targetImg) => {
     }
 
     const result = await response.json();
-    console.log("Respuesta de la API:", result);
 
     if (!result.hasOwnProperty('is_same_person')) {
       throw new Error("Respuesta inválida de la API");
@@ -126,7 +124,6 @@ export const getQRData = async () => {
     if (!tokenData || !tokenData.idIdentidad) {
       throw new Error("No se pudo obtener el idIdentidad del token.");
     }
-    console.log("Datos del QR:", tokenData);
     return {
       idIdentidad: tokenData.idIdentidad,
     };

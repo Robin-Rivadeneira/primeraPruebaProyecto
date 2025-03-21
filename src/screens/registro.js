@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, TextInput, ScrollView } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import registroEsrilo from '../../assets/css/registro';
 import { MaterialIcons } from '@expo/vector-icons'; // Para el ícono del ojo
+import registroEsrilo from '../../assets/css/registro';
 
 // Importar lógica de negocio
 import { loadReferenceImage, takePicture, registerUser } from '../services/registro.Service';
@@ -47,7 +47,7 @@ const RegistroBiometrico = () => {
                 Alert.alert('Permisos de cámara no otorgados', 'Necesitas otorgar permisos para usar la cámara.');
             }
         })();
-    }, []);
+    }, [requestPermission]);
 
     // Temporizador para tomar la foto automáticamente después de 5 segundos
     useEffect(() => {
@@ -69,7 +69,7 @@ const RegistroBiometrico = () => {
     }, [permission, photoUri]);
 
     // Manejar la captura de foto
-    const handleTakePicture = async () => {
+    const handleTakePicture = useCallback(async () => {
         try {
             console.log("Capturando foto...");
             const { uri, base64 } = await takePicture(cameraRef);
@@ -80,41 +80,41 @@ const RegistroBiometrico = () => {
             console.error("Error al capturar foto:", error);
             Alert.alert('Error', 'No se pudo capturar la foto');
         }
-    };
+    }, []);
 
     // Manejar cambios en el nombre y apellido
-    const handleNameChange = (text, setState) => {
+    const handleNameChange = useCallback((text, setState) => {
         if (validateName(text)) {
             setState(text);
         }
-    };
+    }, []);
 
     // Manejar cambios en la cédula (solo números, máximo 10 dígitos)
-    const handleCedulaChange = (text, setState) => {
+    const handleCedulaChange = useCallback((text, setState) => {
         if (validateCedula(text)) {
             setState(text);
         }
-    };
+    }, []);
 
     // Manejar cambios en el código dactilar (texto y números, máximo 10 caracteres)
-    const handleFingerCodeChange = (text, setState) => {
+    const handleFingerCodeChange = useCallback((text, setState) => {
         if (validateFingerCode(text)) {
             setState(text);
         }
-    };
+    }, []);
 
     // Manejar cambios en el correo electrónico
-    const handleEmailChange = (text, setState) => {
+    const handleEmailChange = useCallback((text, setState) => {
         setState(text);
-    };
+    }, []);
 
     // Manejar cambios en la contraseña
-    const handlePasswordChange = (text, setState) => {
+    const handlePasswordChange = useCallback((text, setState) => {
         setState(text);
-    };
+    }, []);
 
     // Manejar el registro
-    const handleRegister = async () => {
+    const handleRegister = useCallback(async () => {
         if (!name || !surname || !idNumber || !fingerCode || !email || !contrasena || !confirmContrasena || !isChecked || !photoBase64) {
             Alert.alert('Error', 'Complete todos los campos');
             return;
@@ -179,7 +179,7 @@ const RegistroBiometrico = () => {
         } catch (error) {
             Alert.alert('Error', error.message || 'Error en el registro');
         }
-    };
+    }, [name, surname, idNumber, fingerCode, email, contrasena, confirmContrasena, isChecked, photoBase64, navigation]);
 
     if (!permission?.granted) {
         return (
@@ -332,4 +332,4 @@ const RegistroBiometrico = () => {
     );
 };
 
-export default RegistroBiometrico;
+export default React.memo(RegistroBiometrico); // Evitar rerenders innecesarios

@@ -1,16 +1,14 @@
-import React, { useState, useRef, useEffect } from "react";
-import { 
-  View, 
-  Text, 
-  FlatList, 
-  Dimensions, 
-  TouchableOpacity 
+import React, { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import carucelEstilo from "../../assets/css/carrucel";
-
-// Importa los datos del carrusel
 import dataCarucels from "../services/carusel.Service";
 
 const { width: screenWidth } = Dimensions.get("window");
@@ -20,30 +18,38 @@ const Carucel = () => {
   const flatListRef = useRef(null);
   const navigation = useNavigation();
 
-  // Detectar cambios en el slide activo
+  // Navegar automáticamente al último slide
   useEffect(() => {
     if (activeIndex === dataCarucels.length - 1) {
-      // Navegar después de 1 segundo en el último slide
       const timer = setTimeout(() => {
         navigation.navigate("login");
       }, 1000);
-      return () => clearTimeout(timer);
+      return () => clearTimeout(timer); // Limpiar el temporizador
     }
-  }, [activeIndex]);
+  }, [activeIndex, navigation]);
 
-  const renderItem = ({ item }) => (
+  // Renderizar cada ítem del carrusel
+  const renderItem = useCallback(({ item }) => (
     <View style={[carucelEstilo.carouselItem, { width: screenWidth }]}>
       <item.image width={200} height={200} />
       <Text style={carucelEstilo.carouselTitle}>{item.title}</Text>
       <Text style={carucelEstilo.carouselDescription}>{item.description}</Text>
     </View>
-  );
+  ), []);
 
-  const handleScroll = (event) => {
+  // Manejar el scroll para actualizar el índice activo
+  const handleScroll = useCallback((event) => {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
     const newIndex = Math.round(contentOffsetX / screenWidth);
     setActiveIndex(newIndex);
-  };
+  }, []);
+
+  // Memoizar el layout de los ítems para FlatList
+  const getItemLayout = useMemo(() => (_, index) => ({
+    length: screenWidth,
+    offset: screenWidth * index,
+    index,
+  }), []);
 
   return (
     <View style={carucelEstilo.container}>
@@ -61,11 +67,7 @@ const Carucel = () => {
           showsHorizontalScrollIndicator={false}
           onScroll={handleScroll}
           scrollEventThrottle={32}
-          getItemLayout={(_, index) => ({
-            length: screenWidth,
-            offset: screenWidth * index,
-            index,
-          })}
+          getItemLayout={getItemLayout}
           keyExtractor={(_, index) => index.toString()}
         />
 
@@ -80,7 +82,7 @@ const Carucel = () => {
               onPress={() => {
                 flatListRef.current?.scrollToIndex({
                   index,
-                  animated: true
+                  animated: true,
                 });
               }}
             />
@@ -91,4 +93,4 @@ const Carucel = () => {
   );
 };
 
-export default Carucel;
+export default React.memo(Carucel); // Evitar rerenders innecesarios
